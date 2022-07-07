@@ -1,0 +1,4 @@
+browser -> server: HTTP GET request is sent to server for the web page
+Server sends the html code to the browser
+browser -> server: Seperate HTTP GET requests are sent for CSS, JS, and JSON files.
+Server sends the requested files to browser. 

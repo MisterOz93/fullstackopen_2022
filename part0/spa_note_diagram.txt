@@ -1,0 +1,2 @@
+1. browser fires off event handler from submitting form
+2. JS event handler adds form data to notes array, updates the displayed notes, and sends a POST request to the server with the data in JSON.
