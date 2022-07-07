@@ -1,0 +1,7 @@
+WHen user submits note:
+
+1. browser sends POST request to server 
+2. Server receives the post and responds with 302 URL redirect.
+3. Browser sends GET request to server for location in response header.
+4. Server fulfills the request and the browser reloads the HTML page. 
+5. Reloading page fires off GET requests for the CSS and JS files in linked in the HTML doc.
