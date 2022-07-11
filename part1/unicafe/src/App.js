@@ -10,18 +10,29 @@ const Statistics = ( {scores, total, reviews} ) => {
       </div>
     )
   }
+  const average = scores.reduce((sum, num) => sum + num) / total
+  const percentPositive = 
+    `${scores.filter(score => score === 1).length / 
+    total * 100}%`
 
   return(
     <div>
       <h2>Statistics:</h2>
-      <p>Good: {reviews[0]}</p>
-      <p>Neutral: {reviews[1]}</p>
-      <p>Bad: {reviews[2]}</p>
-      <p>Total: {total} </p>
-      <Average scores={scores} total={total} />
-      <PercentPositive scores={scores} total={total} />
+      <StatisticLine text='Good' value={reviews[0]} />
+      <StatisticLine text='Neutral' value={reviews[1]} />
+      <StatisticLine text='Bad' value={reviews[2]} />
+      <StatisticLine text='Total' value={total} />
+      <StatisticLine text='Average' value={average} />
+      <StatisticLine text='Positive Reviews' value={percentPositive} />
     </div>
   )
+}
+
+const StatisticLine = ({text, value}) => {
+  return(
+    <p>{text}: {value}</p>
+  )
+
 }
 
 const Button = ( {onClick, name} ) => {
@@ -30,26 +41,6 @@ const Button = ( {onClick, name} ) => {
   )
 }
 
-const Average = ( {scores, total} ) => {
-  const avg = !total ? 0 
-  :
-  scores.reduce((sum, num) => sum + num) / total
-  
-  return(
-    <p>Average: {avg} </p>
-  )
-}
-
-const PercentPositive = ( {scores, total} ) => {
-  const percentPositive = !total ? 'n/a'
-  :
-  `${scores.filter(score => score === 1).length / 
-    total * 100}%`
-  return(
-    <p>Positive Reviews: {percentPositive}</p>
-  )
-
-}
 
 const App = () => {
   const [good, setGood] = useState(0)
