@@ -1,6 +1,19 @@
 import { useState } from 'react'
 
-const Display = ( {counter} ) => <div> {counter}</div>
+const History = ( {allClicks} ) => {
+  if (allClicks.length === 0){
+    return(
+      <div>
+        Press buttons!
+      </div>
+    )
+  }
+  return(
+    <div>
+      Button history: {allClicks.join(' ')}
+    </div>
+  )
+}
 
 const Button = ( {name, onClick} ) => 
   <button onClick={onClick}>
@@ -8,17 +21,27 @@ const Button = ( {name, onClick} ) =>
   </button>
 
 const App = () => {
-  const [ counter, setCounter ] = useState(0)
-  const increment = () => setCounter(counter + 1)
-  const decrement = () => setCounter(counter - 1)
-  const reset = () => setCounter(0)
+  const [left, setLeft] = useState(0)
+  const [right, setRight] = useState(0)
+
+  const [allClicks, setAllClicks] = useState([])
+  const handleLeft = () => {
+    setLeft(left + 1)
+    setAllClicks(allClicks.concat('Left'))
+  }
+
+  const handleRight = () => {
+  setRight(right + 1)
+  setAllClicks(allClicks.concat('Right'))
+  }
 
   return (
     <div>
-    <Display counter={counter}/>
-    <Button name="plus" onClick={increment} />
-    <Button name="zero" onClick={reset} />
-    <Button name="minus" onClick={decrement} />
+      {left}
+      <Button onClick={handleLeft} name='left' />
+      <Button onClick={handleRight} name='right'/>
+      {right}
+      <History allClicks={allClicks} />
     </div>
   )
 }
