@@ -18,19 +18,26 @@ const Statistics = ( {scores, total, reviews} ) => {
   return(
     <div>
       <h2>Statistics:</h2>
-      <StatisticLine text='Good' value={reviews[0]} />
-      <StatisticLine text='Neutral' value={reviews[1]} />
-      <StatisticLine text='Bad' value={reviews[2]} />
-      <StatisticLine text='Total' value={total} />
-      <StatisticLine text='Average' value={average} />
-      <StatisticLine text='Positive Reviews' value={percentPositive} />
+      <table>
+        <tbody>
+        <StatisticLine text='Good' value={reviews[0]} />
+        <StatisticLine text='Neutral' value={reviews[1]} />
+        <StatisticLine text='Bad' value={reviews[2]} />
+        <StatisticLine text='Total' value={total} />
+        <StatisticLine text='Average' value={average} />
+        <StatisticLine text='Positive Reviews' value={percentPositive} />
+        </tbody>
+      </table>
     </div>
   )
 }
 
 const StatisticLine = ({text, value}) => {
   return(
-    <p>{text}: {value}</p>
+    <tr>
+      <th>{text}</th> 
+      <td>{value}</td>
+    </tr>
   )
 
 }
