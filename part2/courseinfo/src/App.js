@@ -11,6 +11,7 @@ const Course = ( {course} ) => {
       })
       }
     </ul>
+    <Total parts={course.parts}/>
     </div>
   )
 }
@@ -23,6 +24,14 @@ const Part = ( {part} ) => {
     </li>
   )
 
+}
+
+const Total = ( {parts} ) => {
+  const total = parts.map((part) => part.exercises)
+    .reduce((sum, num) => sum + num)
+  return(
+    <p>Total of: {total} exercises.</p>
+  )
 }
 
 const App = () => {
