@@ -24,17 +24,28 @@ const App = () => {
   }
 
   const vote = (index) => {
-    console.log(index)
     const copy = [...votes]
     copy[index] = copy[index] + 1
     setVotes(copy)
   }
 
+  const mostPopular = () => {
+    const max = [...votes].sort((a,b) =>(b - a))[0]
+    if (max === 0){
+      return
+    }
+    return anecdotes[votes.indexOf(max)]
+
+  }
+
   return (
     <div>
+      <h2>Anecdote of the Day:</h2>
       <p>{anecdotes[selected]}</p>
       <button onClick={()=>chooseRandom(anecdotes)}>Next anecdote</button>
       <button onClick={()=>vote(selected)}>Upvote</button>
+      <h2>Most Upvoted Anecdote:</h2>
+      <p>{mostPopular()}</p>
     </div>
   )
 }
