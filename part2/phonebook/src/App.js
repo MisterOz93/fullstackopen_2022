@@ -6,6 +6,8 @@ const App = () => {
   ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [query, setQuery] = useState('')
+  const [showAllPersons, setShowAllPersons] = useState(true)
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -36,9 +38,23 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+  const handleQueryChange = (event) => {
+    setQuery(event.target.value)
+    if (event.target.value){
+      setShowAllPersons(false)
+    }
+    else {
+      setShowAllPersons(true)
+    }
+  }
+
+  const personsToShow = showAllPersons ? persons 
+    : persons.filter(person => person.name.toLowerCase().includes(query.toLowerCase().trim()))
+
   return (
     <div>
       <h2>Phonebook</h2>
+        Show only names containing: <input value={query} onChange={handleQueryChange} />
       <form onSubmit={addPerson}>
         <div>
           name: <input required value={newName} onChange={handleNameChange}/>
@@ -51,7 +67,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map(person => {
+      {personsToShow.map(person => {
         return(
           <p key={person.name}>{person.name} {person.number}</p>
         )
