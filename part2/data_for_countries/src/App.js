@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import Country from './components/Country'
+import CountryList from './components/CountryList'
 
-const Display = ({countries, query}) => {
+const Display = ({countries, query, handleClick}) => {
   if (!countries[0] || query === ''){
     return
   }
@@ -15,24 +17,11 @@ const Display = ({countries, query}) => {
   }
   if (validCountries.length > 1){
     return(
-      <ul>
-        {validCountries.map(country => <li key={country.name.common}>{country.name.common}</li>)}
-      </ul>
+      <CountryList countries={validCountries} handleClick={handleClick} />
     )
   }
-  const country = validCountries[0]
   return(
-    <div>
-      <h2>{country.name.common}</h2>
-      <p>Capital: {country.capital}</p>
-      <p>Area: {country.area} km<sup>2</sup></p>
-      <h4>Languages Spoken:</h4>
-      <ul>
-        {Object.entries(country.languages).map(langs => <li key={langs[1]}>{langs[1]}</li>)}
-      </ul>
-      {console.log(country)}
-      <img src={country.flags.png} alt={`The flag of ${country.name.common}`}/>
-    </div>
+    <Country country={validCountries[0]} />
   )
 
 }
@@ -49,10 +38,14 @@ const App = () => {
   const queryChange = (event) => {
     setQuery(event.target.value)
   }
+
+  const chooseCountry = (country) => {
+    setQuery(country.name.common)
+  }
   return(
     <div>
       Find Countries: <input value={query} onChange={queryChange}/>
-      <Display countries={countries} query={query}/>
+      <Display countries={countries} query={query} handleClick={chooseCountry}/>
     </div>
   )
 }
