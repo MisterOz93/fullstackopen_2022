@@ -8,9 +8,9 @@ const CountryList = ({countries, handleClick}) => {
         return(
           <div key={country.name.common}>
             <li>
-              {country.name.common}
+              {`${country.name.common} `}
+              <button onClick={() => handleClick(country)}>Show More</button>
             </li>
-            <button onClick={() => handleClick(country)}>Show More</button>
           </div>
         )
       })}
