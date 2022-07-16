@@ -1,6 +1,10 @@
 import React from "react"
 
 const Country = ({country}) => {
+
+  if(!country){
+    return
+  }
   return(
     <div>
       <h2>{country.name.common}</h2>

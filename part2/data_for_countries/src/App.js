@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Country from './components/Country'
 import CountryList from './components/CountryList'
+const apiKey = process.env.REACT_APP_API_KEY
+
 
 const Display = ({countries, query, handleClick}) => {
   if (!countries[0] || query === ''){
