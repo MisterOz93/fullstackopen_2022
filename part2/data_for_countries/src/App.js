@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Country from './components/Country'
 import CountryList from './components/CountryList'
-const apiKey = process.env.REACT_APP_API_KEY
-
+import Weather from './components/Weather'
 
 const Display = ({countries, query, handleClick}) => {
   if (!countries[0] || query === ''){
@@ -23,7 +22,10 @@ const Display = ({countries, query, handleClick}) => {
     )
   }
   return(
+    <>
     <Country country={validCountries[0]} />
+    <Weather country={validCountries[0]} />
+    </>
   )
 
 }
