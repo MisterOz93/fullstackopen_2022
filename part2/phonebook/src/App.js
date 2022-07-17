@@ -39,6 +39,14 @@ const App = () => {
     setNewNumber('')
   }
 
+  const deletePerson = (person) => {
+    if (window.confirm(`Are you sure you want to delete ${person.name} from the phonebook?`)){
+      personsBackend.deletePerson(person).then(res => {
+        personsBackend.getAll().then(res => setPersons(res))
+      })
+    }
+  }
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -72,7 +80,7 @@ const App = () => {
         <PersonForm onSubmit={addPerson} name={newName} number={newNumber}
         nameChange={handleNameChange} numberChange={handleNumberChange} />
       <h3>Numbers</h3>
-      <Persons persons={personsToShow}/>
+      <Persons persons={personsToShow} deletePerson={deletePerson}/>
     </div>
   )
 }
