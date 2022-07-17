@@ -26,9 +26,21 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    if (persons.map(person => person.name.trim().toLowerCase())
-    .includes(newPerson.name.trim().toLowerCase())){
-      alert(`${newName} is already in the phonebook!`)
+    if (persons.map(person => person.number === newNumber && person.name.trim().toLowerCase())
+    .includes(newPerson.name.trim().toLowerCase()) ){
+      alert(`${newName} is already in the phonebook with that number!`)
+    }
+    else if (persons.map(person => person.name.trim().toLowerCase())
+    .includes(newPerson.name.trim().toLowerCase()) ){
+      //name exists but with new number, so update number
+      if (window.confirm(`${newPerson.name} is already in the phonebook, replace the number with a new one?`)){
+        const personToUpdate = persons.find(person => person.name === newPerson.name)
+        const updatedPerson = {...personToUpdate, number: newNumber}
+        personsBackend.updateNumber(updatedPerson).then(res => {
+          const updatedPersons = persons.map(p => p.id !== updatedPerson.id ? p : res)
+          setPersons(updatedPersons)
+        })
+      }
     }
     else {
       personsBackend.create(newPerson).then(res =>{
