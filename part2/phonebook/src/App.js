@@ -5,6 +5,8 @@ import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 
 const App = () => {
+
+  const personsUrl = 'http://localhost:3001/persons'
   const [persons, setPersons] = useState([])
 
   const [newName, setNewName] = useState('')
@@ -13,7 +15,7 @@ const App = () => {
   const [showAllPersons, setShowAllPersons] = useState(true)
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons')
+    axios.get(personsUrl)
       .then(res => {
         setPersons(res.data)
       })
@@ -30,7 +32,9 @@ const App = () => {
       alert(`${newName} is already in the phonebook!`)
     }
     else {
-      setPersons(persons.concat(newPerson))
+      axios.post(personsUrl, newPerson).then(res =>{
+        setPersons(persons.concat(res.data))
+      })
     }
     setNewName('')
     setNewNumber('')
