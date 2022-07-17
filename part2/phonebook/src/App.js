@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import personsBackend from './backend_communication/persons'
 
 const App = () => {
 
-  const personsUrl = 'http://localhost:3001/persons'
   const [persons, setPersons] = useState([])
 
   const [newName, setNewName] = useState('')
@@ -15,9 +14,9 @@ const App = () => {
   const [showAllPersons, setShowAllPersons] = useState(true)
 
   useEffect(() => {
-    axios.get(personsUrl)
+    personsBackend.getAll()
       .then(res => {
-        setPersons(res.data)
+        setPersons(res)
       })
   }, [])
 
@@ -32,8 +31,8 @@ const App = () => {
       alert(`${newName} is already in the phonebook!`)
     }
     else {
-      axios.post(personsUrl, newPerson).then(res =>{
-        setPersons(persons.concat(res.data))
+      personsBackend.create(newPerson).then(res =>{
+        setPersons(persons.concat(res))
       })
     }
     setNewName('')
