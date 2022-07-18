@@ -1,4 +1,4 @@
-const Message = ({message}) => {
+const Message = ({message, error=false}) => {
   if (message === null){
     return null
   }
@@ -9,10 +9,16 @@ const Message = ({message}) => {
     color: 'green',
     padding: 10,
     marginBottom: 10,
-    width: '50%'
+    width: '30%'
   }
+  if(!error){
+    return(
+      <div style={messageStyle}> {message}</div>
+    )
+  }
+  const errorStyle = {...messageStyle, color: 'red', border: 'solid red 2px'}
   return(
-    <div style={messageStyle}> {message}</div>
+    <div style={errorStyle}>{message}</div>
   )
 }
 

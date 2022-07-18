@@ -19,7 +19,8 @@ const deletePerson = (person) => {
 }
 
 const updateNumber = (person) => {
-  return axios.put(`${personsURL}/${person.id}`, person).then(res => res.data)
+  const request = axios.put(`${personsURL}/${person.id}`, person)
+  return request.then(res => res.data)
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export

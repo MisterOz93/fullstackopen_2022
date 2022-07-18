@@ -14,6 +14,7 @@ const App = () => {
   const [query, setQuery] = useState('')
   const [showAllPersons, setShowAllPersons] = useState(true)
   const [message, setMessage] = useState(null)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     personsBackend.getAll()
@@ -38,13 +39,23 @@ const App = () => {
       if (window.confirm(`${newPerson.name} is already in the phonebook, replace the number with a new one?`)){
         const personToUpdate = persons.find(person => person.name === newPerson.name)
         const updatedPerson = {...personToUpdate, number: newNumber}
-        personsBackend.updateNumber(updatedPerson).then(res => {
+        personsBackend.updateNumber(updatedPerson)
+        .then(res => {
           const updatedPersons = persons.map(p => p.id !== updatedPerson.id ? p : res)
           setPersons(updatedPersons)
           setMessage(`${updatedPerson.name}'s number has been updated!`)
           setTimeout(() => {
             setMessage(null)
           }, 5000)
+        })
+        .catch(e => {
+          setMessage(`Error, ${updatedPerson.name} has already been removed from the server.`)
+          setError(true)
+          setTimeout(() => {
+            setMessage(null)
+            setError(false)
+          }, 5000)
+          personsBackend.getAll().then(res => setPersons(res))
         })
       }
     }
@@ -97,7 +108,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Message message={message}/>
+      <Message message={message} error={error}/>
         <Filter query={query} handleQueryChange={handleQueryChange}/>
         <h3>Add a new: </h3>
         <PersonForm onSubmit={addPerson} name={newName} number={newNumber}
