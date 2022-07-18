@@ -3,6 +3,7 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personsBackend from './backend_communication/persons'
+import Message from './components/Message'
 
 const App = () => {
 
@@ -12,6 +13,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [query, setQuery] = useState('')
   const [showAllPersons, setShowAllPersons] = useState(true)
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     personsBackend.getAll()
@@ -39,12 +41,20 @@ const App = () => {
         personsBackend.updateNumber(updatedPerson).then(res => {
           const updatedPersons = persons.map(p => p.id !== updatedPerson.id ? p : res)
           setPersons(updatedPersons)
+          setMessage(`${updatedPerson.name}'s number has been updated!`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
       }
     }
     else {
       personsBackend.create(newPerson).then(res =>{
         setPersons(persons.concat(res))
+        setMessage(`${newPerson.name} has been added to the phonebook!`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
       })
     }
     setNewName('')
@@ -87,6 +97,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Message message={message}/>
         <Filter query={query} handleQueryChange={handleQueryChange}/>
         <h3>Add a new: </h3>
         <PersonForm onSubmit={addPerson} name={newName} number={newNumber}
