@@ -3,9 +3,11 @@ GET  http://localhost:3001/api/notes
 ##############
 
 
-GET http://localhost:3001/api/fakeendpoint
+GET http://localhost:3001/api/notes/1
 
-DELETE http://localhost:3001/api/notes/1
+################
+
+DELETE http://localhost:3001/api/notes/62dd99bea5426dc488c47e0f
 
 ##############
 
@@ -15,4 +17,14 @@ Content-Type: application/json
 {
   "content": "VS CODE REST is pretty good",
   "important": false
+}
+
+########################
+
+PUT http://localhost:3001/api/notes/62dc736a4160d844798d9cca
+Content-Type: application/json
+
+{
+  "content": "VS CODE REST is pretty good",
+  "important": true
 }
