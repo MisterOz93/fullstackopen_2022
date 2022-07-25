@@ -37,7 +37,8 @@ const App = () => {
     .includes(newPerson.name.trim().toLowerCase()) ){
       //name exists but with new number, so update number
       if (window.confirm(`${newPerson.name} is already in the phonebook, replace the number with a new one?`)){
-        const personToUpdate = persons.find(person => person.name === newPerson.name)
+        personsBackend.getAll().then(res => {
+        const personToUpdate = res.find(person => person.name === newPerson.name)
         const updatedPerson = {...personToUpdate, number: newNumber}
         personsBackend.updateNumber(updatedPerson)
         .then(res => {
@@ -48,8 +49,12 @@ const App = () => {
             setMessage(null)
           }, 5000)
         })
-        .catch(e => {
-          setMessage(`Error, ${updatedPerson.name} has already been removed from the server.`)
+        .catch(error => {
+          const validationErr = error.response.data.error.message
+          validationErr ?
+          setMessage(`${error.response.data.error.message}`)
+          :
+          setMessage(`${newPerson.name} was already removed from server`)
           setError(true)
           setTimeout(() => {
             setMessage(null)
@@ -57,6 +62,7 @@ const App = () => {
           }, 5000)
           personsBackend.getAll().then(res => setPersons(res))
         })
+      })
       }
     }
     else {
@@ -66,7 +72,14 @@ const App = () => {
         setTimeout(() => {
           setMessage(null)
         }, 5000)
-      })
+      }).catch(error => {
+        setMessage(`${error.response.data.error.message}`)
+        setError(true)
+        setTimeout(() => {
+          setMessage(null)
+          setError(false)
+        }, 5000)
+      } )
     }
     setNewName('')
     setNewNumber('')

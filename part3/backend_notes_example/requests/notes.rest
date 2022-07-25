@@ -7,7 +7,7 @@ GET http://localhost:3001/api/notes/1
 
 ################
 
-DELETE http://localhost:3001/api/notes/62dd99bea5426dc488c47e0f
+DELETE http://localhost:3001/api/notes/62dde8a4a2a477777b4defcf
 
 ##############
 
@@ -26,5 +26,5 @@ Content-Type: application/json
 
 {
   "content": "VS CODE REST is pretty good",
-  "important": true
+  "important": false
 }
