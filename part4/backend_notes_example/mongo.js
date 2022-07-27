@@ -13,10 +13,10 @@ const noteSchema = new mongoose.Schema({
 const Note = mongoose.model('Note', noteSchema)
 const url = process.env.MONGO_URI
 
-mongoose.connect(url).then((result) => {
-  console.log('mongo connected');
+mongoose.connect(url).then( () => {
+  console.log('mongo connected')
 
- /* const note = new Note({
+  /* const note = new Note({
     content: 'Callback functions suck :(',
     date: new Date(),
     important: false,
@@ -30,5 +30,5 @@ mongoose.connect(url).then((result) => {
     res.forEach(note => console.log(note))
     mongoose.connection.close()
   })
-  }).catch((err) => console.log(err)) 
+}).catch((err) => console.log(err))
 

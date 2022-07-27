@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const mongoURL = process.env.MONGO_URI
 
-mongoose.connect(mongoURL).then(res => console.log('Connected to MongoDB'))
+mongoose.connect(mongoURL).then( () => console.log('Connected to MongoDB'))
 
 const noteSchema = new mongoose.Schema({
   content: {

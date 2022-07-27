@@ -41,7 +41,7 @@ app.get('/api/notes/:id', (req, res, next) => {
 })
 
 app.delete('/api/notes/:id', (req, res, next) => {
-  Note.findByIdAndRemove(req.params.id).then(result =>
+  Note.findByIdAndRemove(req.params.id).then( () =>
     res.status(204).end())
     .catch(error => next(error))
 })
@@ -60,7 +60,7 @@ app.post('/api/notes', (req, res, next) => {
 })
 
 app.put('/api/notes/:id', (req, res, next) => {
-  
+
   const body = req.body
   const note = {
     content: body.content,
@@ -68,26 +68,26 @@ app.put('/api/notes/:id', (req, res, next) => {
   }
   Note.findByIdAndUpdate(
     req.params.id,
-    note, 
-    {new: true, runValidators: true, context: 'query' }
+    note,
+    { new: true, runValidators: true, context: 'query' }
   )
-  .then(updatedNote => {
-    res.json(updatedNote)
-  }).catch(error => next(error))
+    .then(updatedNote => {
+      res.json(updatedNote)
+    }).catch(error => next(error))
 
 })
 
 const unknownEndpoint = (req, res) => {
-  res.status(404).send({error: "unknown endpoint"})
+  res.status(404).send({ error: 'unknown endpoint' })
 }
 
 const errorHandler = (error, req, res, next) => {
   console.error(error.message)
   if (error.name === 'CastError'){
-    return res.status(400).send({ error: "Malformatted ID or content type"})
+    return res.status(400).send({ error: 'Malformatted ID or content type' })
   }
   if (error.name === 'ValidationError'){
-    return res.status(400).json({error: error.message})
+    return res.status(400).json({ error: error.message })
   }
   next(error)
 }
