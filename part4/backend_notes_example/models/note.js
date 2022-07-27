@@ -1,13 +1,9 @@
 const mongoose = require('mongoose')
 
-const mongoURL = process.env.MONGO_URI
-
-mongoose.connect(mongoURL).then( () => console.log('Connected to MongoDB'))
-
 const noteSchema = new mongoose.Schema({
   content: {
     type: String,
-    minLength: 1,
+    minLength: 5,
     required: true
   },
   date: {
