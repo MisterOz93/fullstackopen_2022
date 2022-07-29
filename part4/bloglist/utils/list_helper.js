@@ -71,4 +71,21 @@ const favoriteBlog = (blogs=[]) => {
   return { title: favorite.title, author: favorite.author, likes: favorite.likes }
 }
 
-module.exports = { blogs, dummy, totalLikes, favoriteBlog }
+const mostBlogs = (blogs=[]) => {
+  if (blogs.length === 0) {
+    return blogs
+  }
+  const count = {}
+  blogs.forEach(blog => {
+    count[blog.author] = count[blog.author] ? count[blog.author] + 1
+      :
+      1
+  })
+  const mostBlogs = Object.entries(count).sort((x, y) => y[1] - x[1])[0]
+  return {
+    author: mostBlogs[0],
+    blogs: mostBlogs[1]
+  }
+}
+
+module.exports = { blogs, dummy, totalLikes, favoriteBlog, mostBlogs }
