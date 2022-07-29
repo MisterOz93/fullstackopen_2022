@@ -3,6 +3,7 @@ const dummy = require('../utils/list_helper').dummy
 const totalLikes = require('../utils/list_helper').totalLikes
 const favoriteBlog = require('../utils/list_helper').favoriteBlog
 const mostBlogs = require('../utils/list_helper').mostBlogs
+const mostLikes = require('../utils/list_helper').mostLikes
 
 
 describe('dummy', () => {
@@ -63,11 +64,29 @@ describe('mostBlogs', () => {
       blogs: 1
     })
   })
-  test('of many blogs returns author with most blogs & that amount',
+  test('of many blogs returns author with most blogs & amount',
     () => {
       expect(mostBlogs(hardCodedBlogs)).toEqual({
         author: 'Robert C. Martin',
         blogs: 3
       })
     })
+})
+
+describe('mostLikes', () => {
+  test('of empty array returns empty array', () => {
+    expect(mostLikes([])).toEqual([])
+  })
+  test('of one blog returns the author and likes of blog', () => {
+    expect(mostLikes([hardCodedBlogs[0]])).toEqual({
+      author: 'Michael Chan',
+      likes: 7
+    })
+  })
+  test('of many blogs returns author with most likes & amount', () => {
+    expect(mostLikes(hardCodedBlogs)).toEqual({
+      author: 'Edsger W. Dijkstra',
+      likes: 17
+    })
+  })
 })
