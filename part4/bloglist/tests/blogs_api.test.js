@@ -11,10 +11,17 @@ beforeEach(async () => {
     await blogObject.save()
   }
 })
+describe('GET Request', () => {
 
-test('GET request returns all blogs as JSON', async () => {
-  const response = await api.get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-  expect(response.body).toHaveLength(hardCodedBlogs.length)
+  test('returns all blogs as JSON', async () => {
+    const response = await api.get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body).toHaveLength(hardCodedBlogs.length)
+  })
+
+  test('returns blogs with id property', async () => {
+    const response = await api.get('/api/blogs')
+    expect(response.body[0].id).toBeDefined()
+  })
 })
