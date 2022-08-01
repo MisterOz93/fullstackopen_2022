@@ -25,3 +25,36 @@ describe('GET Request', () => {
     expect(response.body[0].id).toBeDefined()
   })
 })
+
+describe('POST Request', () => {
+
+  test('Increases size of DB', async () => {
+    const initialBlogList = await api.get('/api/blogs')
+    const newBlog = {
+      title: 'test blog',
+      author: 'me',
+      url: 'no',
+      likes: 1111111,
+    }
+    await api.post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    const updatedBlogList = await api.get('/api/blogs')
+    expect(updatedBlogList.body).toHaveLength(initialBlogList.body.length + 1)
+  }),
+
+  test('adds content of the blog to the DB', async () => {
+    const newBlog = {
+      title: 'unique'
+    }
+    await api.post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    const updatedBlogList = await api.get('/api/blogs')
+    expect(updatedBlogList.body.map(blog => blog.title))
+      .toContain('unique')
+  })
+
+})
