@@ -46,7 +46,10 @@ describe('POST Request', () => {
 
   test('adds content of the blog to the DB', async () => {
     const newBlog = {
-      title: 'unique'
+      title: 'unique',
+      author: 'me',
+      url: 'idk',
+      likes: 42
     }
     await api.post('/api/blogs')
       .send(newBlog)
@@ -55,6 +58,19 @@ describe('POST Request', () => {
     const updatedBlogList = await api.get('/api/blogs')
     expect(updatedBlogList.body.map(blog => blog.title))
       .toContain('unique')
+  })
+
+  test('a blog without likes property defaults to 0', async () => {
+    const blogWithoutLikes = {
+      title: 'unliked',
+    }
+    await api.post('/api/blogs')
+      .send(blogWithoutLikes)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    const updatedBlogList = await api.get('/api/blogs')
+    const newBlog = updatedBlogList.body.find(blog => blog.title === 'unliked')
+    expect(newBlog.likes).toEqual(0)
   })
 
 })
