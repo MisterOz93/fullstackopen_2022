@@ -78,12 +78,25 @@ describe('POST Request', () => {
       author: 'Foo',
       likes: 10000000
     }
-    api.post('/api/blogs')
+    await api.post('/api/blogs')
       .send(untitledBlog)
       .expect(400)
 
     const blogListAfter = await api.get('/api/blogs')
     expect(blogListAfter.body).toHaveLength(hardCodedBlogs.length)
   })
+
+  test('a blog without a url is not added', async () => {
+    const blogWithoutUrl = {
+      title: 'the unfindable blog',
+      author: 'foo'
+    }
+    await api.post('/api/blogs')
+      .send(blogWithoutUrl)
+      .expect(400)
+    const blogListAfter = await api.get('/api/blogs')
+    expect(blogListAfter.body).toHaveLength(hardCodedBlogs.length)
+  })
+
 
 })
