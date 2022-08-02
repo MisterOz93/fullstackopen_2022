@@ -63,6 +63,7 @@ describe('POST Request', () => {
   test('a blog without likes property defaults to 0', async () => {
     const blogWithoutLikes = {
       title: 'unliked',
+      url: 'somewhere'
     }
     await api.post('/api/blogs')
       .send(blogWithoutLikes)
@@ -71,6 +72,18 @@ describe('POST Request', () => {
     const updatedBlogList = await api.get('/api/blogs')
     const newBlog = updatedBlogList.body.find(blog => blog.title === 'unliked')
     expect(newBlog.likes).toEqual(0)
+  })
+  test('a blog without title is not added', async () => {
+    const untitledBlog = {
+      author: 'Foo',
+      likes: 10000000
+    }
+    api.post('/api/blogs')
+      .send(untitledBlog)
+      .expect(400)
+
+    const blogListAfter = await api.get('/api/blogs')
+    expect(blogListAfter.body).toHaveLength(hardCodedBlogs.length)
   })
 
 })
