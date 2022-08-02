@@ -100,3 +100,14 @@ describe('POST Request', () => {
 
 
 })
+
+describe('DELETE Request', () => {
+  test.only('Successfully removes a blog with status 204', async () => {
+    const blogsAtStart = await api.get('/api/blogs')
+    const blogToDelete = blogsAtStart.body[0]
+    await api.delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+    const blogsAtEnd = await api.get('/api/blogs')
+    expect(blogsAtEnd.body.map(blog => blog.title)).not.toContain('React patterns')
+  })
+})
