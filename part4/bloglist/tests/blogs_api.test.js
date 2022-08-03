@@ -102,12 +102,24 @@ describe('POST Request', () => {
 })
 
 describe('DELETE Request', () => {
-  test.only('Successfully removes a blog with status 204', async () => {
+  test('Successfully removes a blog with status 204', async () => {
     const blogsAtStart = await api.get('/api/blogs')
     const blogToDelete = blogsAtStart.body[0]
     await api.delete(`/api/blogs/${blogToDelete.id}`)
       .expect(204)
     const blogsAtEnd = await api.get('/api/blogs')
     expect(blogsAtEnd.body.map(blog => blog.title)).not.toContain('React patterns')
+  })
+})
+
+describe('PUT Request', () => {
+  test('Successfully updates a blog', async () => {
+    const blogsAtStart = await api.get('/api/blogs')
+    const blogToUpdate = { ...blogsAtStart.body[0], likes: 77 }
+    await api.put(`/api/blogs/${blogToUpdate.id}`)
+      .send(blogToUpdate)
+    const blogsAtEnd = await api.get('/api/blogs')
+    expect(blogsAtEnd.body).toHaveLength(blogsAtStart.body.length)
+    expect(blogsAtEnd.body[0].likes).toEqual(77)
   })
 })
