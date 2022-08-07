@@ -32,4 +32,29 @@ describe('When there is initially one user in DB', () => {
     expect(usersAtEnd.body).toHaveLength(usersAtStart.body.length + 1)
     expect(usersAtEnd.body.map(user => user.username)).toContain('Valid')
   })
+  test('POST request does not add user with invalid username',
+    async() => {
+      const usersAtStart = await api.get('/api/users')
+      const invalidUser = {
+        username: 'E',
+        password: 'password'
+      }
+      await api.post('/api/users')
+        .send(invalidUser)
+        .expect(400)
+      const usersAtEnd = await api.get('/api/users')
+      expect(usersAtStart.body).toHaveLength(usersAtEnd.body.length)
+    })
+  test('POST does not add user with duplicate username', async () => {
+    const usersAtStart = await api.get('/api/users')
+    const duplicateUser = {
+      username: 'Test User',
+      password: 'hello'
+    }
+    await api.post('/api/users')
+      .send(duplicateUser)
+      .expect(400)
+    const usersAtEnd = await api.get('/api/users')
+    expect(usersAtStart.body).toHaveLength(usersAtEnd.body.length)
+  })
 })
