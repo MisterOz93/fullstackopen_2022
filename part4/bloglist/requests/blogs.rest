@@ -4,11 +4,17 @@ GET http://localhost:3003/api/blogs
 
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlN1cGVyIFVzZXIiLCJpZCI6IjYyZWRiY2MyMTljMmMxNzMxNmY1MTY0YSIsImlhdCI6MTY1OTk5MDk1NCwiZXhwIjoxNjU5OTk0NTU0fQ.PR8GhYlTmd-pxBft7vhOLr5KMyXsNLOurnO8zrFcCX0
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNlY29uZCBVc2VyIiwiaWQiOiI2MmYxN2I1Njg2MjBkNjUyMzc0MzM4ZjMiLCJpYXQiOjE2NTk5OTMyNDksImV4cCI6MTY1OTk5Njg0OX0.elNPv67tjDPSIvjh5GnMUl0VrG1UtKRNtONTdVz8Pro
 
 {
-  "title": "Testing token authorization",
-  "author": "J.R.R. Token",
-  "url": "token.com",
-  "likes": 3
+  "title": "Delete this",
+  "author": "woof",
+  "url": "idk",
+  "likes": 0
 } 
+
+####################
+
+DELETE http://localhost:3003/api/blogs/62f18898b949ad860f044bba
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNlY29uZCBVc2VyIiwiaWQiOiI2MmYxN2I1Njg2MjBkNjUyMzc0MzM4ZjMiLCJpYXQiOjE2NTk5OTY0NDQsImV4cCI6MTY2MDAwMDA0NH0.Cfu8pOfowdTAujY3f20GJpr3zJIkcxXRuvcj63LMRVs
+
