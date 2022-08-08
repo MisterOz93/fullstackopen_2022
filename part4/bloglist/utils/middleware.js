@@ -17,4 +17,14 @@ const errorHandler = (error, request, response, next) => {
   next (error)
 }
 
-module.exports = { errorHandler }
+const isolateToken = (request, response, next) => {
+  const authorization = request.get('authorization')
+  request.token = authorization && authorization.toLowerCase().startsWith('bearer ')
+    ?
+    authorization.substring(7)
+    :
+    null
+  next()
+}
+
+module.exports = { errorHandler, isolateToken }

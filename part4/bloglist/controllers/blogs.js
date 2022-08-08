@@ -4,14 +4,6 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 require('express-async-errors')
 
-const isolateToken = (request) => {
-  const authorization = request.get('authorization')
-  return authorization && authorization.toLowerCase().startsWith('bearer ')
-    ?
-    authorization.substring(7)
-    :
-    null
-}
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
@@ -20,8 +12,7 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const postedBlog = request.body
-  const token = isolateToken(request)
-  const decodedToken = jwt.verify(token, process.env.SECRET)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id){
     return response.status(401).json({ error: 'Missing or invalid token.' })
   }
