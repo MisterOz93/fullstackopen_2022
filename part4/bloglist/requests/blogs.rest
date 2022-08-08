@@ -4,11 +4,11 @@ GET http://localhost:3003/api/blogs
 
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-//Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlN1cGVyIFVzZXIiLCJpZCI6IjYyZWRiY2MyMTljMmMxNzMxNmY1MTY0YSIsImlhdCI6MTY1OTkyMTA0OCwiZXhwIjoxNjU5OTI0NjQ4fQ.M1cR823hTtEGptsOL8qn1yuBCAs270eomiB8TDW4OSk
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlN1cGVyIFVzZXIiLCJpZCI6IjYyZWRiY2MyMTljMmMxNzMxNmY1MTY0YSIsImlhdCI6MTY1OTk4OTc1MSwiZXhwIjoxNjU5OTkzMzUxfQ.vwHSgenwz5gSyFdf2AGJ7bryhx9x1mKYwwQsAYrWMQU
 
 {
-  "title": "Blog From authorized user",
-  "author": "Author McAuthorized",
+  "title": "Testing token authorization",
+  "author": "J.R.R. Token",
   "url": "token.com",
-  "likes": 1
+  "likes": 3
 } 
