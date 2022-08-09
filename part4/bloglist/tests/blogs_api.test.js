@@ -41,7 +41,7 @@ describe('POST Request', () => {
     await user.save()
     const userReady = await User.findOne({ username })
     const userForToken = {
-      username: userReady.name,
+      username: userReady.username,
       id: userReady._id
     }
     token = jwt.sign(userForToken, process.env.SECRET, { expiresIn: 300 })
