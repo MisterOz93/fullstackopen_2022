@@ -17,7 +17,6 @@ mongoose.connect(config.MONGO_URI).then( () => {
 app.use(cors())
 app.use(express.json())
 app.use(middleware.isolateToken)
-app.use(middleware.isolateUser)
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)

@@ -1,7 +1,6 @@
 const blogsRouter = require('express').Router()
-const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
-const User = require('../models/user')
+const middleware = require('../utils/middleware')
 require('express-async-errors')
 
 
@@ -10,13 +9,12 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', middleware.isolateUser, async (request, response) => {
   const postedBlog = request.body
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id){
+  if (!request.user){
     return response.status(401).json({ error: 'Missing or invalid token.' })
   }
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
   const blog = new Blog({
     title: postedBlog.title,
     author: postedBlog.author,
@@ -30,12 +28,12 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken.id){
+blogsRouter.delete('/:id', middleware.isolateUser, async (request, response) => {
+
+  if (!request.user){
     return response.status(401).json({ error: 'Missing or invalid token.' })
   }
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
   if (!user._id){
     return response.status(400).json({ error: 'The Blog does not have a user associated with it.' })
   }
