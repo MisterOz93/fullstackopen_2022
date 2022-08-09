@@ -41,7 +41,7 @@ blogsRouter.delete('/:id', middleware.isolateUser, async (request, response) => 
   if (!blogToDelete){
     return response.status(400).json({ error: 'The blog was already deleted' })
   }
-  if (user._id.toString() !== blogToDelete.user.toString()){
+  if ( !blogToDelete.user || user._id.toString() !== blogToDelete.user.toString()){
     return response.status(401).json({ error: 'Blog can only be deleted by its creator' })
   }
 
