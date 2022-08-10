@@ -68,6 +68,7 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password })
       setUser(user)
+      noteService.setToken(user.token)
       console.log('logging in with', user);
       setUsername('')
       setPassword('')
@@ -84,9 +85,10 @@ const App = () => {
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage} />
-      {!user ? 
+      { !user ? 
         <LoginForm handleLogin={handleLogin} setPassword={setPassword} password={password}
-          setUsername={setUsername} username={username} /> : 
+          setUsername={setUsername} username={username} />
+        : 
         <div>
           <p> Logged in as {user.name}</p>
           <NoteForm addNote={addNote} newNote={newNote} handleNoteChange={handleNoteChange} />
