@@ -1,4 +1,4 @@
-//cont. with taking notes in frontend login txt file
+//cont. with exercise 5.1
 import { useState, useEffect } from 'react'
 //import axios from 'axios'
 import Note from './components/Note'
@@ -17,6 +17,15 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    const loginUserJSON = window.localStorage.getItem('loggedInNoteAppUser')
+    if (loginUserJSON){
+      const user = JSON.parse(loginUserJSON)
+      setUser(user)
+      noteService.setToken(user.token)
+    }
+  }, [])
 
   useEffect(() => {
     //console.log('effect')
@@ -67,6 +76,7 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedInNoteAppUser', JSON.stringify(user))
       setUser(user)
       noteService.setToken(user.token)
       console.log('logging in with', user);
