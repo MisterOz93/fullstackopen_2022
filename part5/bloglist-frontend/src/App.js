@@ -15,9 +15,10 @@ const App = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     try {
-      const loggedInUser = await loginService.login({ username, password })
-      setUser(loggedInUser)
-      blogService.setToken(loggedInUser.token)
+      const user = await loginService.login({ username, password })
+      setUser(user)
+      window.localStorage.setItem('bloglistLoggedInUser', JSON.stringify(user))
+      blogService.setToken(user.token)
     } catch (exception) {
         setErrorMessage('Invalid Username or Password')
         setTimeout(() => {
@@ -27,6 +28,20 @@ const App = () => {
     setUsername('')
     setPassword('')
   }
+
+  const logOut = () => {
+    setUser(null)
+    window.localStorage.removeItem('bloglistLoggedInUser')
+  }
+
+  useEffect(() => {
+    const loggedInUserJSON = window.localStorage.getItem('bloglistLoggedInUser')
+    if (loggedInUserJSON){
+      const user = JSON.parse(loggedInUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -43,7 +58,7 @@ const App = () => {
 
       {user && 
         <div>
-          <p>Logged in as {user.username}</p>
+          <p>Logged in as {user.username} <button onClick={() => logOut()}>Log Out</button></p>
           <h2>Blogs</h2>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
