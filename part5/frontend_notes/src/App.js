@@ -89,7 +89,6 @@ const App = () => {
       <Notification message={errorMessage} />
       { !user ? 
         <Toggleable buttonLabel='login'>
-          {console.log(noteFormRef)}
           <LoginForm handleLogin={handleLogin} setPassword={setPassword} password={password}
             setUsername={setUsername} username={username} />
         </Toggleable>
