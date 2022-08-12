@@ -4,17 +4,26 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
-import DisplayError from './components/DisplayError'
+import Display from './components/Display'
+
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(null)
+  const [error, setError] = useState(null)
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+
+  const removeMessage = () => {
+    setTimeout(() => {
+      setMessage(null)
+      setError(null)
+    }, 5000)
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -24,10 +33,8 @@ const App = () => {
       window.localStorage.setItem('bloglistLoggedInUser', JSON.stringify(user))
       blogService.setToken(user.token)
     } catch (exception) {
-        setErrorMessage('Invalid Username or Password')
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
+        setError('Invalid Username or Password')
+        removeMessage()
     }
     setUsername('')
     setPassword('')
@@ -39,15 +46,14 @@ const App = () => {
     const blog = {
       title, author, url
     }
-    console.log('blog is', blog)
     try{
       const newBlog = await blogService.create(blog)
       setBlogs(blogs.concat(newBlog))
+      setMessage(`A new blog: ${newBlog.title} by ${newBlog.author} was added.`)
+      removeMessage()
     } catch (exception) {
-      setErrorMessage(exception.response.data.error)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      setError(exception.response.data.error)
+      removeMessage()
     }
   }
 
@@ -76,8 +82,9 @@ const App = () => {
       {!user && <LoginForm username={username} password={password} setUsername={setUsername}
         setPassword={setPassword} handleSubmit={handleSubmit} /> }
 
-      {errorMessage && <DisplayError message={errorMessage}/>}
-
+      {message && <Display message={message} />}
+      {error && <Display message={null} error={error} />}
+      
       {user && 
         <div>
           <p>Logged in as {user.username} <button onClick={() => logOut()}>Log Out</button></p>
