@@ -8,6 +8,7 @@ import Footer from './components/Footer'
 import LoginForm from './components/LoginForm'
 import NoteForm from './components/NoteForm'
 import loginService from './services/login'
+import Toggleable from './components/Toggleable'
 
 const App = () => {
   const [notes, setNotes] = useState([])
@@ -96,14 +97,19 @@ const App = () => {
       <h1>Notes</h1>
       <Notification message={errorMessage} />
       { !user ? 
-        <LoginForm handleLogin={handleLogin} setPassword={setPassword} password={password}
-          setUsername={setUsername} username={username} />
+        <Toggleable buttonLabel='login'>
+          <LoginForm handleLogin={handleLogin} setPassword={setPassword} password={password}
+            setUsername={setUsername} username={username} />
+        </Toggleable>
         : 
         <div>
           <p> Logged in as {user.name}</p>
-          <NoteForm addNote={addNote} newNote={newNote} handleNoteChange={handleNoteChange} />
+          <Toggleable buttonLabel='Add Note'>
+            <NoteForm addNote={addNote} newNote={newNote} handleNoteChange={handleNoteChange} />
+          </Toggleable>
         </div>
         }
+        
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important notes' : 'all'}
