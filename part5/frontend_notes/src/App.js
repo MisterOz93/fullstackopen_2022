@@ -1,5 +1,5 @@
 //cont. with exercise 5.1
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 //import axios from 'axios'
 import Note from './components/Note'
 import noteService from './services/notes'
@@ -12,12 +12,13 @@ import Toggleable from './components/Toggleable'
 
 const App = () => {
   const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+
+  const noteFormRef = useRef()
 
   useEffect(() => {
     const loginUserJSON = window.localStorage.getItem('loggedInNoteAppUser')
@@ -37,22 +38,12 @@ const App = () => {
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important)
 
-  const addNote = (event) => {
-    event.preventDefault()
-    const noteObject = {
-      content: newNote,
-      date: new Date().toISOString(),
-      important: Math.random() < 0.5,
-      id: notes.length + 1, //wont work if delete is added
-    }
+  const createNote = (noteObject) => {
+    noteFormRef.current.toggleVisibility()
     noteService.create(noteObject)
     .then(returnedNote => {
       setNotes(notes.concat(returnedNote))
-      setNewNote('')})
-  }
-
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value)
+    })
   }
 
   const toggleImportance = (id) => {
@@ -98,14 +89,15 @@ const App = () => {
       <Notification message={errorMessage} />
       { !user ? 
         <Toggleable buttonLabel='login'>
+          {console.log(noteFormRef)}
           <LoginForm handleLogin={handleLogin} setPassword={setPassword} password={password}
             setUsername={setUsername} username={username} />
         </Toggleable>
         : 
         <div>
           <p> Logged in as {user.name}</p>
-          <Toggleable buttonLabel='Add Note'>
-            <NoteForm addNote={addNote} newNote={newNote} handleNoteChange={handleNoteChange} />
+          <Toggleable buttonLabel='Add Note' ref={noteFormRef}>
+            <NoteForm createNote={createNote} />
           </Toggleable>
         </div>
         }
