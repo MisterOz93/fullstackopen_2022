@@ -15,7 +15,6 @@ const BlogForm = ({ createBlog, visible }) => {
     setTitle('')
     setAuthor('')
     setUrl('')
-
   }
   
   if (!visible){
