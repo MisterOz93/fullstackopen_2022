@@ -1,4 +1,7 @@
-const BlogForm = ({ createBlog, title, setTitle, author, setAuthor, url, setUrl }) => {
+const BlogForm = ({ createBlog, title, setTitle, author, setAuthor, url, setUrl, visible }) => {
+  if (!visible){
+    return
+  }
   return(
     <form onSubmit={createBlog}>
       <h3>Create New Blog</h3>
@@ -6,7 +9,6 @@ const BlogForm = ({ createBlog, title, setTitle, author, setAuthor, url, setUrl 
       <p>Author:<input type='text' value={author} onChange={({ target }) => setAuthor(target.value)} /> </p>
       <p>URL:<input type='text' value={url} onChange={({ target }) => setUrl(target.value)} /> </p>
       <button type='submit'>Create Blog</button>
-
     </form>
   )
 }

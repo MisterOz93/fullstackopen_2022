@@ -17,6 +17,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [showBlogs, setShowBlogs] = useState(false)
 
   const removeMessage = () => {
     setTimeout(() => {
@@ -55,6 +56,10 @@ const App = () => {
       setError(exception.response.data.error)
       removeMessage()
     }
+    setShowBlogs(false)
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
 
   const logOut = () => {
@@ -88,8 +93,10 @@ const App = () => {
       {user && 
         <div>
           <p>Logged in as {user.username} <button onClick={() => logOut()}>Log Out</button></p>
+          {showBlogs === false && <button onClick={() => setShowBlogs(true)}> Create Blog</button>}
           <BlogForm url={url} setUrl={setUrl} author={author} setAuthor={setAuthor}
-            title={title} setTitle={setTitle} createBlog={createBlog} />
+            title={title} setTitle={setTitle} createBlog={createBlog} visible={showBlogs}/>
+          {showBlogs && <button onClick={() => setShowBlogs(false)}>Cancel</button>}
           <h2>Blogs</h2>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
