@@ -14,9 +14,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [error, setError] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [showBlogs, setShowBlogs] = useState(false)
 
   const removeMessage = () => {
@@ -41,11 +38,12 @@ const App = () => {
     setPassword('')
   }
 
-  const createBlog = async (event) => {
-    event.preventDefault()
+  const createBlog = async (blogObject) => {
 
     const blog = {
-      title, author, url
+      title: blogObject.title,
+      author: blogObject.author,
+      url: blogObject.url
     }
     try{
       const newBlog = await blogService.create(blog)
@@ -57,9 +55,6 @@ const App = () => {
       removeMessage()
     }
     setShowBlogs(false)
-    setTitle('')
-    setAuthor('')
-    setUrl('')
   }
 
   const logOut = () => {
@@ -94,8 +89,7 @@ const App = () => {
         <div>
           <p>Logged in as {user.username} <button onClick={() => logOut()}>Log Out</button></p>
           {showBlogs === false && <button onClick={() => setShowBlogs(true)}> Create Blog</button>}
-          <BlogForm url={url} setUrl={setUrl} author={author} setAuthor={setAuthor}
-            title={title} setTitle={setTitle} createBlog={createBlog} visible={showBlogs}/>
+          <BlogForm createBlog={createBlog} visible={showBlogs}/>
           {showBlogs && <button onClick={() => setShowBlogs(false)}>Cancel</button>}
           <h2>Blogs</h2>
           {blogs.map(blog =>

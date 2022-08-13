@@ -1,9 +1,28 @@
-const BlogForm = ({ createBlog, title, setTitle, author, setAuthor, url, setUrl, visible }) => {
+//cont. by checking if still works after moving state into this file
+import { useState } from "react"
+
+const BlogForm = ({ createBlog, visible }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    createBlog({
+      title, author, url
+    })
+
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+
+  }
+  
   if (!visible){
     return
   }
   return(
-    <form onSubmit={createBlog}>
+    <form onSubmit={addBlog}>
       <h3>Create New Blog</h3>
       <p>Title: <input type='text' value={title} onChange={({ target }) => setTitle(target.value)} /> </p>
       <p>Author:<input type='text' value={author} onChange={({ target }) => setAuthor(target.value)} /> </p>
