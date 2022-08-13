@@ -57,6 +57,26 @@ const App = () => {
     setShowBlogs(false)
   }
 
+  const updateBlog = async (blogObject) => {
+    try{
+      const blogToUpdate = await blogService.getOne(blogObject)
+      const updatedBlogObject = {
+        user: blogToUpdate.user,
+        likes: blogToUpdate.likes + 1,
+        author: blogToUpdate.author,
+        title: blogToUpdate.title,
+        url: blogToUpdate.url
+      }
+      const updatedBlog = await blogService.update(blogToUpdate.id, updatedBlogObject)
+      const updatedBlogs = blogs.map(blog => blog.id !== blogToUpdate.id ? blog : updatedBlog)
+      setBlogs(updatedBlogs)
+    
+    } catch (exception) {
+      setError(exception.response.data.error)
+      removeMessage()
+    }
+  }
+
   const logOut = () => {
     setUser(null)
     window.localStorage.removeItem('bloglistLoggedInUser')
@@ -93,7 +113,7 @@ const App = () => {
           {showBlogs && <button onClick={() => setShowBlogs(false)}>Cancel</button>}
           <h2>Blogs</h2>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
           )}
         </div>
       }

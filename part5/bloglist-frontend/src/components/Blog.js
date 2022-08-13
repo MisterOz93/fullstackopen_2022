@@ -1,11 +1,15 @@
 import { useState } from "react"
 
-const Blog = ({blog}) => {
+const Blog = ({ blog, updateBlog }) => {
   const [showDetails, setShowDetails] = useState(false)
   const buttonText = showDetails ? 'Hide' : 'View'
   
-  const clickHandler = () => {
+  const toggleView = () => {
     setShowDetails(!showDetails)
+  }
+
+  const addLike = () => {
+    updateBlog(blog)
   }
 
   const blogStyle = {
@@ -17,11 +21,11 @@ const Blog = ({blog}) => {
 
   return(
     <div style={blogStyle}>
-      <p>{blog.title} by {blog.author} <button onClick={clickHandler}> {buttonText} </button> </p>
+      <p>{blog.title} by {blog.author} <button onClick={toggleView}> {buttonText} </button> </p>
       {showDetails && 
       <>
         <p>{blog.url}</p>
-        <p>Likes: {blog.likes} <button>Like</button></p>
+        <p>Likes: {blog.likes} <button onClick={addLike}>Like</button></p>
         <p>{blog.user.username}</p>
       </>}
     </div>
