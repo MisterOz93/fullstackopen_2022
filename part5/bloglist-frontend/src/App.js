@@ -23,6 +23,15 @@ const App = () => {
     }, 5000)
   }
 
+  const sortBlogs = (blogs) => {
+    if (blogs.length > 1){
+      const blogsCopy = [...blogs]
+      blogsCopy.sort((a, b) => b.likes - a.likes)
+      setBlogs(blogsCopy)
+    }
+
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     try {
@@ -47,7 +56,7 @@ const App = () => {
     }
     try{
       const newBlog = await blogService.create(blog)
-      setBlogs(blogs.concat(newBlog))
+      sortBlogs(blogs.concat(newBlog))
       setMessage(`A new blog: ${newBlog.title} by ${newBlog.author} was added.`)
       removeMessage()
     } catch (exception) {
@@ -66,7 +75,7 @@ const App = () => {
       }
       await blogService.update(blogToUpdate.id, updatedBlogObject)
       const updatedBlogs = await blogService.getAll()
-      setBlogs(updatedBlogs)
+      sortBlogs(updatedBlogs)
     
     } catch (exception) {
       setError(exception.response.data.error)
@@ -91,10 +100,11 @@ const App = () => {
   useEffect(() => {
     const initialBlogs = async () => {
       const blogs = await blogService.getAll()
-      setBlogs(blogs)
+      sortBlogs(blogs)
     }
     initialBlogs()
   }, [])
+
 
   return (
     <div>
