@@ -3,7 +3,7 @@ import { useState } from "react"
 const Blog = ({ blog, updateBlog }) => {
   const [showDetails, setShowDetails] = useState(false)
   const buttonText = showDetails ? 'Hide' : 'View'
-  
+  //console.log('blog user is', blog.user)
   const toggleView = () => {
     setShowDetails(!showDetails)
   }

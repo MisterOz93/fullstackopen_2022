@@ -23,7 +23,7 @@ blogsRouter.post('/', middleware.isolateUser, async (request, response) => {
   const blog = new Blog({
     title: postedBlog.title,
     author: postedBlog.author,
-    user: user._id,
+    user: user,
     url: postedBlog.url,
     likes: postedBlog.likes ? postedBlog.likes : 0
   })

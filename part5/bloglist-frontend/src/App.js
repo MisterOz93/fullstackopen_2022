@@ -61,14 +61,11 @@ const App = () => {
     try{
       const blogToUpdate = await blogService.getOne(blogObject)
       const updatedBlogObject = {
-        user: blogToUpdate.user,
+        ...blogToUpdate,
         likes: blogToUpdate.likes + 1,
-        author: blogToUpdate.author,
-        title: blogToUpdate.title,
-        url: blogToUpdate.url
       }
-      const updatedBlog = await blogService.update(blogToUpdate.id, updatedBlogObject)
-      const updatedBlogs = blogs.map(blog => blog.id !== blogToUpdate.id ? blog : updatedBlog)
+      await blogService.update(blogToUpdate.id, updatedBlogObject)
+      const updatedBlogs = await blogService.getAll()
       setBlogs(updatedBlogs)
     
     } catch (exception) {
@@ -92,9 +89,11 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    const initialBlogs = async () => {
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
+    }
+    initialBlogs()
   }, [])
 
   return (
