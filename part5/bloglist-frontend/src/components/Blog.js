@@ -1,9 +1,9 @@
 import { useState } from "react"
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   const [showDetails, setShowDetails] = useState(false)
   const buttonText = showDetails ? 'Hide' : 'View'
-  //console.log('blog user is', blog.user)
+
   const toggleView = () => {
     setShowDetails(!showDetails)
   }
@@ -12,11 +12,23 @@ const Blog = ({ blog, updateBlog }) => {
     updateBlog(blog)
   }
 
+  const deleteBlog = () => {
+    removeBlog(blog)
+  }
+
   const blogStyle = {
     'border': '1px solid black',
     'margin': '2%',
     'paddingLeft': '2%',
 
+  }
+
+  const deleteButtonStyle = {
+    'backgroundColor': 'lightBlue',
+    'border': ' 2px',
+    'borderRadius': '10%',
+    'marginBottom': '2%',
+    'padding': '1.5%'
   }
 
   return(
@@ -27,6 +39,8 @@ const Blog = ({ blog, updateBlog }) => {
         <p>{blog.url}</p>
         <p>Likes: {blog.likes} <button onClick={addLike}>Like</button></p>
         <p>{blog.user.username}</p>
+        {user.username === blog.user.username && user.name === blog.user.name &&
+        <button style={deleteButtonStyle} onClick={deleteBlog}>Delete</button>}
       </>}
     </div>
   )

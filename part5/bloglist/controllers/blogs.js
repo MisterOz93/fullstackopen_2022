@@ -34,7 +34,6 @@ blogsRouter.post('/', middleware.isolateUser, async (request, response) => {
 })
 
 blogsRouter.delete('/:id', middleware.isolateUser, async (request, response) => {
-
   if (!request.user){
     return response.status(401).json({ error: 'Missing or invalid token.' })
   }

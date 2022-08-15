@@ -83,6 +83,18 @@ const App = () => {
     }
   }
 
+  const removeBlog = async (blogObject) => {
+    try {
+      blogService.setToken(user.token)
+      await blogService.deleteBlog(blogObject.id)
+      const blogsAfterDelete = await blogService.getAll()
+      sortBlogs(blogsAfterDelete)
+    } catch (exception) {
+      setError(exception.response.data.error)
+      removeMessage()
+    }
+  }
+
   const logOut = () => {
     setUser(null)
     window.localStorage.removeItem('bloglistLoggedInUser')
@@ -122,7 +134,7 @@ const App = () => {
           {showBlogs && <button onClick={() => setShowBlogs(false)}>Cancel</button>}
           <h2>Blogs</h2>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} updateBlog={updateBlog}/>
+            <Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={removeBlog} user={user}/>
           )}
         </div>
       }
