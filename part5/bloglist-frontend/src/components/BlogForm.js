@@ -1,5 +1,5 @@
 //cont. by checking if still works after moving state into this file
-import { useState } from "react"
+import { useState } from 'react'
 
 const BlogForm = ({ createBlog, visible }) => {
   const [title, setTitle] = useState('')
@@ -16,7 +16,7 @@ const BlogForm = ({ createBlog, visible }) => {
     setAuthor('')
     setUrl('')
   }
-  
+
   if (!visible){
     return
   }

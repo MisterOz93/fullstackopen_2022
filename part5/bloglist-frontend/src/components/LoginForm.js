@@ -5,7 +5,7 @@ const LoginForm = ({ username, password, handleSubmit, setUsername, setPassword 
       <form onSubmit={handleSubmit}>
         <p>
           Username: <input type='text' name='username' value={username}
-          onChange={({ target }) => setUsername(target.value)} /> 
+            onChange={({ target }) => setUsername(target.value)} />
         </p>
         <p>
           Password: <input type='password' name='password' value={password}

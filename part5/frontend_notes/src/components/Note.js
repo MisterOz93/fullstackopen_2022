@@ -1,6 +1,6 @@
-const Note = ( {note, toggleImportance} ) => {
+const Note = ( { note, toggleImportance } ) => {
   const buttonLabel = note.important ?
-    "make unimportant" : "make important" 
+    'make unimportant' : 'make important'
   return(
     <li className='note'>
       {note.content} {' '}

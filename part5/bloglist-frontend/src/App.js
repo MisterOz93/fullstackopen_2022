@@ -40,8 +40,8 @@ const App = () => {
       window.localStorage.setItem('bloglistLoggedInUser', JSON.stringify(user))
       blogService.setToken(user.token)
     } catch (exception) {
-        setError('Invalid Username or Password')
-        removeMessage()
+      setError('Invalid Username or Password')
+      removeMessage()
     }
     setUsername('')
     setPassword('')
@@ -76,7 +76,7 @@ const App = () => {
       await blogService.update(blogToUpdate.id, updatedBlogObject)
       const updatedBlogs = await blogService.getAll()
       sortBlogs(updatedBlogs)
-    
+
     } catch (exception) {
       setError(exception.response.data.error)
       removeMessage()
@@ -125,8 +125,8 @@ const App = () => {
 
       {message && <Display message={message} />}
       {error && <Display message={null} error={error} />}
-      
-      {user && 
+
+      {user &&
         <div>
           <p>Logged in as {user.username} <button onClick={() => logOut()}>Log Out</button></p>
           {showBlogs === false && <button onClick={() => setShowBlogs(true)}> Create Blog</button>}

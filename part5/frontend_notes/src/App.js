@@ -41,21 +41,20 @@ const App = () => {
   const createNote = (noteObject) => {
     noteFormRef.current.toggleVisibility()
     noteService.create(noteObject)
-    .then(returnedNote => {
-      setNotes(notes.concat(returnedNote))
-    })
+      .then(returnedNote => {
+        setNotes(notes.concat(returnedNote))
+      })
   }
 
   const toggleImportance = (id) => {
-    
+
     const note = notes.find(n => n.id === id)
-    const changedNote = {...note, important: !note.important}
-    
+    const changedNote = { ...note, important: !note.important }
     noteService.update(id, changedNote)
       .then(returnedNote => {
         setNotes(notes.map(note => note.id !== id ? note : returnedNote))
       })
-      .catch(error => {
+      .catch(() => {
         setErrorMessage(`The note ${note.content} was already deleted from the server `)
         setTimeout(() => {
           setErrorMessage(null)
@@ -71,7 +70,7 @@ const App = () => {
       window.localStorage.setItem('loggedInNoteAppUser', JSON.stringify(user))
       setUser(user)
       noteService.setToken(user.token)
-      console.log('logging in with', user);
+      console.log('logging in with', user)
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -87,27 +86,27 @@ const App = () => {
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage} />
-      { !user ? 
+      { !user ?
         <Toggleable buttonLabel='login'>
           <LoginForm handleLogin={handleLogin} setPassword={setPassword} password={password}
             setUsername={setUsername} username={username} />
         </Toggleable>
-        : 
+        :
         <div>
           <p> Logged in as {user.name}</p>
           <Toggleable buttonLabel='Add Note' ref={noteFormRef}>
             <NoteForm createNote={createNote} />
           </Toggleable>
         </div>
-        }
-        
+      }
+
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important notes' : 'all'}
         </button>
       </div>
       <ul>
-        {notesToShow.map(note => 
+        {notesToShow.map(note =>
           <Note key={note.id} note={note} toggleImportance={() => toggleImportance(note.id)}/>
         )}
       </ul>

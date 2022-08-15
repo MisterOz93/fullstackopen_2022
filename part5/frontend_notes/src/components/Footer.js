@@ -12,7 +12,7 @@ const Footer = () => {
 
   return (
     <footer style={footerStyle}>
-     <p style={pStyle}> Note app, Department of Computer Science, University of Helsinki 2022</p>
+      <p style={pStyle}> Note app, Department of Computer Science, University of Helsinki 2022</p>
     </footer>
   )
 }

@@ -15,13 +15,13 @@ const Display = ({ message, error=null }) => {
   if (!error){
     return(
       <>
-      <h3 style={messageStyle}> { message }</h3>
+        <h3 style={messageStyle}> { message }</h3>
       </>
     )
   }
   return(
     <>
-    <h3 style={errorStyle}>{ error }</h3>
+      <h3 style={errorStyle}>{ error }</h3>
     </>
   )
 }
