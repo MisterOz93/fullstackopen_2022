@@ -24,14 +24,14 @@ describe('<Blog />', () => {
       name: 'Test'
     }
     dummy = jest.fn()
+    render(<Blog blog={blog} removeBlog={dummy} updateBlog={dummy} user={user}/>)
   })
   test('Only Title and author are displayed by default', () => {
-    render(<Blog blog={blog} removeBlog={dummy} updateBlog={dummy} user={user}/>)
     const element = screen.getByText('Test Blog by Foo')
     expect(element).toBeDefined()
   })
   test('Display URL and likes when button clicked', async () => {
-    render(<Blog blog={blog} removeBlog={dummy} updateBlog={dummy} user={user}/>)
+
     const currentUser = userEvent.setup()
     const button = screen.getByText('View')
     await currentUser.click(button)
@@ -39,5 +39,14 @@ describe('<Blog />', () => {
     const blogUrl = screen.getByText('www.www.www')
     expect(blogLikes).toBeDefined()
     expect(blogUrl).toBeDefined()
+  })
+  test('event handler fires with each appropriate button click', async () => {
+    const currentUser = userEvent.setup()
+    const viewButton = screen.getByText('View')
+    await currentUser.click(viewButton)
+    const updateButton = screen.getByText('Like')
+    await currentUser.click(updateButton)
+    await currentUser.click(updateButton)
+    expect(dummy.mock.calls).toHaveLength(2)
   })
 })
