@@ -50,11 +50,13 @@ describe('Blog app', function() {
         .should('contain', 'Blog created through Cypress by Cy Press')
     })
 
-    it('A blog can be liked by the user', function(){
+    it.only('A blog can be liked by the user', function(){
       cy.createBlog({ title: 'blog a', author: 'Tester', url: '1234' })
       cy.createBlog({ title: 'blog b', author: 'Tester', url: '1234' })
       cy.createBlog({ title: 'blog c', author: 'Tester', url: '1234' })
-      cy.get('.blog').should('have.length', 3)
+      cy.get('.blog').contains('blog b').contains('View').click()
+        .get('#like_button').click()
+      cy.get('.blog').contains('blog b').parent().contains('Likes: 1')
     })
 
   })
