@@ -101,9 +101,11 @@ const App = () => {
       }
 
       <div>
+        {user &&
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important notes' : 'all'}
         </button>
+        }
       </div>
       <ul>
         {notesToShow.map(note =>

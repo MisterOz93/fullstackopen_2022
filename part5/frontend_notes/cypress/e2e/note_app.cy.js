@@ -1,4 +1,6 @@
+//cont from failed login test
 describe('Note app', function(){
+
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3001/api/testing/reset')
     const user = {
@@ -24,10 +26,7 @@ describe('Note app', function(){
   describe('when logged in', function(){
 
     beforeEach(function(){
-      cy.contains('login').click()
-      cy.get('#username-field').type('Root')
-      cy.get('#password-field').type('password')
-      cy.get('#login-submit').click()
+      cy.login({ username: 'Root', password: 'password' })
     })
 
     it('a new note can be created', function() {
@@ -37,18 +36,29 @@ describe('Note app', function(){
       cy.contains('Created via Cypress')
     })
 
-    describe('and a note exists', function(){
+    describe('and several notes exist', function(){
       beforeEach(function(){
-        cy.contains('Add Note').click()
-        cy.get('#note-content').type('Another Cypress Note')
-        cy.contains('Save').click()
+        cy.createNote({ content: 'first note' })
+        cy.createNote({ content: 'second note' })
+        cy.createNote({ content: 'third note' })
       })
 
-      it('it can be made important', function(){
-        cy.contains('Another Cypress Note')
-          .contains('make important').click()
-        cy.contains('make unimportant')
+      it('one of the notes can be made important', function(){
+        cy.contains('second note').parent().find('button').as('theButton')
+        cy.get('@theButton').click()
+        cy.get('@theButton')
+          .should('contain', 'make unimportant')
       })
     })
+
   })
+  it('login fails with wrong password', function(){
+    cy.contains('login').click()
+    cy.get('#username-field').type('Root')
+    cy.get('#password-field').type('wrongpassword')
+    cy.get('#login-submit').click()
+    cy.contains('Invalid Username or Password')
+    cy.get('html').should('not.contain', 'Logged in as Root')
+  })
+
 })
