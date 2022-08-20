@@ -24,11 +24,11 @@ const App = () => {
   }
 
   const sortBlogs = (blogs) => {
+    const blogsCopy = [...blogs]
     if (blogs.length > 1){
-      const blogsCopy = [...blogs]
       blogsCopy.sort((a, b) => b.likes - a.likes)
-      setBlogs(blogsCopy)
     }
+    setBlogs(blogsCopy)
 
   }
 
@@ -49,13 +49,8 @@ const App = () => {
 
   const createBlog = async (blogObject) => {
 
-    const blog = {
-      title: blogObject.title,
-      author: blogObject.author,
-      url: blogObject.url
-    }
-    try{
-      const newBlog = await blogService.create(blog)
+    try {
+      const newBlog = await blogService.create(blogObject)
       sortBlogs(blogs.concat(newBlog))
       setMessage(`A new blog: ${newBlog.title} by ${newBlog.author} was added.`)
       removeMessage()
