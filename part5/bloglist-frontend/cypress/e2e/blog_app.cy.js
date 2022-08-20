@@ -34,23 +34,30 @@ describe('Blog app', function() {
     })
   })
 
-  describe('When logged in', function() {
+  describe.only('When logged in', function() {
     beforeEach(function() {
-      cy.get('#username').type('Tester')
-      cy.get('#password').type('password')
-      cy.get('#log_in_button').click()
+      cy.login({ username: 'Tester', password: 'password' })
     })
 
     it('A blog can be created', function() {
-      cy.contains('Create Blog').click()
+      cy.contains('Add a Blog').click()
       cy.get('#title').type('Blog created through Cypress')
       cy.get('#author').type('Cy Press')
       cy.get('#url').type('cy.press')
       cy.get('#create_blog_button').click()
-      cy.contains('Create Blog')
+      cy.contains('Add a Blog')
       cy.get('.blog').should('have.css', 'border', '1px solid rgb(0, 0, 0)')
         .should('contain', 'Blog created through Cypress by Cy Press')
     })
+
+    it('A blog can be liked by the user', function(){
+      cy.createBlog({ title: 'blog a', author: 'Tester', url: '1234' })
+      cy.createBlog({ title: 'blog b', author: 'Tester', url: '1234' })
+      cy.createBlog({ title: 'blog c', author: 'Tester', url: '1234' })
+      cy.get('.blog').should('have.length', 3)
+    })
+
   })
+
 
 })

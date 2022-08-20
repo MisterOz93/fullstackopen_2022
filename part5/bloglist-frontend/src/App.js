@@ -124,7 +124,7 @@ const App = () => {
       {user &&
         <div>
           <p>Logged in as {user.username} <button onClick={() => logOut()}>Log Out</button></p>
-          {showBlogs === false && <button onClick={() => setShowBlogs(true)}> Create Blog</button>}
+          {showBlogs === false && <button onClick={() => setShowBlogs(true)}> Add a Blog</button>}
           <BlogForm createBlog={createBlog} visible={showBlogs}/>
           {showBlogs && <button onClick={() => setShowBlogs(false)}>Cancel</button>}
           <h2>Blogs</h2>
