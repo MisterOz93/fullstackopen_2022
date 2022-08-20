@@ -48,7 +48,8 @@ describe('Blog app', function() {
       cy.get('#url').type('cy.press')
       cy.get('#create_blog_button').click()
       cy.contains('Create Blog')
-      cy.contains('Blog created through Cypress by Cy Press')
+      cy.get('.blog').should('have.css', 'border', '1px solid rgb(0, 0, 0)')
+        .should('contain', 'Blog created through Cypress by Cy Press')
     })
   })
 
