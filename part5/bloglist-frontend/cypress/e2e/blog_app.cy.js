@@ -5,6 +5,8 @@ describe('Blog app', function() {
   })
 
   it('Login form is shown', function() {
-    // ...
+    cy.contains('Log In to Bloglist Application')
+    cy.contains('Username:')
+    cy.contains('Password:')
   })
 })
