@@ -1,46 +1,45 @@
-//cont from 'redux-notes' header
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import noteReducer from './reducers/noteReducer'
+
 import { createStore } from 'redux'
 
+const store = createStore(noteReducer)
 
-const counterReducer = (state = 0, action) => {
-  switch (action.type){
-    case 'INCREMENT':
-      return state + 1
-    case 'DECREMENT':
-      return state - 1
-    case 'ZERO':
-      return 0
-    default:
-      return state
+store.dispatch({
+  type: 'NEW_NOTE',
+  data: {
+    content: 'the app state is in redux store',
+    important: true,
+    id: 1
   }
-}
+})
 
-const store = createStore(counterReducer)
+store.dispatch({
+  type: 'NEW_NOTE',
+  data: {
+    content: 'state changes are made with actions',
+    important: false,
+    id: 2
+  }
+})
 
 const App = () => {
   return(
     <div>
-      <div>
-        {store.getState()}
-      </div>
-      <button onClick ={e => store.dispatch({ type: 'INCREMENT' })}>
-        Plus
-      </button>
-      <button onClick ={e => store.dispatch({ type: 'DECREMENT' })}>
-        Minus
-      </button>
-      <button onClick={e => store.dispatch({ type: 'ZERO'})}>
-        Zero
-      </button>
+      <ul>
+        {store.getState().map(note => 
+          <li key={note.id}>
+            {note.content} <strong>{note.important ? 'important' : ''} </strong>
+          </li>
+        )}
+      </ul>
     </div>
   )
 }
-const renderApp = () => {
-ReactDOM.createRoot(document.getElementById('root')).render(
-    <App /> )
-}
 
+const root = ReactDOM.createRoot(document.getElementById('root'))
+const renderApp = () => root.render(<App />)
 renderApp()
+
 store.subscribe(renderApp)
