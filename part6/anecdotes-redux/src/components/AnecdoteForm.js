@@ -1,12 +1,15 @@
-
-const AnecdoteForm = ({ createAnecdote }) => {
+import { useDispatch } from 'react-redux'
+import { addAnecdote } from '../reducers/anecdoteReducer'
+const AnecdoteForm = () => {
+  const dispatch = useDispatch()
 
   const handleSubmit = (event) => {
     event.preventDefault()
     const input = event.target.anecdote.value
     event.target.anecdote.value = ''
-    createAnecdote(input)
+    dispatch(addAnecdote(input))
   }
+
   return(
     <form onSubmit={handleSubmit}>
       <input type='text' name='anecdote' />
