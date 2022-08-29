@@ -17,7 +17,7 @@ const Anecdote = ({ anecdote, vote }) => {
 
 const AnecdoteList = () => {
 
-  const anecdotes = useSelector(state => state)
+  const state = useSelector(state => state)
   const dispatch = useDispatch()
 
   const vote = (id) => {
@@ -26,7 +26,7 @@ const AnecdoteList = () => {
 
 return (
   <div>
-    {anecdotes.map( a => 
+    {state.anecdote.map( a => 
       <Anecdote key={a.id} anecdote={a} vote={vote} />)}
   </div>
 )
