@@ -7,6 +7,7 @@ const App = () => {
     <div>
       <NewNote />
       <VisibilityFilter />
+      <h2> Notes </h2>
       <Notes />
     </div>
   )
