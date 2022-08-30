@@ -7,4 +7,11 @@ const getAll = async () => {
   return response.data
 }
 
-export default { getAll }
+const createNote = async (content) => {
+  const note = { content, important: false}
+  const res = await axios.post(baseUrl, note)
+  return res.data
+}
+
+// eslint-disable-next-line import/no-anonymous-default-export
+export default { getAll, createNote }
