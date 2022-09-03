@@ -64,6 +64,11 @@
       "content": "testing display",
       "votes": 0,
       "id": "NLM1OQC"
+    },
+    {
+      "content": "testing connected components",
+      "votes": 1,
+      "id": "IpcQ1zU"
     }
   ]
 }
