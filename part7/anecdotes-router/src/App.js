@@ -84,6 +84,13 @@ const CreateNew = (props) => {
     nav('/')
 
   }
+
+  const reset = () => {
+    return (
+      content.reset(), author.reset(), info.reset()
+    )
+  }
+
   const margin = {
     'marginLeft': 5
   }
@@ -104,7 +111,8 @@ const CreateNew = (props) => {
           url for more info
           <input style={margin} {...info} />
         </div>
-        <button>create</button>
+        <button type='submit'>create</button>
+        <button type='button' onClick={()=>{ reset()} }>reset</button>
       </form>
     </div>
   )
