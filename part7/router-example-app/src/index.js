@@ -37,8 +37,20 @@ const StyledInput = styled.input`
   margin: 0.25em;
   `
 
+const Page = styled.div`
+  padding: 1em;
+  background: papayawhip;
+`
 
-
+const Navigation = styled.div`
+  background: BurlyWood;
+  padding: 1em;
+`
+const Footer = styled.div`
+  background: Chocolate;
+  padding: 1em;
+  margin-top: 1em;
+  `
 const Home = () => (
   <div>
     <h2>TKTL notes app</h2>
@@ -164,44 +176,28 @@ const App = () => {
   }
 
   return (
-    <Container>
-      <AppBar position='static'>
-        <Toolbar>
-          <MuiButton color='inherit' component={Link} to='/'>
-            Home
-          </MuiButton>
-          <MuiButton color='inherit' component={Link} to='/notes'>
-            Notes
-          </MuiButton>
-          <MuiButton color='inherit' component={Link} to='/users'>
-            Users
-          </MuiButton>
+    <Page>
+      <Navigation>
+        <Link style={padding} to='/'>Home</Link>
+        <Link style={padding} to='/notes'>Notes</Link>
+        <Link style={padding} to='/users'>Users</Link>
           {user 
             ? <em> {user} logged in </em>
-            : <MuiButton color='inherit' component={Link} to='/login'>
-                Login
-              </MuiButton>
+            : <Link style={padding} to='/login'>
+              Log In
+            </Link>
             }
-        </Toolbar>
-      </AppBar>
-      <div className='message_container'>
-        {(message && 
-          <MuiAlert severity='success'>
-            {message}
-          </MuiAlert>
-         )}
-      </div>
-      <Routes>
-        <Route path="/notes/:id" element={<Note notes={note} />} />
-        <Route path="/notes" element={<Notes notes={notes} />} />
-        <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />          <Route path="/login" element={<Login onLogin={login} />} />
-        <Route path="/" element={<Home />} />
-      </Routes>
-      <div>
-        <br />
-        <em>Note app, Department of Computer Science 2022</em>
-      </div>
-    </Container>
+    </Navigation>
+    <Routes>
+      <Route path="/notes/:id" element={<Note notes={note} />} />
+      <Route path="/notes" element={<Notes notes={notes} />} />
+      <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />          <Route path="/login" element={<Login onLogin={login} />} />
+      <Route path="/" element={<Home />} />
+    </Routes>
+    <Footer>
+      <em>Note app, Department of Computer Science 2022</em>
+    </Footer>
+  </Page>
   )
 }
 
