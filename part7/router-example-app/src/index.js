@@ -22,6 +22,22 @@ import {
   useMatch,
 } from "react-router-dom"
 
+import styled from 'styled-components'
+
+const StyledButton = styled.button`
+  background: Bisque;
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: solid 2px Chocolate;
+  border-radius: 3px;
+  `
+
+const StyledInput = styled.input`
+  margin: 0.25em;
+  `
+
+
 
 const Home = () => (
   <div>
@@ -88,19 +104,15 @@ const Login = (props) => {
       <h2>login</h2>
       <form onSubmit={onSubmit}>
         <div>
-          <TextField label='username'>
             username:
-          </TextField>
+            <StyledInput />
         </div>
         <div>
-          <TextField label='password' type='password'>
             password:
-          </TextField>
+            <StyledInput type='password' />
         </div>
         <div>
-          <MuiButton variant='contained' color='primary' type='submit'>
-            login
-          </MuiButton>
+          <StyledButton type='submit' primary=''>login</StyledButton>
         </div>
       </form>
     </div>
