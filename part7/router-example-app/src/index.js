@@ -2,7 +2,14 @@ import ReactDOM  from 'react-dom/client'
 
 import { Table, Form, Button, Navbar, Nav, Alert } from 'react-bootstrap'
 
+import { TableContainer, Table as MuiTable, Paper, TableBody, TableRow,
+TableCell, Button as MuiButton, TextField, Alert as MuiAlert, AppBar,
+Toolbar
+  } from '@mui/material'
+
 import { useState } from 'react'
+
+import { Container } from '@mui/material'
 
 import {
   BrowserRouter as Router,
@@ -37,20 +44,22 @@ const Note = ({ note }) => {
 const Notes = ({ notes }) => (
   <div>
     <h2>Notes</h2>
-    <Table striped>
-      <tbody>
-        {notes.map(note =>
-          <tr key={note.id}>
-            <td>
-              <Link to={`/notes/${note.id}`}>{note.content}</Link>
-            </td>
-            <td>
-              {note.user}
-            </td>
-        </tr>
-      )}
-    </tbody>
-    </Table>
+    <TableContainer component={Paper}>
+      <MuiTable>
+        <TableBody>
+          {notes.map(note =>
+            <TableRow key={note.id}>
+              <TableCell>
+                <Link to={`/notes/${note.id}`}>{note.content}</Link>
+              </TableCell>
+              <TableCell>
+                {note.user}
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </MuiTable>
+    </TableContainer>
   </div>
 )
 
@@ -77,17 +86,23 @@ const Login = (props) => {
   return (
     <div>
       <h2>login</h2>
-      <Form onSubmit={onSubmit}>
-        <Form.Group>
-          <Form.Label> username: </Form.Label>
-          <Form.Control type='text' name='username' />
-          <Form.Label> password: </Form.Label>
-          <Form.Control type='password' />
-          <Button variant='primary' type='submit'>
+      <form onSubmit={onSubmit}>
+        <div>
+          <TextField label='username'>
+            username:
+          </TextField>
+        </div>
+        <div>
+          <TextField label='password' type='password'>
+            password:
+          </TextField>
+        </div>
+        <div>
+          <MuiButton variant='contained' color='primary' type='submit'>
             login
-          </Button>
-        </Form.Group>
-      </Form>
+          </MuiButton>
+        </div>
+      </form>
     </div>
   )
 }
@@ -137,49 +152,44 @@ const App = () => {
   }
 
   return (
-    <div>
-<Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-  <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-  <Navbar.Collapse id="responsive-navbar-nav">
-    <Nav className="me-auto">
-      <Nav.Link href="#" as="span">
-        <Link style={padding} to="/">home</Link>
-      </Nav.Link>
-      <Nav.Link href="#" as="span">
-        <Link style={padding} to="/notes">notes</Link>
-      </Nav.Link>
-      <Nav.Link href="#" as="span">
-        <Link style={padding} to="/users">users</Link>
-      </Nav.Link>
-      <Nav.Link href="#" as="span">
-        {user
-          ? <em style={padding}>{user} logged in</em>
-          : <Link style={padding} to="/login">login</Link>
-        }
-      </Nav.Link>
-    </Nav>
-  </Navbar.Collapse>
-</Navbar>
-        <div className='message_container'>
-          {(message && 
-            <Alert variant='success'>
-              {message}
-            </Alert>
-          )}
-        </div>
-
-        <Routes>
-          <Route path="/notes/:id" element={<Note notes={note} />} />
-          <Route path="/notes" element={<Notes notes={notes} />} />
-          <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
-          <Route path="/login" element={<Login onLogin={login} />} />
-          <Route path="/" element={<Home />} />
-        </Routes>
+    <Container>
+      <AppBar position='static'>
+        <Toolbar>
+          <MuiButton color='inherit' component={Link} to='/'>
+            Home
+          </MuiButton>
+          <MuiButton color='inherit' component={Link} to='/notes'>
+            Notes
+          </MuiButton>
+          <MuiButton color='inherit' component={Link} to='/users'>
+            Users
+          </MuiButton>
+          {user 
+            ? <em> {user} logged in </em>
+            : <MuiButton color='inherit' component={Link} to='/login'>
+                Login
+              </MuiButton>
+            }
+        </Toolbar>
+      </AppBar>
+      <div className='message_container'>
+        {(message && 
+          <MuiAlert severity='success'>
+            {message}
+          </MuiAlert>
+         )}
+      </div>
+      <Routes>
+        <Route path="/notes/:id" element={<Note notes={note} />} />
+        <Route path="/notes" element={<Notes notes={notes} />} />
+        <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />          <Route path="/login" element={<Login onLogin={login} />} />
+        <Route path="/" element={<Home />} />
+      </Routes>
       <div>
         <br />
         <em>Note app, Department of Computer Science 2022</em>
       </div>
-    </div>
+    </Container>
   )
 }
 
