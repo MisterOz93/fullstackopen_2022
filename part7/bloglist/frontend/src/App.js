@@ -6,7 +6,6 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Display from './components/Display'
 
-
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
@@ -25,11 +24,10 @@ const App = () => {
 
   const sortBlogs = (blogs) => {
     const blogsCopy = [...blogs]
-    if (blogs.length > 1){
+    if (blogs.length > 1) {
       blogsCopy.sort((a, b) => b.likes - a.likes)
     }
     setBlogs(blogsCopy)
-
   }
 
   const handleSubmit = async (event) => {
@@ -48,7 +46,6 @@ const App = () => {
   }
 
   const createBlog = async (blogObject) => {
-
     try {
       const newBlog = await blogService.create(blogObject)
       sortBlogs(blogs.concat(newBlog))
@@ -62,7 +59,7 @@ const App = () => {
   }
 
   const updateBlog = async (blogObject) => {
-    try{
+    try {
       const blogToUpdate = await blogService.getOne(blogObject)
       const updatedBlogObject = {
         ...blogToUpdate,
@@ -71,7 +68,6 @@ const App = () => {
       await blogService.update(blogToUpdate.id, updatedBlogObject)
       const updatedBlogs = await blogService.getAll()
       sortBlogs(updatedBlogs)
-
     } catch (exception) {
       setError(exception.response.data.error)
       removeMessage()
@@ -97,7 +93,7 @@ const App = () => {
 
   useEffect(() => {
     const loggedInUserJSON = window.localStorage.getItem('bloglistLoggedInUser')
-    if (loggedInUserJSON){
+    if (loggedInUserJSON) {
       const user = JSON.parse(loggedInUserJSON)
       setUser(user)
       blogService.setToken(user.token)
@@ -112,27 +108,46 @@ const App = () => {
     initialBlogs()
   }, [])
 
-
   return (
     <div>
-      {!user && <LoginForm username={username} password={password} setUsername={setUsername}
-        setPassword={setPassword} handleSubmit={handleSubmit} /> }
+      {!user && (
+        <LoginForm
+          username={username}
+          password={password}
+          setUsername={setUsername}
+          setPassword={setPassword}
+          handleSubmit={handleSubmit}
+        />
+      )}
 
       {message && <Display message={message} />}
       {error && <Display message={null} error={error} />}
 
-      {user &&
+      {user && (
         <div>
-          <p>Logged in as {user.username} <button onClick={() => logOut()}>Log Out</button></p>
-          {showBlogs === false && <button onClick={() => setShowBlogs(true)}> Add a Blog</button>}
-          <BlogForm createBlog={createBlog} visible={showBlogs}/>
-          {showBlogs && <button onClick={() => setShowBlogs(false)}>Cancel</button>}
-          <h2>Blogs</h2>
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={removeBlog} user={user}/>
+          <p>
+            Logged in as {user.username}{' '}
+            <button onClick={() => logOut()}>Log Out</button>
+          </p>
+          {showBlogs === false && (
+            <button onClick={() => setShowBlogs(true)}> Add a Blog</button>
           )}
+          <BlogForm createBlog={createBlog} visible={showBlogs} />
+          {showBlogs && (
+            <button onClick={() => setShowBlogs(false)}>Cancel</button>
+          )}
+          <h2>Blogs</h2>
+          {blogs.map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              updateBlog={updateBlog}
+              removeBlog={removeBlog}
+              user={user}
+            />
+          ))}
         </div>
-      }
+      )}
     </div>
   )
 }
