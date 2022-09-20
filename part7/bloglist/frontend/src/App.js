@@ -17,6 +17,19 @@ const App = () => {
 
   const dispatch = useDispatch()
   const messageState = useSelector((state) => state.notification)
+<<<<<<< HEAD
+
+  const setDisplay = (message, error = null) => {
+    dispatch(displayMessage({ message, error }))
+=======
+  //console.log('redux state on load is', messageState)
+
+  /* const removeMessage = () => {
+>>>>>>> c814f57e24a9d2d6e65afc26cc7044ad9063d388
+    setTimeout(() => {
+      dispatch(resetDisplay())
+    }, 5000)
+  } */
 
   const setDisplay = (message, error = null) => {
     dispatch(displayMessage({ message, error }))
@@ -42,6 +55,11 @@ const App = () => {
       blogService.setToken(user.token)
     } catch (exception) {
       setDisplay('Invalid Username or Password', true)
+<<<<<<< HEAD
+=======
+      //setError('Invalid Username or Password')
+      //removeMessage()
+>>>>>>> c814f57e24a9d2d6e65afc26cc7044ad9063d388
     }
     setUsername('')
     setPassword('')
@@ -51,6 +69,11 @@ const App = () => {
     try {
       const newBlog = await blogService.create(blogObject)
       sortBlogs(blogs.concat(newBlog))
+<<<<<<< HEAD
+=======
+      /* setMessage(`A new blog: ${newBlog.title} by ${newBlog.author} was added.`)
+      removeMessage() */
+>>>>>>> c814f57e24a9d2d6e65afc26cc7044ad9063d388
       setDisplay(`A new blog: ${newBlog.title} by ${newBlog.author} was added.`)
     } catch (exception) {
       if (exception.response.data.error) {
@@ -58,6 +81,11 @@ const App = () => {
       } else {
         setDisplay(exception.response.statusText, true)
       }
+<<<<<<< HEAD
+=======
+      /*setError(exception.response.data.error)
+      removeMessage() */
+>>>>>>> c814f57e24a9d2d6e65afc26cc7044ad9063d388
     }
     setShowBlogs(false)
   }
@@ -78,6 +106,12 @@ const App = () => {
       } else {
         setDisplay(exception.response.statusText, true)
       }
+<<<<<<< HEAD
+=======
+      /*
+      setError(exception.response.data.error)
+      removeMessage() */
+>>>>>>> c814f57e24a9d2d6e65afc26cc7044ad9063d388
     }
   }
 
@@ -93,6 +127,13 @@ const App = () => {
       } else {
         setDisplay(exception.response.statusText, true)
       }
+<<<<<<< HEAD
+=======
+      /*
+      setError(exception.response.data.error)
+      removeMessage()
+      */
+>>>>>>> c814f57e24a9d2d6e65afc26cc7044ad9063d388
     }
   }
 
