@@ -5,6 +5,8 @@ import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Display from './components/Display'
+import { useSelector, useDispatch } from 'react-redux'
+import { displayMessage, resetDisplay } from './reducers/notificationReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -15,10 +17,21 @@ const App = () => {
   const [error, setError] = useState(null)
   const [showBlogs, setShowBlogs] = useState(false)
 
-  const removeMessage = () => {
+  const dispatch = useDispatch()
+  const messageState = useSelector((state) => state.notification)
+  //console.log('redux state on load is', messageState)
+
+  /* const removeMessage = () => {
     setTimeout(() => {
       setMessage(null)
       setError(null)
+    }, 5000)
+  } */
+
+  const setDisplay = (message, error = null) => {
+    dispatch(displayMessage({ message, error }))
+    setTimeout(() => {
+      dispatch(resetDisplay())
     }, 5000)
   }
 
@@ -38,8 +51,9 @@ const App = () => {
       window.localStorage.setItem('bloglistLoggedInUser', JSON.stringify(user))
       blogService.setToken(user.token)
     } catch (exception) {
-      setError('Invalid Username or Password')
-      removeMessage()
+      setDisplay('Invalid Username or Password', true)
+      //setError('Invalid Username or Password')
+      //removeMessage()
     }
     setUsername('')
     setPassword('')
@@ -49,11 +63,17 @@ const App = () => {
     try {
       const newBlog = await blogService.create(blogObject)
       sortBlogs(blogs.concat(newBlog))
-      setMessage(`A new blog: ${newBlog.title} by ${newBlog.author} was added.`)
-      removeMessage()
+      /* setMessage(`A new blog: ${newBlog.title} by ${newBlog.author} was added.`)
+      removeMessage() */
+      setDisplay(`A new blog: ${newBlog.title} by ${newBlog.author} was added.`)
     } catch (exception) {
-      setError(exception.response.data.error)
-      removeMessage()
+      if (exception.response.data.error) {
+        setDisplay(exception.response.data.error, true)
+      } else {
+        setDisplay(exception.response.statusText, true)
+      }
+      /*setError(exception.response.data.error)
+      removeMessage() */
     }
     setShowBlogs(false)
   }
@@ -69,8 +89,14 @@ const App = () => {
       const updatedBlogs = await blogService.getAll()
       sortBlogs(updatedBlogs)
     } catch (exception) {
+      if (exception.response.data.error) {
+        setDisplay(exception.response.data.error, true)
+      } else {
+        setDisplay(exception.response.statusText, true)
+      }
+      /*
       setError(exception.response.data.error)
-      removeMessage()
+      removeMessage() */
     }
   }
 
@@ -81,8 +107,15 @@ const App = () => {
       const blogsAfterDelete = await blogService.getAll()
       sortBlogs(blogsAfterDelete)
     } catch (exception) {
+      if (exception.response.data.error) {
+        setDisplay(exception.response.data.error, true)
+      } else {
+        setDisplay(exception.response.statusText, true)
+      }
+      /*
       setError(exception.response.data.error)
       removeMessage()
+      */
     }
   }
 
@@ -120,8 +153,11 @@ const App = () => {
         />
       )}
 
-      {message && <Display message={message} />}
-      {error && <Display message={null} error={error} />}
+      {messageState.message && (
+        <div>
+          <Display message={messageState.message} error={messageState.error} />
+        </div>
+      )}
 
       {user && (
         <div>
