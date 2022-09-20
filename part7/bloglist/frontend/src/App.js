@@ -13,20 +13,10 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState(null)
-  const [error, setError] = useState(null)
   const [showBlogs, setShowBlogs] = useState(false)
 
   const dispatch = useDispatch()
   const messageState = useSelector((state) => state.notification)
-  //console.log('redux state on load is', messageState)
-
-  /* const removeMessage = () => {
-    setTimeout(() => {
-      setMessage(null)
-      setError(null)
-    }, 5000)
-  } */
 
   const setDisplay = (message, error = null) => {
     dispatch(displayMessage({ message, error }))
@@ -52,8 +42,6 @@ const App = () => {
       blogService.setToken(user.token)
     } catch (exception) {
       setDisplay('Invalid Username or Password', true)
-      //setError('Invalid Username or Password')
-      //removeMessage()
     }
     setUsername('')
     setPassword('')
@@ -63,8 +51,6 @@ const App = () => {
     try {
       const newBlog = await blogService.create(blogObject)
       sortBlogs(blogs.concat(newBlog))
-      /* setMessage(`A new blog: ${newBlog.title} by ${newBlog.author} was added.`)
-      removeMessage() */
       setDisplay(`A new blog: ${newBlog.title} by ${newBlog.author} was added.`)
     } catch (exception) {
       if (exception.response.data.error) {
@@ -72,8 +58,6 @@ const App = () => {
       } else {
         setDisplay(exception.response.statusText, true)
       }
-      /*setError(exception.response.data.error)
-      removeMessage() */
     }
     setShowBlogs(false)
   }
@@ -94,9 +78,6 @@ const App = () => {
       } else {
         setDisplay(exception.response.statusText, true)
       }
-      /*
-      setError(exception.response.data.error)
-      removeMessage() */
     }
   }
 
@@ -112,10 +93,6 @@ const App = () => {
       } else {
         setDisplay(exception.response.statusText, true)
       }
-      /*
-      setError(exception.response.data.error)
-      removeMessage()
-      */
     }
   }
 
