@@ -18,11 +18,10 @@ const getOne = async (blog) => {
 
 const create = async (blog) => {
   const config = {
-    headers: { Authorization: token }
+    headers: { Authorization: token },
   }
   const response = await axios.post(baseUrl, blog, config)
   return response.data
-
 }
 
 const update = async (id, newBlog) => {
@@ -32,7 +31,7 @@ const update = async (id, newBlog) => {
 
 const deleteBlog = async (id) => {
   const config = {
-    headers: { Authorization: token }
+    headers: { Authorization: token },
   }
   const response = await axios.delete(`${baseUrl}/${id}`, config)
   return response.data

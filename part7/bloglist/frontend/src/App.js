@@ -1,3 +1,5 @@
+//implement displayAll to test blogReducer
+
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
@@ -7,6 +9,7 @@ import BlogForm from './components/BlogForm'
 import Display from './components/Display'
 import { useSelector, useDispatch } from 'react-redux'
 import { displayMessage, resetDisplay } from './reducers/notificationReducer'
+import { blogsFromDb } from './reducers/blogReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -17,8 +20,9 @@ const App = () => {
 
   const dispatch = useDispatch()
   const messageState = useSelector((state) => state.notification)
+  const blogState = useSelector((state) => state.blogs)
 
-  const setDisplay = (message, error = null) => {
+  const setDisplayMessage = (message, error = null) => {
     dispatch(displayMessage({ message, error }))
     setTimeout(() => {
       dispatch(resetDisplay())
@@ -41,7 +45,7 @@ const App = () => {
       window.localStorage.setItem('bloglistLoggedInUser', JSON.stringify(user))
       blogService.setToken(user.token)
     } catch (exception) {
-      setDisplay('Invalid Username or Password', true)
+      setDisplayMessage('Invalid Username or Password', true)
     }
     setUsername('')
     setPassword('')
@@ -52,12 +56,14 @@ const App = () => {
       const newBlog = await blogService.create(blogObject)
       sortBlogs(blogs.concat(newBlog))
 
-      setDisplay(`A new blog: ${newBlog.title} by ${newBlog.author} was added.`)
+      setDisplayMessage(
+        `A new blog: ${newBlog.title} by ${newBlog.author} was added.`
+      )
     } catch (exception) {
       if (exception.response.data.error) {
-        setDisplay(exception.response.data.error, true)
+        setDisplayMessage(exception.response.data.error, true)
       } else {
-        setDisplay(exception.response.statusText, true)
+        setDisplayMessage(exception.response.statusText, true)
       }
     }
     setShowBlogs(false)
@@ -75,9 +81,9 @@ const App = () => {
       sortBlogs(updatedBlogs)
     } catch (exception) {
       if (exception.response.data.error) {
-        setDisplay(exception.response.data.error, true)
+        setDisplayMessage(exception.response.data.error, true)
       } else {
-        setDisplay(exception.response.statusText, true)
+        setDisplayMessage(exception.response.statusText, true)
       }
     }
   }
@@ -90,9 +96,9 @@ const App = () => {
       sortBlogs(blogsAfterDelete)
     } catch (exception) {
       if (exception.response.data.error) {
-        setDisplay(exception.response.data.error, true)
+        setDisplayMessage(exception.response.data.error, true)
       } else {
-        setDisplay(exception.response.statusText, true)
+        setDisplayMessage(exception.response.statusText, true)
       }
     }
   }
@@ -112,12 +118,9 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const initialBlogs = async () => {
-      const blogs = await blogService.getAll()
-      sortBlogs(blogs)
-    }
-    initialBlogs()
-  }, [])
+    dispatch(blogsFromDb())
+    console.log('hey')
+  }, [dispatch])
 
   return (
     <div>
@@ -151,7 +154,7 @@ const App = () => {
             <button onClick={() => setShowBlogs(false)}>Cancel</button>
           )}
           <h2>Blogs</h2>
-          {blogs.map((blog) => (
+          {blogState.map((blog) => (
             <Blog
               key={blog.id}
               blog={blog}
