@@ -9,7 +9,7 @@ import BlogForm from './components/BlogForm'
 import Display from './components/Display'
 import { useSelector, useDispatch } from 'react-redux'
 import { displayMessage, resetDisplay } from './reducers/notificationReducer'
-import { blogsFromDb, addBlog } from './reducers/blogReducer'
+import { blogsFromDb, addBlog, addLike } from './reducers/blogReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -67,8 +67,9 @@ const App = () => {
     setShowBlogs(false)
   }
 
-  const updateBlog = async (blogObject) => {
+  const likeBlog = async (blogObject) => {
     try {
+      /*
       const blogToUpdate = await blogService.getOne(blogObject)
       const updatedBlogObject = {
         ...blogToUpdate,
@@ -77,6 +78,8 @@ const App = () => {
       await blogService.update(blogToUpdate.id, updatedBlogObject)
       const updatedBlogs = await blogService.getAll()
       sortBlogs(updatedBlogs)
+      */
+      dispatch(addLike(blogObject))
     } catch (exception) {
       if (exception.response.data.error) {
         setDisplayMessage(exception.response.data.error, true)
@@ -155,7 +158,7 @@ const App = () => {
             <Blog
               key={blog.id}
               blog={blog}
-              updateBlog={updateBlog}
+              likeBlog={likeBlog}
               removeBlog={removeBlog}
               user={user}
             />
