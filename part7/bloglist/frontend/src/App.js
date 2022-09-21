@@ -9,7 +9,7 @@ import BlogForm from './components/BlogForm'
 import Display from './components/Display'
 import { useSelector, useDispatch } from 'react-redux'
 import { displayMessage, resetDisplay } from './reducers/notificationReducer'
-import { blogsFromDb } from './reducers/blogReducer'
+import { blogsFromDb, addBlog } from './reducers/blogReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -53,11 +53,12 @@ const App = () => {
 
   const createBlog = async (blogObject) => {
     try {
-      const newBlog = await blogService.create(blogObject)
-      sortBlogs(blogs.concat(newBlog))
+      //const newBlog = await blogService.create(blogObject)
+      //sortBlogs(blogs.concat(newBlog))
+      dispatch(addBlog(blogObject))
 
       setDisplayMessage(
-        `A new blog: ${newBlog.title} by ${newBlog.author} was added.`
+        `A new blog: ${blogObject.title} by ${blogObject.author} was added.`
       )
     } catch (exception) {
       if (exception.response.data.error) {
@@ -119,7 +120,6 @@ const App = () => {
 
   useEffect(() => {
     dispatch(blogsFromDb())
-    console.log('hey')
   }, [dispatch])
 
   return (
