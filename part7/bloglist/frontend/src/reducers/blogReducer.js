@@ -8,8 +8,10 @@ const blogSlice = createSlice({
     setBlogs(state, action) {
       return action.payload.sort((a, b) => b.likes - a.likes)
     },
+    createBlog(state, action) {
+      return state.concat(action.payload)
+    },
   },
-  createBlog(state, action) {},
 })
 
 export const { setBlogs, createBlog } = blogSlice.actions
@@ -23,9 +25,14 @@ export const blogsFromDb = () => {
 
 export const addBlog = (blogObject) => {
   return async (dispatch) => {
-    await blogService.create(blogObject)
-    const blogsAfterPost = await blogService.getAll()
-    dispatch(setBlogs(blogsAfterPost))
+    const newBlog = await blogService.create(blogObject)
+    dispatch(createBlog(newBlog))
+  }
+}
+
+export const updateBlog = (blogObject) => {
+  return async (dispatch) => {
+    await blogService.update()
   }
 }
 

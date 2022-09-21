@@ -53,10 +53,7 @@ const App = () => {
 
   const createBlog = async (blogObject) => {
     try {
-      //const newBlog = await blogService.create(blogObject)
-      //sortBlogs(blogs.concat(newBlog))
       dispatch(addBlog(blogObject))
-
       setDisplayMessage(
         `A new blog: ${blogObject.title} by ${blogObject.author} was added.`
       )
