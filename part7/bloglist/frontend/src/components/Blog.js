@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, likeBlog, removeBlog, user }) => {
+const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
   const [showDetails, setShowDetails] = useState(false)
   const buttonText = showDetails ? 'Hide' : 'View'
 
@@ -13,9 +13,9 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
     likeBlog(blog)
   }
 
-  const deleteBlog = () => {
+  const confirmDelete = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) {
-      removeBlog(blog)
+      deleteBlog(blog)
     }
   }
 
@@ -51,7 +51,7 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
           <p>{blog.user.username}</p>
           {user.username === blog.user.username &&
             user.name === blog.user.name && (
-              <button style={deleteButtonStyle} onClick={deleteBlog}>
+              <button style={deleteButtonStyle} onClick={confirmDelete}>
                 Delete
               </button>
             )}
@@ -63,7 +63,7 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
 
 Blog.propTypes = {
   likeBlog: PropTypes.func.isRequired,
-  removeBlog: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired,
 }
 
 export default Blog

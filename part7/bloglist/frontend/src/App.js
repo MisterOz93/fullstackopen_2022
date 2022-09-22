@@ -1,4 +1,4 @@
-//implement displayAll to test blogReducer
+//next: refactor delete to use redux
 
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
@@ -9,7 +9,12 @@ import BlogForm from './components/BlogForm'
 import Display from './components/Display'
 import { useSelector, useDispatch } from 'react-redux'
 import { displayMessage, resetDisplay } from './reducers/notificationReducer'
-import { blogsFromDb, addBlog, addLike } from './reducers/blogReducer'
+import {
+  blogsFromDb,
+  addBlog,
+  addLike,
+  removeBlog,
+} from './reducers/blogReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -69,16 +74,6 @@ const App = () => {
 
   const likeBlog = async (blogObject) => {
     try {
-      /*
-      const blogToUpdate = await blogService.getOne(blogObject)
-      const updatedBlogObject = {
-        ...blogToUpdate,
-        likes: blogToUpdate.likes + 1,
-      }
-      await blogService.update(blogToUpdate.id, updatedBlogObject)
-      const updatedBlogs = await blogService.getAll()
-      sortBlogs(updatedBlogs)
-      */
       dispatch(addLike(blogObject))
     } catch (exception) {
       if (exception.response.data.error) {
@@ -89,12 +84,10 @@ const App = () => {
     }
   }
 
-  const removeBlog = async (blogObject) => {
+  const deleteBlog = async (blogObject) => {
     try {
       blogService.setToken(user.token)
-      await blogService.deleteBlog(blogObject.id)
-      const blogsAfterDelete = await blogService.getAll()
-      sortBlogs(blogsAfterDelete)
+      dispatch(removeBlog(blogObject.id))
     } catch (exception) {
       if (exception.response.data.error) {
         setDisplayMessage(exception.response.data.error, true)
@@ -159,7 +152,7 @@ const App = () => {
               key={blog.id}
               blog={blog}
               likeBlog={likeBlog}
-              removeBlog={removeBlog}
+              deleteBlog={deleteBlog}
               user={user}
             />
           ))}
