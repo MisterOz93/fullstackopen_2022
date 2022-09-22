@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
+import notificationReducer, { displayMessage } from './notificationReducer'
 
 const blogSlice = createSlice({
   name: 'blogs',
@@ -38,7 +39,9 @@ export const addBlog = (blogObject) => {
       const newBlog = await blogService.create(blogObject)
       dispatch(createBlog(newBlog))
     } catch (exception) {
-      return null
+      return exception
+      console.log('exception:', exception)
+      dispatch(displayMessage(exception.response.data.error))
     }
   }
 }

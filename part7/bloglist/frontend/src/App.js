@@ -1,5 +1,3 @@
-//next: refactor delete to use redux
-
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
@@ -57,16 +55,17 @@ const App = () => {
   }
 
   const createBlog = async (blogObject) => {
-    try {
-      dispatch(addBlog(blogObject))
+    const tryAddBlog = await dispatch(addBlog(blogObject))
+    console.log('res is', tryAddBlog)
+    if (!tryAddBlog)
       setDisplayMessage(
         `A new blog: ${blogObject.title} by ${blogObject.author} was added.`
       )
-    } catch (exception) {
-      if (exception.response.data.error) {
-        setDisplayMessage(exception.response.data.error, true)
+    else {
+      if (tryAddBlog.response.data.error) {
+        setDisplayMessage(tryAddBlog.response.data.error, true)
       } else {
-        setDisplayMessage(exception.response.statusText, true)
+        setDisplayMessage(tryAddBlog.response.statusText, true)
       }
     }
     setShowBlogs(false)
