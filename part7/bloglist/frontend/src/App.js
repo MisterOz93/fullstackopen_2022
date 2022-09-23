@@ -14,16 +14,17 @@ import {
   removeBlog,
 } from './reducers/blogReducer'
 
+import { setCurrentUser } from './reducers/userReducer'
+
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
   const [showBlogs, setShowBlogs] = useState(false)
 
   const dispatch = useDispatch()
   const messageState = useSelector((state) => state.notification)
   const blogState = useSelector((state) => state.blogs)
+  const userState = useSelector((state) => state.user)
 
   const setDisplayMessage = (message, error = null) => {
     dispatch(displayMessage({ message, error }))
@@ -32,21 +33,13 @@ const App = () => {
     }, 5000)
   }
 
-  const sortBlogs = (blogs) => {
-    const blogsCopy = [...blogs]
-    if (blogs.length > 1) {
-      blogsCopy.sort((a, b) => b.likes - a.likes)
-    }
-    setBlogs(blogsCopy)
-  }
-
   const handleSubmit = async (event) => {
     event.preventDefault()
     try {
       const user = await loginService.login({ username, password })
-      setUser(user)
       window.localStorage.setItem('bloglistLoggedInUser', JSON.stringify(user))
       blogService.setToken(user.token)
+      dispatch(setCurrentUser(user))
     } catch (exception) {
       setDisplayMessage('Invalid Username or Password', true)
     }
@@ -56,7 +49,6 @@ const App = () => {
 
   const createBlog = async (blogObject) => {
     const tryAddBlog = await dispatch(addBlog(blogObject))
-    console.log('res is', tryAddBlog)
     if (!tryAddBlog)
       setDisplayMessage(
         `A new blog: ${blogObject.title} by ${blogObject.author} was added.`
@@ -85,7 +77,7 @@ const App = () => {
 
   const deleteBlog = async (blogObject) => {
     try {
-      blogService.setToken(user.token)
+      blogService.setToken(userState.token)
       dispatch(removeBlog(blogObject.id))
     } catch (exception) {
       if (exception.response.data.error) {
@@ -97,7 +89,7 @@ const App = () => {
   }
 
   const logOut = () => {
-    setUser(null)
+    dispatch(setCurrentUser({}))
     window.localStorage.removeItem('bloglistLoggedInUser')
   }
 
@@ -105,10 +97,10 @@ const App = () => {
     const loggedInUserJSON = window.localStorage.getItem('bloglistLoggedInUser')
     if (loggedInUserJSON) {
       const user = JSON.parse(loggedInUserJSON)
-      setUser(user)
+      dispatch(setCurrentUser(user))
       blogService.setToken(user.token)
     }
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     dispatch(blogsFromDb())
@@ -116,7 +108,7 @@ const App = () => {
 
   return (
     <div>
-      {!user && (
+      {!userState && (
         <LoginForm
           username={username}
           password={password}
@@ -132,10 +124,10 @@ const App = () => {
         </div>
       )}
 
-      {user && (
+      {userState && (
         <div>
           <p>
-            Logged in as {user.username}{' '}
+            Logged in as {userState.username}{' '}
             <button onClick={() => logOut()}>Log Out</button>
           </p>
           {showBlogs === false && (
@@ -152,7 +144,7 @@ const App = () => {
               blog={blog}
               likeBlog={likeBlog}
               deleteBlog={deleteBlog}
-              user={user}
+              user={userState}
             />
           ))}
         </div>
