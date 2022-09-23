@@ -1,13 +1,12 @@
 //create a seperate view for blogs and users, blogs at / and
 //users at /users
 import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
-import BlogForm from './components/BlogForm'
 import Display from './components/Display'
 import Users from './components/Users'
+import BlogList from './components/BlogList'
 import { useSelector, useDispatch } from 'react-redux'
 import { displayMessage, resetDisplay } from './reducers/notificationReducer'
 import {
@@ -137,31 +136,31 @@ const App = () => {
               {'  '}
               <Link to="/users">Users</Link>
             </div>
+            <p>
+              Logged in as {userState.username}{' '}
+              <button onClick={() => logOut()}>Log Out</button>
+            </p>
+
             <Routes>
               <Route path="/users" element={<Users blogs={blogState} />} />
+              <Route
+                path="/"
+                element={
+                  <BlogList
+                    props={{
+                      showBlogs,
+                      setShowBlogs,
+                      blogState,
+                      likeBlog,
+                      userState,
+                      createBlog,
+                      deleteBlog,
+                    }}
+                  />
+                }
+              />
             </Routes>
           </Router>
-          <p>
-            Logged in as {userState.username}{' '}
-            <button onClick={() => logOut()}>Log Out</button>
-          </p>
-          {showBlogs === false && (
-            <button onClick={() => setShowBlogs(true)}> Add a Blog</button>
-          )}
-          <BlogForm createBlog={createBlog} visible={showBlogs} />
-          {showBlogs && (
-            <button onClick={() => setShowBlogs(false)}>Cancel</button>
-          )}
-          <h2>Blogs</h2>
-          {blogState.map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              likeBlog={likeBlog}
-              deleteBlog={deleteBlog}
-              user={userState}
-            />
-          ))}
         </div>
       )}
     </div>
