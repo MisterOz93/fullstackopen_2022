@@ -1,3 +1,5 @@
+//create a seperate view for blogs and users, blogs at / and
+//users at /users
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
@@ -5,6 +7,7 @@ import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Display from './components/Display'
+import Users from './components/Users'
 import { useSelector, useDispatch } from 'react-redux'
 import { displayMessage, resetDisplay } from './reducers/notificationReducer'
 import {
@@ -128,6 +131,16 @@ const App = () => {
 
       {userState && (
         <div>
+          <Router>
+            <div>
+              <Link to="/">Blogs</Link>
+              {'  '}
+              <Link to="/users">Users</Link>
+            </div>
+            <Routes>
+              <Route path="/users" element={<Users blogs={blogState} />} />
+            </Routes>
+          </Router>
           <p>
             Logged in as {userState.username}{' '}
             <button onClick={() => logOut()}>Log Out</button>
