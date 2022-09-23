@@ -19,7 +19,7 @@ const Users = ({ blogs }) => {
           </tr>
           {Object.entries(blogsByUser).map((kvPair) => {
             return (
-              <tr>
+              <tr key={kvPair[0]}>
                 <td>{kvPair[0]}</td>
 
                 <td>{kvPair[1]}</td>
