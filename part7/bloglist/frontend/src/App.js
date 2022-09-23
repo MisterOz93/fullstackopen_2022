@@ -16,6 +16,8 @@ import {
 
 import { setCurrentUser } from './reducers/userReducer'
 
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -89,7 +91,7 @@ const App = () => {
   }
 
   const logOut = () => {
-    dispatch(setCurrentUser({}))
+    dispatch(setCurrentUser(null))
     window.localStorage.removeItem('bloglistLoggedInUser')
   }
 
