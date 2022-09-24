@@ -1,11 +1,10 @@
-//create a seperate view for blogs and users, blogs at / and
-//users at /users
 import { useState, useEffect } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm'
 import Display from './components/Display'
 import Users from './components/Users'
+import SingleUser from './components/SingleUser'
 import BlogList from './components/BlogList'
 import { useSelector, useDispatch } from 'react-redux'
 import { displayMessage, resetDisplay } from './reducers/notificationReducer'
@@ -158,6 +157,10 @@ const App = () => {
                     }}
                   />
                 }
+              />
+              <Route
+                path="/users/:id"
+                element={<SingleUser blogs={blogState} />}
               />
             </Routes>
           </Router>

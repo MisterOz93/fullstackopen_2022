@@ -3,7 +3,7 @@ import Blog from './Blog'
 
 const BlogList = ({ props }) => {
   if (!props.blogState) {
-    return <>Loading...</>
+    return <>Loading Blogs...</>
   }
   return (
     <div>

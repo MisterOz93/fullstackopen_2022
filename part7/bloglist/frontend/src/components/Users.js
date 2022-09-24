@@ -1,9 +1,17 @@
+import { Link } from 'react-router-dom'
+
 const Users = ({ blogs }) => {
   const blogsByUser = {}
   for (let i = 0; i < blogs.length; i++) {
     blogsByUser[blogs[i].user.username]
       ? (blogsByUser[blogs[i].user.username] += 1)
       : (blogsByUser[blogs[i].user.username] = 1)
+  }
+  const users = blogs.map((blog) => blog.user)
+
+  const findUserId = (username) => {
+    const user = users.find((user) => user.username === username)
+    return user.id
   }
 
   return (
@@ -20,7 +28,14 @@ const Users = ({ blogs }) => {
           {Object.entries(blogsByUser).map((kvPair) => {
             return (
               <tr key={kvPair[0]}>
-                <td>{kvPair[0]}</td>
+                <td>
+                  {
+                    <Link to={`/users/${findUserId(kvPair[0])}`}>
+                      {' '}
+                      {kvPair[0]}{' '}
+                    </Link>
+                  }
+                </td>
 
                 <td>{kvPair[1]}</td>
               </tr>
