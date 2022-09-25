@@ -6,6 +6,7 @@ import Display from './components/Display'
 import Users from './components/Users'
 import SingleUser from './components/SingleUser'
 import BlogList from './components/BlogList'
+import BlogInfo from './components/BlogInfo'
 import { useSelector, useDispatch } from 'react-redux'
 import { displayMessage, resetDisplay } from './reducers/notificationReducer'
 import {
@@ -71,6 +72,7 @@ const App = () => {
       dispatch(addLike(blogObject))
     } catch (exception) {
       if (exception.response.data.error) {
+        console.log('failed')
         setDisplayMessage(exception.response.data.error, true)
       } else {
         setDisplayMessage(exception.response.statusText, true)
@@ -161,6 +163,10 @@ const App = () => {
               <Route
                 path="/users/:id"
                 element={<SingleUser blogs={blogState} />}
+              />
+              <Route
+                path="/blogs/:id"
+                element={<BlogInfo likeBlog={likeBlog} blogs={blogState} />}
               />
             </Routes>
           </Router>

@@ -1,4 +1,4 @@
-import { useParams } from 'react-router'
+import { useParams, Link } from 'react-router-dom'
 
 const SingleUser = ({ blogs }) => {
   const userId = useParams().id
@@ -13,7 +13,11 @@ const SingleUser = ({ blogs }) => {
       <h3>Added Blogs: </h3>
       <ul>
         {blogsByUser.map((blog) => {
-          return <li key={blog.id}>{blog.title}</li>
+          return (
+            <Link key={blog.id} to={`/blogs/${blog.id}`}>
+              <li>{blog.title}</li>
+            </Link>
+          )
         })}
       </ul>
     </div>
