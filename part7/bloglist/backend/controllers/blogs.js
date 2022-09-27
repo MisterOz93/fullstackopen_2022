@@ -3,7 +3,6 @@ const Blog = require('../models/blog')
 const middleware = require('../utils/middleware')
 require('express-async-errors')
 
-
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
   response.json(blogs)
@@ -14,9 +13,14 @@ blogsRouter.get('/:id', async (request, response) => {
   return response.json(blog)
 })
 
+blogsRouter.get('/:id/comments', async (request, response) => {
+  const blog = await Blog.findById(request.params.id)
+  return response.json(blog.comments)
+})
+
 blogsRouter.post('/', middleware.isolateUser, async (request, response) => {
   const postedBlog = request.body
-  if (!request.user){
+  if (!request.user) {
     return response.status(401).json({ error: 'Missing or invalid token.' })
   }
   const user = request.user
@@ -25,7 +29,8 @@ blogsRouter.post('/', middleware.isolateUser, async (request, response) => {
     author: postedBlog.author,
     user: user,
     url: postedBlog.url,
-    likes: postedBlog.likes ? postedBlog.likes : 0
+    likes: postedBlog.likes ? postedBlog.likes : 0,
+    comments: postedBlog.comments,
   })
   const savedBlog = await blog.save()
   user.blogs = user.blogs.concat(savedBlog._id)
@@ -33,25 +38,52 @@ blogsRouter.post('/', middleware.isolateUser, async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
-blogsRouter.delete('/:id', middleware.isolateUser, async (request, response) => {
-  if (!request.user){
-    return response.status(401).json({ error: 'Missing or invalid token.' })
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const data = JSON.stringify(request.body.content)
+  if (!data) {
+    return response.status(401).json({ error: 'Missing or invalid comment' })
   }
-  const user = request.user
-  if (!user._id){
-    return response.status(400).json({ error: 'The Blog does not have a user associated with it.' })
-  }
-  const blogToDelete = await Blog.findById(request.params.id)
-  if (!blogToDelete){
-    return response.status(400).json({ error: 'The blog was already deleted' })
-  }
-  if ( !blogToDelete.user || user._id.toString() !== blogToDelete.user.toString()){
-    return response.status(401).json({ error: 'Blog can only be deleted by its creator' })
-  }
-
-  await Blog.findByIdAndDelete(request.params.id)
-  response.status(204).end()
+  const comment = JSON.parse(data)
+  const blog = await Blog.findById(request.params.id)
+  console.log('existing blog comments are', blog.comments)
+  blog.comments.push(comment)
+  console.log('blog comments are now', blog.comments)
+  await blog.save()
+  response.status(201).json(comment)
 })
+
+blogsRouter.delete(
+  '/:id',
+  middleware.isolateUser,
+  async (request, response) => {
+    if (!request.user) {
+      return response.status(401).json({ error: 'Missing or invalid token.' })
+    }
+    const user = request.user
+    if (!user._id) {
+      return response
+        .status(400)
+        .json({ error: 'The Blog does not have a user associated with it.' })
+    }
+    const blogToDelete = await Blog.findById(request.params.id)
+    if (!blogToDelete) {
+      return response
+        .status(400)
+        .json({ error: 'The blog was already deleted' })
+    }
+    if (
+      !blogToDelete.user ||
+      user._id.toString() !== blogToDelete.user.toString()
+    ) {
+      return response
+        .status(401)
+        .json({ error: 'Blog can only be deleted by its creator' })
+    }
+
+    await Blog.findByIdAndDelete(request.params.id)
+    response.status(204).end()
+  }
+)
 
 blogsRouter.put('/:id', async (request, response) => {
   const body = request.body
@@ -60,13 +92,13 @@ blogsRouter.put('/:id', async (request, response) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes
+    likes: body.likes,
   }
-  const updatedBlog = await Blog.findByIdAndUpdate(
-    request.params.id, blog, {
-      new: true, runValidators: true, context: 'query'
-    }
-  )
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true,
+    runValidators: true,
+    context: 'query',
+  })
   response.json(updatedBlog)
 })
 
