@@ -7,6 +7,7 @@ const BlogList = ({ props }) => {
   }
   return (
     <div>
+      <h2>Blogs</h2>
       {props.showBlogs === false && (
         <button onClick={() => props.setShowBlogs(true)}> Add a Blog</button>
       )}
@@ -14,7 +15,7 @@ const BlogList = ({ props }) => {
       {props.showBlogs && (
         <button onClick={() => props.setShowBlogs(false)}>Cancel</button>
       )}
-      <h2>Blogs</h2>
+
       {props.blogState.map((blog) => (
         <Blog
           key={blog.id}

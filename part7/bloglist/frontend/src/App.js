@@ -72,7 +72,6 @@ const App = () => {
       dispatch(addLike(blogObject))
     } catch (exception) {
       if (exception.response.data.error) {
-        console.log('failed')
         setDisplayMessage(exception.response.data.error, true)
       } else {
         setDisplayMessage(exception.response.statusText, true)
@@ -136,11 +135,10 @@ const App = () => {
               <Link to="/">Blogs</Link>
               {'  '}
               <Link to="/users">Users</Link>
-            </div>
-            <p>
-              Logged in as {userState.username}{' '}
+              {'  '}
+              {userState.username} logged in{' '}
               <button onClick={() => logOut()}>Log Out</button>
-            </p>
+            </div>
 
             <Routes>
               <Route path="/users" element={<Users blogs={blogState} />} />
