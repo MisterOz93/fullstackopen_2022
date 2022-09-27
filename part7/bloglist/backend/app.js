@@ -7,10 +7,10 @@ const logger = require('./utils/logger')
 const blogsRouter = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
+const commentsRouter = require('./controllers/comments')
 const middleware = require('./utils/middleware')
 
-
-mongoose.connect(config.MONGO_URI).then( () => {
+mongoose.connect(config.MONGO_URI).then(() => {
   logger.info('Connected to Mongo DB')
 })
 
@@ -20,7 +20,8 @@ app.use(middleware.isolateToken)
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
-if (process.env.NODE_ENV === 'test'){
+app.use('/api/comments', commentsRouter)
+if (process.env.NODE_ENV === 'test') {
   const testRouter = require('./controllers/tests')
   app.use('/api/testing', testRouter)
 }
