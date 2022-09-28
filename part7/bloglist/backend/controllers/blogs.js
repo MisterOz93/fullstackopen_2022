@@ -1,5 +1,6 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const Comment = require('../models/comment')
 const middleware = require('../utils/middleware')
 require('express-async-errors')
 
@@ -39,13 +40,24 @@ blogsRouter.post('/', middleware.isolateUser, async (request, response) => {
 })
 
 blogsRouter.post('/:id/comments', async (request, response) => {
-  const data = JSON.stringify(request.body.content)
-  if (!data) {
+  if (!request.body) {
     return response.status(401).json({ error: 'Missing or invalid comment' })
   }
-  const comment = JSON.parse(data)
+  const commentData = new Comment({
+    content: request.body.content,
+  })
+  await commentData.save()
+
+  const commentObject = await Comment.findById(commentData.id)
+  const comment = commentObject.toJSON()
+  console.log('comment is', comment)
   const blog = await Blog.findById(request.params.id)
-  console.log('existing blog comments are', blog.comments)
+  if (
+    blog.comments &&
+    blog.comments.map((comment) => comment.id).includes(comment.id)
+  ) {
+    return response.status(401).json({ error: 'Comment already added to blog' })
+  }
   blog.comments.push(comment)
   console.log('blog comments are now', blog.comments)
   await blog.save()
