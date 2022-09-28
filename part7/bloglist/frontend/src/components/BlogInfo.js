@@ -1,4 +1,3 @@
-//add comments feature
 import { useParams } from 'react-router-dom'
 import Comments from './Comments'
 
@@ -23,7 +22,7 @@ const BlogInfo = ({ likeBlog, blogs }) => {
         {blog.likes} {likeOrLikes} <button onClick={addLike}>Like</button>
       </p>
       <p>Added by {blog.user.username}</p>
-      <Comments />
+      <Comments comments={blog.comments} />
     </div>
   )
 }
