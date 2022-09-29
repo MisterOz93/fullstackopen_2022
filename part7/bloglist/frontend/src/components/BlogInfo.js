@@ -22,7 +22,7 @@ const BlogInfo = ({ likeBlog, blogs }) => {
         {blog.likes} {likeOrLikes} <button onClick={addLike}>Like</button>
       </p>
       <p>Added by {blog.user.username}</p>
-      <Comments comments={blog.comments} />
+      <Comments blog={blog} />
     </div>
   )
 }

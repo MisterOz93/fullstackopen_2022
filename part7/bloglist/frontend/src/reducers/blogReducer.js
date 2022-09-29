@@ -59,6 +59,18 @@ export const addLike = (blogObject) => {
   }
 }
 
+export const addComment = (blogObject, comment) => {
+  return async (dispatch) => {
+    const blogToUpdate = await blogService.getOne(blogObject)
+    const postedBlog = await blogService.createComment(blogToUpdate.id, comment)
+    const blogWithUserInfo = {
+      ...postedBlog,
+      user: blogObject.user,
+    }
+    dispatch(updateBlog(blogWithUserInfo))
+  }
+}
+
 export const removeBlog = (id) => {
   return async (dispatch) => {
     await blogService.deleteBlog(id)
