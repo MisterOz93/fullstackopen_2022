@@ -32,7 +32,7 @@ const createComment = async (blogId, comment) => {
     `${baseUrl}/${blogId}/comments`,
     commentObject
   )
-  return response.data
+  return response.data //this is the comment data
 }
 
 const update = async (id, newBlog) => {
