@@ -111,7 +111,7 @@ const App = () => {
   }, [dispatch])
 
   return (
-    <div>
+    <div className="container">
       {!userState && (
         <LoginForm
           username={username}

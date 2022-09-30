@@ -1,5 +1,3 @@
-//need to import blog's state so that component renders with submit
-
 import { addComment } from '../reducers/blogReducer'
 import { useDispatch } from 'react-redux'
 import { useState } from 'react'
@@ -15,6 +13,8 @@ const Comments = ({ blog }) => {
     dispatch(addComment(blog, content))
     setContent('')
   }
+
+  console.log('user is', blog.user)
 
   return (
     <div>

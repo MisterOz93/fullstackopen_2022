@@ -9,8 +9,17 @@ const Users = ({ blogs }) => {
   }
   const users = blogs.map((blog) => blog.user)
 
+  console.log('blogs on Users.js render:', blogs)
+
+  if (!users) {
+    return null
+  }
+
   const findUserId = (username) => {
     const user = users.find((user) => user.username === username)
+    if (!user) {
+      return
+    }
     return user.id
   }
 

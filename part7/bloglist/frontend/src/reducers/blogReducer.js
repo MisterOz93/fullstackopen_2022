@@ -68,7 +68,7 @@ export const addComment = (blogObject, comment) => {
       comment
     )
     const blogWithNewComment = {
-      ...blogToUpdate,
+      ...blogObject,
       comments: blogToUpdate.comments.concat([postedComment]),
     }
 
