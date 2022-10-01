@@ -23,6 +23,7 @@ const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
     border: '1px solid black',
     margin: '2%',
     paddingLeft: '2%',
+    backgroundColor: 'lightGrey',
   }
 
   const deleteButtonStyle = {
@@ -33,11 +34,18 @@ const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
     padding: '1.5%',
   }
 
+  const viewButtonStyle = {
+    justifySelf: 'end',
+  }
+
   return (
     <div className="blog" style={blogStyle}>
       <p>
         {blog.title} by {blog.author}{' '}
-        <button onClick={toggleView}> {buttonText} </button>{' '}
+        <button style={viewButtonStyle} onClick={toggleView}>
+          {' '}
+          {buttonText}{' '}
+        </button>{' '}
       </p>
       {showDetails && (
         <>

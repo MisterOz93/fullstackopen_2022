@@ -9,8 +9,6 @@ const Users = ({ blogs }) => {
   }
   const users = blogs.map((blog) => blog.user)
 
-  console.log('blogs on Users.js render:', blogs)
-
   if (!users) {
     return null
   }
@@ -25,7 +23,7 @@ const Users = ({ blogs }) => {
 
   return (
     <div>
-      <h2>Users</h2>
+      <h2 style={{ textAlign: 'center' }}>Users</h2>
       <table>
         <tbody>
           <tr>

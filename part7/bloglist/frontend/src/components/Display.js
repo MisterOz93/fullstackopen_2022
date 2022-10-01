@@ -1,8 +1,4 @@
-const messageStyle = {
-  color: 'green',
-  fontFamily: 'Arial',
-  maxWidth: '40%',
-}
+import { Alert } from 'react-bootstrap'
 
 const errorStyle = {
   color: 'red',
@@ -14,10 +10,10 @@ const Display = ({ message, error }) => {
   if (!error) {
     return (
       <>
-        <h3 id="display_message" style={messageStyle}>
+        <Alert variant="success" id="display_message">
           {' '}
           {message}
-        </h3>
+        </Alert>
       </>
     )
   }

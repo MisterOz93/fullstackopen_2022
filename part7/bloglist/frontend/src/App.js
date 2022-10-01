@@ -16,6 +16,10 @@ import {
   removeBlog,
 } from './reducers/blogReducer'
 
+import { Navbar, Nav } from 'react-bootstrap'
+
+import { navLinkStyle, navUsername } from './styles/navbarStyles'
+
 import { setCurrentUser } from './reducers/userReducer'
 
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
@@ -131,14 +135,32 @@ const App = () => {
       {userState && (
         <div>
           <Router>
-            <div>
-              <Link to="/">Blogs</Link>
-              {'  '}
-              <Link to="/users">Users</Link>
-              {'  '}
-              {userState.username} logged in{' '}
-              <button onClick={() => logOut()}>Log Out</button>
-            </div>
+            <Navbar collapseOnSelect expand="lg" bg="primary" variant="dark">
+              <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+              <Navbar.Collapse id="responsive-navbar-nav">
+                <Nav className="me-auto">
+                  <Nav.Link href="#" as="span">
+                    <Link to="/" style={navLinkStyle}>
+                      Blogs
+                    </Link>
+                  </Nav.Link>
+                  <Nav.Link href="#" as="span">
+                    <Link to="/users" style={navLinkStyle}>
+                      Users
+                    </Link>
+                  </Nav.Link>
+                </Nav>
+                <Nav>
+                  <Nav.Link href="#" as="span">
+                    <span style={navUsername}> {userState.username} </span>{' '}
+                    logged in
+                  </Nav.Link>
+                  <Nav.Link href="#" as="span">
+                    <button onClick={() => logOut()}>Log Out</button>
+                  </Nav.Link>
+                </Nav>
+              </Navbar.Collapse>
+            </Navbar>
 
             <Routes>
               <Route path="/users" element={<Users blogs={blogState} />} />

@@ -7,7 +7,7 @@ const BlogList = ({ props }) => {
   }
   return (
     <div>
-      <h2>Blogs</h2>
+      <h2 style={{ textAlign: 'center' }}>Blogs</h2>
       {props.showBlogs === false && (
         <button onClick={() => props.setShowBlogs(true)}> Add a Blog</button>
       )}
