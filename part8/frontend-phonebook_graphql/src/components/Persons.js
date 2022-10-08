@@ -1,0 +1,32 @@
+import { useState } from 'react'
+import { useQuery } from '@apollo/client'
+import Person from './Person'
+const Persons = ({ persons, FIND_PERSON }) => {
+  const [nameToSearch, setNameToSearch] = useState(null)
+  const result = useQuery(FIND_PERSON, {
+    variables: { nameToSearch },
+    skip: !nameToSearch,
+  })
+  if (nameToSearch && result.data) {
+    return (
+      <Person
+        person={result.data.findPerson}
+        onClose={() => setNameToSearch(null)}
+      />
+    )
+  }
+
+  return (
+    <div>
+      <h2>Persons</h2>
+      {persons.map((p) => (
+        <div key={p.name}>
+          {p.name} {p.phone}
+          <button onClick={() => setNameToSearch(p.name)}>Show address</button>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export default Persons
