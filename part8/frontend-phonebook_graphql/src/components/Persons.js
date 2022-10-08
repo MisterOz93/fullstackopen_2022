@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useQuery } from '@apollo/client'
 import Person from './Person'
-const Persons = ({ persons, FIND_PERSON }) => {
+import { FIND_PERSON } from '../queries'
+
+const Persons = ({ persons }) => {
   const [nameToSearch, setNameToSearch] = useState(null)
   const result = useQuery(FIND_PERSON, {
     variables: { nameToSearch },
