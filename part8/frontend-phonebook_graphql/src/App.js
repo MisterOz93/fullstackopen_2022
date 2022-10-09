@@ -4,6 +4,7 @@ import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Notification from './components/Notification'
 import { ALL_PERSONS } from './queries'
+import PhoneForm from './components/PhoneForm'
 
 const App = () => {
   const result = useQuery(ALL_PERSONS)
@@ -17,7 +18,7 @@ const App = () => {
     setErrorMessage(message)
     setTimeout(() => {
       setErrorMessage(null)
-    }, 8000)
+    }, 6000)
   }
 
   return (
@@ -25,6 +26,7 @@ const App = () => {
       <Notification errorMessage={errorMessage} />
       <Persons persons={result.data.allPersons} />
       <PersonForm setError={notify} />
+      <PhoneForm setError={notify} />
     </div>
   )
 }
