@@ -170,6 +170,7 @@ const resolvers = {
       const newBook = { ...args, id: uuid() }
       const existingAuthors = authors.map((a) => a.name)
       if (!existingAuthors.includes(args.author)) {
+        console.log('adding author:', args.author)
         authors = authors.concat({ name: args.author })
       }
       books = books.concat(newBook)

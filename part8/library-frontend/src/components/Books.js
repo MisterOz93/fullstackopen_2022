@@ -8,7 +8,7 @@ const Books = (props) => {
     return null
   }
   if (getBooks.loading) {
-    return <h2>loading</h2>
+    return <h2>loading...</h2>
   }
   const books = getBooks.data.allBooks
 
