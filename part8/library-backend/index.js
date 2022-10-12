@@ -177,8 +177,10 @@ const resolvers = {
       return newBook
     },
     editAuthor: (root, args) => {
+      console.log('received mutation query:', args.name, args.setBornTo)
       const author = authors.find((a) => a.name === args.name)
       if (!author) {
+        console.log('could not find author')
         return null
       }
       const updatedAuthor = {

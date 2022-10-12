@@ -1,9 +1,12 @@
-import { useQuery } from '@apollo/client'
-import { ALL_AUTHORS } from '../queries'
+import { useQuery, useMutation } from '@apollo/client'
+import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries'
 import UpdateAuthor from './UpdateAuthor'
 
 const Authors = (props) => {
   const getAuthors = useQuery(ALL_AUTHORS)
+  const [editAuthorName] = useMutation(EDIT_AUTHOR, {
+    refetchQueries: [{ query: ALL_AUTHORS }],
+  })
 
   if (getAuthors.loading) {
     return <div>Loading...</div>
@@ -33,7 +36,10 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <UpdateAuthor />
+      <UpdateAuthor
+        authors={authors.map((a) => a.name)}
+        editAuthorName={editAuthorName}
+      />
     </div>
   )
 }
