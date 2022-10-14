@@ -120,20 +120,20 @@ const typeDefs = gql`
     name: String!
     id: ID!
     born: Int
-    bookCount: Int!
+    bookCount: Int
   }
 
   type Book {
     title: String!
     published: Int!
-    author: Author!
+    author: Author
     genres: [String!]!
     id: ID!
   }
 
   type Query {
-    bookCount: Int!
-    authorCount: Int!
+    bookCount: Int
+    authorCount: Int
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
   }
@@ -141,29 +141,39 @@ const typeDefs = gql`
   type Mutation {
     addBook(
       title: String!
-      author: String!
+      author: String
       published: Int
       genres: [String!]!
     ): Book
 
     editAuthor(name: String!, setBornTo: Int!): Author
+
+    addAuthor(name: String!, born: Int): Author
   }
 `
 
 const resolvers = {
+  /* temporarily not working
   Author: {
     bookCount: (root) => {
       return books.filter((b) => b.author === root.name).length
     },
-  },
+  },   */
 
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
+    bookCount: async () => {
+      const size = await Book.find({})
+      return size.length
+    },
+    authorCount: async () => {
+      const size = await Author.find({})
+      return size.length
+    },
+    allBooks: async (root, args) => {
       if (!args.author && !args.genre) {
-        return books
+        return await Book.find({})
       }
+      /* don't work yet
       if (!args.genre && args.author) {
         return books.filter((b) => b.author === args.author)
       }
@@ -174,10 +184,12 @@ const resolvers = {
       if (args.author && args.genre) {
         const byAuthor = books.filter((b) => b.author === args.author)
         return byAuthor.filter((b) => b.genres.includes(args.genre))
-      }
+      } */
     },
 
-    allAuthors: () => authors,
+    allAuthors: async () => {
+      return await Author.find({})
+    },
   },
 
   Mutation: {
@@ -185,27 +197,32 @@ const resolvers = {
       const newBook = new Book({
         ...args,
       })
-      const existingAuthor = Author.findOne({ name: args.author.name })
-      if (!existingAuthor) {
-        console.log('adding author:', args.author.name)
-        const newAuthor = { ...args.author }
-        await newAuthor.save()
+      if (args.author) {
+        //temporary if block
+        const existingAuthor = await Author.findOne({ name: args.author.name })
+        if (!existingAuthor) {
+          console.log('adding author:', args.author.name)
+          const newAuthor = { ...args.author }
+          await newAuthor.save()
+        }
       }
       await newBook.save()
       return newBook
     },
 
     addAuthor: async (root, args) => {
+      //console.log('args are', args)
       const newAuthor = new Author({
         ...args,
       })
 
-      const existingAuthor = Author.findOne({ name: args.name })
-      if (!existingAuthor) {
-        await newAuthor.save()
-        return newAuthor
+      const existingAuthor = await Author.findOne({ name: args.name })
+      if (existingAuthor) {
+        return `Error: ${args.name} is already entered in the system.`
       }
-      return `Error: ${args.name} is already entered in the system.`
+      await newAuthor.save()
+      //console.log('newAuthor after save is', newAuthor)
+      return newAuthor
     },
 
     editAuthor: (root, args) => {
