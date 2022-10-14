@@ -1,7 +1,28 @@
 const { ApolloServer, gql } = require('apollo-server')
-const { v1: uuid } = require('uuid')
+const Book = require('./models/book')
+const Author = require('./models/author')
+const mongoose = require('mongoose')
+const { MONGODB_URI } = require('./utils/config')
+/*
+The following things do not have to work just yet:
 
-let authors = [
+allBooks query with parameters
+bookCount field of an author object
+author field of a book
+editAuthor mutation
+
+*/
+console.log('Connecting to MongoDB')
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log('Connected to MongoDB')
+  })
+  .catch((error) => {
+    console.log('Error connecting to MongoDB:', error.message)
+  })
+/*let authors = [
   {
     name: 'Robert Martin',
     id: 'afa51ab0-344d-11e9-a414-719c6709cf3e',
@@ -25,7 +46,7 @@ let authors = [
     name: 'Sandi Metz', // birthyear not known
     id: 'afa5b6f3-344d-11e9-a414-719c6709cf3e',
   },
-]
+] */
 
 /*
  * Suomi:
@@ -41,6 +62,7 @@ let authors = [
  * Sin embargo, por simplicidad, almacenaremos el nombre del autor en conección con el libro
  */
 
+/*
 let books = [
   {
     title: 'Clean Code',
@@ -92,7 +114,7 @@ let books = [
     genres: ['classic', 'revolution'],
   },
 ]
-
+*/
 const typeDefs = gql`
   type Author {
     name: String!
@@ -104,9 +126,9 @@ const typeDefs = gql`
   type Book {
     title: String!
     published: Int!
-    author: String!
-    id: ID!
+    author: Author!
     genres: [String!]!
+    id: ID!
   }
 
   type Query {
@@ -137,15 +159,7 @@ const resolvers = {
 
   Query: {
     bookCount: () => books.length,
-    authorCount: () => authors.length /*{
-      const authors = []
-      for (let i = 0; i < books.length; i++) {
-        if (!authors.includes(books[i].author)) {
-          authors.push(books[i].author)
-        }
-      }
-      return authors.length
-    }, */,
+    authorCount: () => authors.length,
     allBooks: (root, args) => {
       if (!args.author && !args.genre) {
         return books
@@ -165,18 +179,37 @@ const resolvers = {
 
     allAuthors: () => authors,
   },
+
   Mutation: {
-    addBook: (root, args) => {
-      const newBook = { ...args, id: uuid() }
-      const existingAuthors = authors.map((a) => a.name)
-      if (!existingAuthors.includes(args.author)) {
-        console.log('adding author:', args.author)
-        authors = authors.concat({ name: args.author })
+    addBook: async (root, args) => {
+      const newBook = new Book({
+        ...args,
+      })
+      const existingAuthor = Author.findOne({ name: args.author.name })
+      if (!existingAuthor) {
+        console.log('adding author:', args.author.name)
+        const newAuthor = { ...args.author }
+        await newAuthor.save()
       }
-      books = books.concat(newBook)
+      await newBook.save()
       return newBook
     },
+
+    addAuthor: async (root, args) => {
+      const newAuthor = new Author({
+        ...args,
+      })
+
+      const existingAuthor = Author.findOne({ name: args.name })
+      if (!existingAuthor) {
+        await newAuthor.save()
+        return newAuthor
+      }
+      return `Error: ${args.name} is already entered in the system.`
+    },
+
     editAuthor: (root, args) => {
+      //currently broken
       console.log('received mutation query:', args.name, args.setBornTo)
       const author = authors.find((a) => a.name === args.name)
       if (!author) {
