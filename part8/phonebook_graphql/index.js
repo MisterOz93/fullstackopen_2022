@@ -64,6 +64,8 @@ const typeDefs = gql`
     createUser(username: String!): User
 
     login(username: String!, password: String!): Token
+
+    addAsFriend(name: String!): User
   }
 `
 
@@ -71,10 +73,13 @@ const resolvers = {
   Query: {
     personCount: async () => Person.collection.countDocuments(),
     allPersons: async (root, args) => {
-      // filters missing
-      return Person.find({})
+      if (!args.phone) {
+        return Person.find({})
+      }
+      return Person.find({ phone: { $exists: args.phone === 'YES' } })
     },
     findPerson: async (root, args) => Person.findOne({ name: args.name }),
+    me: (root, args, context) => context.currentUser,
   },
   Person: {
     address: (root) => {
@@ -85,10 +90,16 @@ const resolvers = {
     },
   },
   Mutation: {
-    addPerson: async (root, args) => {
+    addPerson: async (root, args, context) => {
       const person = new Person({ ...args })
+      const currentUser = context.currentUser
+      if (!currentUser) {
+        throw new AuthenticationError('Authentication Failed')
+      }
       try {
         await person.save()
+        currentUser.friends = currentUser.friends.concat(person)
+        await currentUser.save()
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
@@ -96,6 +107,7 @@ const resolvers = {
       }
       return person
     },
+
     editNumber: async (root, args) => {
       const person = await Person.findOne({ name: args.name })
       person.phone = args.phone
@@ -108,6 +120,7 @@ const resolvers = {
       }
       return person
     },
+
     createUser: async (root, args) => {
       const user = User({ username: args.username })
       return user.save().catch((error) => {
@@ -116,6 +129,7 @@ const resolvers = {
         })
       })
     },
+
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username })
 
@@ -130,14 +144,42 @@ const resolvers = {
 
       return { value: jwt.sign(userForToken, JWT_SECRET) }
     },
+
+    addAsFriend: async (root, args, { currentUser }) => {
+      const isFriend = (person) => {
+        currentUser.friends
+          .map((f) => f._id.toString())
+          .includes(person._id.toString())
+      }
+      if (!currentUser) {
+        throw new AuthenticationError('User Authentication failed')
+      }
+
+      const person = Person.findOne({ name: args.name })
+
+      if (!isFriend(person)) {
+        currentUser.friends = currentUser.friends.concat(person)
+      }
+      await currentUser.save()
+      return currentUser
+    },
   },
 }
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: async ({ req }) => {
+    const auth = req ? req.headers.authorization : null
+    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+      const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET)
+      const currentUser = await User.findById(decodedToken.id).populate(
+        'friends'
+      )
+      return { currentUser }
+    }
+  },
 })
-
 server.listen().then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })
