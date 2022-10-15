@@ -195,16 +195,16 @@ const resolvers = {
 
   Mutation: {
     addBook: async (root, args) => {
-      console.log('args are', args)
+      //console.log('args are', args)
       const existingAuthor = await Author.findOne({ name: args.author })
-      console.log('existingAuthor is', existingAuthor)
+      //console.log('existingAuthor is', existingAuthor)
       if (!existingAuthor) {
         console.log('adding author:', args.author)
         const newAuthor = new Author({ name: args.author })
         await newAuthor.save()
       }
       const author = await Author.findOne({ name: args.author })
-      console.log('author after saving to db is', author)
+      //console.log('author after saving to db is', author)
       const newBook = new Book({
         ...args,
         author: author,
