@@ -126,7 +126,7 @@ const typeDefs = gql`
   type Book {
     title: String!
     published: Int!
-    author: Author
+    author: Author!
     genres: [String!]!
     id: ID!
   }
@@ -141,8 +141,8 @@ const typeDefs = gql`
   type Mutation {
     addBook(
       title: String!
-      author: String
-      published: Int
+      author: String!
+      published: Int!
       genres: [String!]!
     ): Book
 
@@ -176,15 +176,16 @@ const resolvers = {
       /* don't work yet
       if (!args.genre && args.author) {
         return books.filter((b) => b.author === args.author)
-      }
+      } 
 
-      if (!args.author && args.genre) {
-        return books.filter((b) => b.genres.includes(args.genre))
-      }
-      if (args.author && args.genre) {
+       if (args.author && args.genre) {
         const byAuthor = books.filter((b) => b.author === args.author)
         return byAuthor.filter((b) => b.genres.includes(args.genre))
       } */
+
+      if (!args.author && args.genre) {
+        return Book.find({ genres: { $in: args.genre } })
+      }
     },
 
     allAuthors: async () => {
@@ -194,18 +195,20 @@ const resolvers = {
 
   Mutation: {
     addBook: async (root, args) => {
+      console.log('args are', args)
+      const existingAuthor = await Author.findOne({ name: args.author })
+      console.log('existingAuthor is', existingAuthor)
+      if (!existingAuthor) {
+        console.log('adding author:', args.author)
+        const newAuthor = new Author({ name: args.author })
+        await newAuthor.save()
+      }
+      const author = await Author.findOne({ name: args.author })
+      console.log('author after saving to db is', author)
       const newBook = new Book({
         ...args,
+        author: author,
       })
-      if (args.author) {
-        //temporary if block
-        const existingAuthor = await Author.findOne({ name: args.author.name })
-        if (!existingAuthor) {
-          console.log('adding author:', args.author.name)
-          const newAuthor = { ...args.author }
-          await newAuthor.save()
-        }
-      }
       await newBook.save()
       return newBook
     },
