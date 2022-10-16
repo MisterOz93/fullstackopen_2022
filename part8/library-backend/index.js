@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, UserInputError, gql } = require('apollo-server')
 const Book = require('./models/book')
 const Author = require('./models/author')
 const mongoose = require('mongoose')
@@ -6,10 +6,9 @@ const { MONGODB_URI } = require('./utils/config')
 /*
 The following things do not have to work just yet:
 
-allBooks query with parameters
-bookCount field of an author object
-author field of a book
-editAuthor mutation
+allBooks working with the parameter author 
+and 
+bookCount field of an author object 
 
 */
 console.log('Connecting to MongoDB')
@@ -147,8 +146,6 @@ const typeDefs = gql`
     ): Book
 
     editAuthor(name: String!, setBornTo: Int!): Author
-
-    addAuthor(name: String!, born: Int): Author
   }
 `
 
@@ -213,7 +210,7 @@ const resolvers = {
       return newBook
     },
 
-    addAuthor: async (root, args) => {
+    /*addAuthor: async (root, args) => {
       //console.log('args are', args)
       const newAuthor = new Author({
         ...args,
@@ -226,23 +223,26 @@ const resolvers = {
       await newAuthor.save()
       //console.log('newAuthor after save is', newAuthor)
       return newAuthor
-    },
+    }, */
 
-    editAuthor: (root, args) => {
-      //currently broken
-      console.log('received mutation query:', args.name, args.setBornTo)
-      const author = authors.find((a) => a.name === args.name)
+    editAuthor: async (root, args) => {
+      //console.log('received mutation query:', args.name, args.setBornTo)
+      const author = await Author.findOne({ name: args.name })
       if (!author) {
         console.log('could not find author')
         return null
       }
-      const updatedAuthor = {
-        ...author,
-        born: args.setBornTo,
+      //console.log('author from db is', author)
+      author.born = args.setBornTo
+      //console.log('updated author:', author)
+      try {
+        await author.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
       }
-
-      authors = authors.map((a) => (a.name === args.name ? updatedAuthor : a))
-      return updatedAuthor
+      return author
     },
   },
 }
