@@ -198,7 +198,13 @@ const resolvers = {
       if (!existingAuthor) {
         console.log('adding author:', args.author)
         const newAuthor = new Author({ name: args.author })
-        await newAuthor.save()
+        try {
+          await newAuthor.save()
+        } catch (error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        }
       }
       const author = await Author.findOne({ name: args.author })
       //console.log('author after saving to db is', author)
@@ -206,7 +212,13 @@ const resolvers = {
         ...args,
         author: author,
       })
-      await newBook.save()
+      try {
+        await newBook.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
       return newBook
     },
 
