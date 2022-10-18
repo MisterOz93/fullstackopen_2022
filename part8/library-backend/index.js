@@ -170,7 +170,7 @@ const resolvers = {
 
     createUser: async (root, args, context) => {
       const existingUser = await User.findOne({ username: args.username })
-      if (!existingUser) {
+      if (existingUser) {
         throw new UserInputError('Username Taken')
       }
       const newUser = new User({ ...args })
