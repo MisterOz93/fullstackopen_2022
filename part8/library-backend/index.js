@@ -1,3 +1,4 @@
+//finish exercise by making mutations require log in
 const { ApolloServer, UserInputError, gql } = require('apollo-server')
 const Book = require('./models/book')
 const Author = require('./models/author')
@@ -114,11 +115,19 @@ const resolvers = {
       return await Author.find({})
     },
 
-    me: (root, args, context) => context.currentUser,
+    me: (root, args, context) => {
+      console.log('context for me is,', context)
+      return context.currentUser
+    },
   },
 
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      if (!context.currentUser) {
+        throw new UserInputError('Must be Logged In to perform operaiton', {
+          invalidArgs: args,
+        })
+      }
       //console.log('args are', args)
       const existingAuthor = await Author.findOne({ name: args.author })
       //console.log('existingAuthor is', existingAuthor)
@@ -149,8 +158,13 @@ const resolvers = {
       return newBook
     },
 
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, context) => {
       //console.log('received mutation query:', args.name, args.setBornTo)
+      if (!context.currentUser) {
+        throw new UserInputError('Must be Logged In to perform operaiton', {
+          invalidArgs: args,
+        })
+      }
       const author = await Author.findOne({ name: args.name })
       if (!author) {
         throw new UserInputError('could not find author in database')
@@ -193,7 +207,9 @@ const resolvers = {
         username: user.username,
         id: user._id,
       }
-      return { value: jwt.sign(userForToken, JWT_KEY) }
+      return {
+        value: jwt.sign(userForToken, JWT_KEY),
+      }
     },
   },
 }
@@ -201,8 +217,8 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ request }) => {
-    const auth = request ? request.headers.authorization : null
+  context: async ({ req }) => {
+    const auth = req ? req.headers.authorization : null
     if (auth && auth.toLowerCase().startsWith('bearer ')) {
       const decodedToken = jwt.verify(auth.substring(7), JWT_KEY)
       const currentUser = await User.findById(decodedToken.id)
