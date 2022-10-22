@@ -161,7 +161,7 @@ const resolvers = {
     editAuthor: async (root, args, context) => {
       //console.log('received mutation query:', args.name, args.setBornTo)
       if (!context.currentUser) {
-        throw new UserInputError('Must be Logged In to perform operaiton', {
+        throw new UserInputError('Must be Logged In to perform operation', {
           invalidArgs: args,
         })
       }

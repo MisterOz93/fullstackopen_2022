@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Select from 'react-select'
 
-const UpdateAuthor = ({ authors, editAuthorName }) => {
+const UpdateAuthor = ({ authors, editAuthorBirthYear }) => {
   const [name, setName] = useState('')
   const [year, setYear] = useState('')
 
@@ -13,7 +13,7 @@ const UpdateAuthor = ({ authors, editAuthorName }) => {
 
   const updateAuthor = (event) => {
     event.preventDefault()
-    editAuthorName({
+    editAuthorBirthYear({
       variables: { name, setBornTo: +year },
     })
     setName('')
