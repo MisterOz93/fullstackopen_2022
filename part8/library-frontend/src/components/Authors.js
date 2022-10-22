@@ -4,7 +4,7 @@ import UpdateAuthor from './UpdateAuthor'
 
 const Authors = (props) => {
   const getAuthors = useQuery(ALL_AUTHORS)
-  const [editAuthorName] = useMutation(EDIT_AUTHOR, {
+  const [editAuthorBirthYear] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
   })
 
@@ -19,7 +19,7 @@ const Authors = (props) => {
 
   return (
     <div>
-      <h2>authors</h2>
+      <h2>Authors</h2>
       <table>
         <tbody>
           <tr>
@@ -38,7 +38,7 @@ const Authors = (props) => {
       </table>
       <UpdateAuthor
         authors={authors.map((a) => a.name)}
-        editAuthorName={editAuthorName}
+        editAuthorBirthYear={editAuthorBirthYear}
       />
     </div>
   )

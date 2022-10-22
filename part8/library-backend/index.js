@@ -94,7 +94,7 @@ const resolvers = {
     },
     allBooks: async (root, args) => {
       if (!args.author && !args.genre) {
-        return await Book.find({})
+        return await Book.find({}).populate('author')
       }
       /* don't work yet
       if (!args.genre && args.author) {

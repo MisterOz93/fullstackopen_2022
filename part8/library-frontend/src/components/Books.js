@@ -10,30 +10,32 @@ const Books = (props) => {
   if (getBooks.loading) {
     return <h2>loading...</h2>
   }
-  const books = getBooks.data.allBooks
+  if (getBooks.data) {
+    const books = getBooks.data.allBooks
 
-  return (
-    <div>
-      <h2>books</h2>
+    return (
+      <div>
+        <h2>Books</h2>
 
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>author</th>
-            <th>published</th>
-          </tr>
-          {books.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author}</td>
-              <td>{a.published}</td>
+        <table>
+          <tbody>
+            <tr>
+              <th></th>
+              <th>Author</th>
+              <th>published</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
+            {books.map((a) => (
+              <tr key={a.title}>
+                <td>{a.title}</td>
+                <td>{a.author.name}</td>
+                <td>{a.published}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
 }
 
 export default Books
