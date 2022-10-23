@@ -63,7 +63,7 @@ const typeDefs = gql`
     addBook(
       title: String!
       author: String!
-      published: Int!
+      published: Int
       genres: [String!]!
     ): Book
 
@@ -137,6 +137,7 @@ const resolvers = {
         try {
           await newAuthor.save()
         } catch (error) {
+          console.log('error here')
           throw new UserInputError(error.message, {
             invalidArgs: args,
           })
