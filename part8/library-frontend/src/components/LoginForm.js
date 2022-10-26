@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useMutation } from '@apollo/client'
-import { LOGIN } from '../queries'
+import { CURRENT_USER, LOGIN } from '../queries'
 
 const LoginForm = (props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const [login, result] = useMutation(LOGIN)
+  const [login, result] = useMutation(LOGIN, {
+    refetchQueries: { query: CURRENT_USER },
+  })
 
   useEffect(() => {
     if (result.data) {
@@ -14,6 +16,7 @@ const LoginForm = (props) => {
       props.setToken(token)
       localStorage.setItem('library-user-token', token)
       props.setPage('authors')
+      window.location.reload()
     }
     // eslint-disable-next-line
   }, [result.data])
