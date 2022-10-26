@@ -6,9 +6,7 @@ const LoginForm = (props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const [login, result] = useMutation(LOGIN, {
-    refetchQueries: { query: CURRENT_USER },
-  })
+  const [login, result] = useMutation(LOGIN)
 
   useEffect(() => {
     if (result.data) {
@@ -16,7 +14,7 @@ const LoginForm = (props) => {
       props.setToken(token)
       localStorage.setItem('library-user-token', token)
       props.setPage('authors')
-      window.location.reload()
+      window.location.reload() //temp fix for current user not refetching
     }
     // eslint-disable-next-line
   }, [result.data])
