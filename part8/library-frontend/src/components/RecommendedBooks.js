@@ -1,9 +1,8 @@
 import { useQuery } from '@apollo/client'
-import { BOOKS_IN_GENRE } from '../queries'
-import { useState } from 'react'
+import { ALL_BOOKS } from '../queries'
 
 const RecommendedBooks = ({ genre, show }) => {
-  const recommendedBooks = useQuery(BOOKS_IN_GENRE, {
+  const recommendedBooks = useQuery(ALL_BOOKS, {
     variables: { genre },
     skip: !genre,
   })
