@@ -1,16 +1,47 @@
-const RecommendedBooks = (props) => {
-  if (!props.show || !props.user.me) {
+import { useQuery } from '@apollo/client'
+import { BOOKS_IN_GENRE } from '../queries'
+import { useState } from 'react'
+
+const RecommendedBooks = ({ genre, show }) => {
+  const recommendedBooks = useQuery(BOOKS_IN_GENRE, {
+    variables: { genre },
+    skip: !genre,
+  })
+
+  if (!show || !genre) {
     return null
   }
-  const genre = props.user.me.favouriteGenre
-  return (
-    <div>
-      <h2>Recommended Books</h2>
-      <h4>
-        Books in your favorite genre <em>{genre}</em>
-      </h4>
-    </div>
-  )
+
+  if (recommendedBooks.loading) {
+    return <h2>Loading...</h2>
+  }
+  if (recommendedBooks.data.allBooks) {
+    const booksInGenre = recommendedBooks.data.allBooks
+    return (
+      <div>
+        <h2>Recommended Books</h2>
+        <h4>
+          Books in your favorite genre <em>{genre}</em>
+        </h4>
+        <table>
+          <tbody>
+            <tr>
+              <th></th>
+              <th>Author</th>
+              <th>Published</th>
+            </tr>
+            {booksInGenre.map((b) => (
+              <tr key={b.title}>
+                <td>{b.title}</td>
+                <td>{b.author.name}</td>
+                <td>{b.published}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
 }
 
 export default RecommendedBooks

@@ -21,7 +21,9 @@ const App = () => {
   }
 
   useEffect(() => {
-    setUser(currentUser.data)
+    if (currentUser.data) {
+      setUser(currentUser.data.me)
+    }
   }, [currentUser.data])
 
   console.log('curr user', user, 'token is:', token)
@@ -59,8 +61,11 @@ const App = () => {
       <Books show={page === 'books'} />
 
       <NewBook show={page === 'add'} />
-      {currentUser.data && (
-        <RecommendedBooks show={page === 'recommended'} user={user} />
+      {user && (
+        <RecommendedBooks
+          show={page === 'recommended'}
+          genre={user.favouriteGenre}
+        />
       )}
       <LoginForm
         show={page === 'login'}

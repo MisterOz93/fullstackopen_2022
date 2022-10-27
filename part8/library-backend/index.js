@@ -107,7 +107,7 @@ const resolvers = {
       } */
 
       if (!args.author && args.genre) {
-        return Book.find({ genres: { $in: args.genre } })
+        return Book.find({ genres: { $in: args.genre } }).populate('author')
       }
     },
 
@@ -208,6 +208,7 @@ const resolvers = {
         username: user.username,
         id: user._id,
       }
+      console.log('log in successful as', userForToken)
       return {
         value: jwt.sign(userForToken, JWT_KEY),
       }
