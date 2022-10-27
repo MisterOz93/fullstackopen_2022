@@ -3,9 +3,12 @@ import { ALL_BOOKS } from '../queries'
 import { useState } from 'react'
 
 const Books = (props) => {
-  const getBooks = useQuery(ALL_BOOKS)
-  const [currentGenre, setCurrentGenre] = useState('All Genres')
+  const [currentGenre, setCurrentGenre] = useState(null)
   const [genres, setGenres] = useState([])
+
+  const getBooks = useQuery(ALL_BOOKS, {
+    variables: { genre: currentGenre },
+  })
 
   if (!props.show) {
     return null
@@ -15,7 +18,6 @@ const Books = (props) => {
   }
   if (getBooks.data) {
     const books = getBooks.data.allBooks
-
     books
       .map((b) => b.genres)
       .map((list) =>
@@ -29,7 +31,9 @@ const Books = (props) => {
     return (
       <div>
         <h2>Books</h2>
-        <p>Showing books in: {currentGenre} </p>
+        <p>
+          Showing books in: {currentGenre ? `${currentGenre}` : 'All Genres'}{' '}
+        </p>
 
         <table>
           <tbody>
@@ -39,18 +43,13 @@ const Books = (props) => {
               <th>published</th>
             </tr>
             {books.map((b) => {
-              if (
-                currentGenre === 'All Genres' ||
-                b.genres.includes(currentGenre)
-              ) {
-                return (
-                  <tr key={b.title}>
-                    <td>{b.title}</td>
-                    <td>{b.author.name}</td>
-                    <td>{b.published}</td>
-                  </tr>
-                )
-              }
+              return (
+                <tr key={b.title}>
+                  <td>{b.title}</td>
+                  <td>{b.author.name}</td>
+                  <td>{b.published}</td>
+                </tr>
+              )
             })}
           </tbody>
         </table>
@@ -66,10 +65,7 @@ const Books = (props) => {
               </button>
             )
           })}
-          <button
-            style={{ margin: 2 }}
-            onClick={() => setCurrentGenre('All Genres')}
-          >
+          <button style={{ margin: 2 }} onClick={() => setCurrentGenre(null)}>
             All Genres
           </button>
         </div>
