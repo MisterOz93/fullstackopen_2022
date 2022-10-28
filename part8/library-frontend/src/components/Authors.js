@@ -4,7 +4,9 @@ import UpdateAuthor from './UpdateAuthor'
 
 const Authors = (props) => {
   const getAuthors = useQuery(ALL_AUTHORS)
-  const getBooks = useQuery(ALL_BOOKS)
+  const getBooks = useQuery(ALL_BOOKS, {
+    variables: { genre: null },
+  })
   //getBooks temporary until bookCount field of Author obj is fixed
 
   const [editAuthorBirthYear] = useMutation(EDIT_AUTHOR, {

@@ -26,7 +26,7 @@ const App = () => {
     }
   }, [currentUser.data])
 
-  console.log('curr user', user, 'token is:', token)
+  //debug helper: console.log('curr user', user, 'token is:', token)
 
   const logout = () => {
     setToken(null)

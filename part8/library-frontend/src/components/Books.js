@@ -6,18 +6,18 @@ const Books = (props) => {
   const [currentGenre, setCurrentGenre] = useState(null)
   const [genres, setGenres] = useState([])
 
-  const getBooks = useQuery(ALL_BOOKS, {
+  const { loading, data, refetch } = useQuery(ALL_BOOKS, {
     variables: { genre: currentGenre },
   })
 
   if (!props.show) {
     return null
   }
-  if (getBooks.loading) {
+  if (loading) {
     return <h2>loading...</h2>
   }
-  if (getBooks.data) {
-    const books = getBooks.data.allBooks
+  if (data) {
+    const books = data.allBooks
     books
       .map((b) => b.genres)
       .map((list) =>
@@ -27,6 +27,11 @@ const Books = (props) => {
           }
         })
       )
+
+    const refetchBooks = (genre = null) => {
+      setCurrentGenre(genre)
+      refetch({ genre })
+    }
 
     return (
       <div>
@@ -59,13 +64,13 @@ const Books = (props) => {
               <button
                 style={{ margin: 2 }}
                 key={genre}
-                onClick={() => setCurrentGenre(genre)}
+                onClick={() => refetchBooks(genre)}
               >
                 {genre}
               </button>
             )
           })}
-          <button style={{ margin: 2 }} onClick={() => setCurrentGenre(null)}>
+          <button style={{ margin: 2 }} onClick={() => refetchBooks()}>
             All Genres
           </button>
         </div>
