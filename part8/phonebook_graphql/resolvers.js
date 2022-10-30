@@ -1,3 +1,5 @@
+const { PubSub } = require('graphql-subscriptions')
+const pubsub = new PubSub()
 const { UserInputError, AuthenticationError } = require('apollo-server')
 const jwt = require('jsonwebtoken')
 const Person = require('./models/persons')
@@ -41,6 +43,7 @@ const resolvers = {
           invalidArgs: args,
         })
       }
+      pubsub.publish('PERSON_ADDED', { personAdded: person })
       return person
     },
 
@@ -98,6 +101,11 @@ const resolvers = {
       }
       await currentUser.save()
       return currentUser
+    },
+  },
+  Subscription: {
+    personAdded: {
+      subscribe: () => pubsub.asyncIterator('PERSON_ADDED'),
     },
   },
 }
