@@ -89,7 +89,7 @@ const resolvers = {
           invalidArgs: args,
         })
       }
-      pubsub.publish('BOOK_ADDED', { bookAdded: book })
+      pubsub.publish('BOOK_ADDED', { bookAdded: newBook })
       return newBook
     },
 
@@ -146,6 +146,11 @@ const resolvers = {
       return {
         value: jwt.sign(userForToken, JWT_KEY),
       }
+    },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator('BOOK_ADDED'),
     },
   },
 }

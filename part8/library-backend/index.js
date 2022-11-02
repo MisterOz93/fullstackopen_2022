@@ -9,10 +9,11 @@ const { useServer } = require('graphql-ws/lib/use/ws')
 
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
+const User = require('./models/user')
 const typeDefs = require('./schema')
 const resolvers = require('./resolvers')
 
-const { MONGODB_URI } = require('./utils/config')
+const { MONGODB_URI, JWT_KEY } = require('./utils/config')
 
 console.log('Connecting to MongoDB')
 
@@ -25,7 +26,7 @@ mongoose
     console.log('Error connecting to MongoDB:', error.message)
   })
 
-mongoose.set('debug', true)
+//mongoose.set('debug', true)
 
 const start = async () => {
   const app = express()
