@@ -1,12 +1,11 @@
+import { useEffect, useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { ALL_AUTHORS, EDIT_AUTHOR, ALL_BOOKS } from '../queries'
 import UpdateAuthor from './UpdateAuthor'
 
 const Authors = (props) => {
   const getAuthors = useQuery(ALL_AUTHORS)
-  const getBooks = useQuery(ALL_BOOKS, {
-    variables: { genre: null },
-  })
+  const getBooks = useQuery(ALL_BOOKS)
   //getBooks temporary until bookCount field of Author obj is fixed
 
   const [editAuthorBirthYear] = useMutation(EDIT_AUTHOR, {
@@ -17,10 +16,10 @@ const Authors = (props) => {
     return <div>Loading...</div>
   }
 
-  const authors = getAuthors.data.allAuthors
-  const books = getBooks.data.allBooks
-
   const bookCount = {}
+
+  const books = getBooks.data.allBooks
+  const authors = getAuthors.data.allAuthors
 
   books.map((b) => {
     bookCount[b.author.name] = bookCount[b.author.name]

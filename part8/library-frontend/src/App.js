@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { CURRENT_USER } from './queries'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { ALL_BOOKS, CURRENT_USER, BOOK_ADDED } from './queries'
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
@@ -25,6 +25,18 @@ const App = () => {
       setUser(currentUser.data.me)
     }
   }, [currentUser.data])
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ subscriptionData }) => {
+      const bookAdded = subscriptionData.data.bookAdded
+      window.alert(`${bookAdded.name} has been added to the list of books`)
+      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(bookAdded),
+        }
+      })
+    },
+  })
 
   //debug helper: console.log('curr user', user, 'token is:', token)
 
