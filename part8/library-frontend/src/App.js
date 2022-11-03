@@ -27,9 +27,11 @@ const App = () => {
   }, [currentUser.data])
 
   useSubscription(BOOK_ADDED, {
-    onData: ({ subscriptionData }) => {
+    onSubscriptionData: ({ subscriptionData }) => {
+      //console.log('subscriptionData is', subscriptionData)
       const bookAdded = subscriptionData.data.bookAdded
-      window.alert(`${bookAdded.name} has been added to the list of books`)
+      bookAdded.author.bookCount = bookAdded.author.bookCount + 1
+      window.alert(`${bookAdded.title} has been added to the list of books`)
       client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
         return {
           allBooks: allBooks.concat(bookAdded),
