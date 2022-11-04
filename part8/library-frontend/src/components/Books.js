@@ -1,15 +1,30 @@
-import { useQuery } from '@apollo/client'
-import { ALL_BOOKS } from '../queries'
+import { useQuery, useSubscription } from '@apollo/client'
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from '../queries'
 import { useState } from 'react'
 
 const Books = (props) => {
   const [currentGenre, setCurrentGenre] = useState(null)
   const [genres, setGenres] = useState([])
-
+  const authorQuery = useQuery(ALL_AUTHORS)
   const { loading, data, refetch } = useQuery(ALL_BOOKS, {
     variables: { genre: currentGenre },
   })
 
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      //console.log('subscriptionData is', subscriptionData)
+      const bookAdded = subscriptionData.data.bookAdded
+      bookAdded.author.bookCount = bookAdded.author.bookCount + 1
+      window.alert(`${bookAdded.title} has been added to the list of books`)
+      props.client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(bookAdded),
+        }
+      })
+      refetch()
+      authorQuery.refetch()
+    },
+  })
   if (!props.show) {
     return null
   }

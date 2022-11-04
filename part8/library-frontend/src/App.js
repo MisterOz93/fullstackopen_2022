@@ -1,3 +1,4 @@
+//might need to fetch book state here for subscribe to update view?
 import { useEffect, useState } from 'react'
 import { ALL_BOOKS, CURRENT_USER, BOOK_ADDED } from './queries'
 import { useApolloClient, useQuery, useSubscription } from '@apollo/client'
@@ -25,20 +26,6 @@ const App = () => {
       setUser(currentUser.data.me)
     }
   }, [currentUser.data])
-
-  useSubscription(BOOK_ADDED, {
-    onSubscriptionData: ({ subscriptionData }) => {
-      //console.log('subscriptionData is', subscriptionData)
-      const bookAdded = subscriptionData.data.bookAdded
-      bookAdded.author.bookCount = bookAdded.author.bookCount + 1
-      window.alert(`${bookAdded.title} has been added to the list of books`)
-      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
-        return {
-          allBooks: allBooks.concat(bookAdded),
-        }
-      })
-    },
-  })
 
   //debug helper: console.log('curr user', user, 'token is:', token)
 
@@ -72,7 +59,7 @@ const App = () => {
 
       <Authors show={page === 'authors'} />
 
-      <Books show={page === 'books'} />
+      <Books show={page === 'books'} client={client} />
 
       <NewBook show={page === 'add'} />
       {user && (
