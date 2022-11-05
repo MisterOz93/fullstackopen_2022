@@ -9,13 +9,16 @@ const { PubSub } = require('graphql-subscriptions')
 const pubsub = new PubSub()
 
 const resolvers = {
-  Author: {
+  /* fix n+1 problem of bookCount
+  idea 1: give Author Books field array, then simply populate it
+  and return its length for bookCount */
+
+  /*Author: {
     bookCount: async (root) => {
-      const books = await Book.find({}).populate('author')
-      return books.filter((b) => b.author.name === root.name).length
+      return root.books.length
     },
   },
-
+*/
   Query: {
     bookCount: async () => {
       const size = await Book.find({})
@@ -26,25 +29,14 @@ const resolvers = {
       return size.length
     },
     allBooks: async (root, args) => {
-      if (!args.author && !args.genre) {
-        return await Book.find({}).populate('author')
-      }
-      /* don't work yet
-      if (!args.genre && args.author) {
-        return books.filter((b) => b.author === args.author)
-      } 
-
-       if (args.author && args.genre) {
-        const byAuthor = books.filter((b) => b.author === args.author)
-        return byAuthor.filter((b) => b.genres.includes(args.genre))
-      } */
-
-      if (!args.author && args.genre) {
+      if (args.genre) {
         return Book.find({ genres: { $in: args.genre } }).populate('author')
       }
+      return await Book.find({}).populate('author')
     },
 
     allAuthors: async () => {
+      console.log('firing an allAuthors query')
       return await Author.find({})
     },
 
@@ -77,13 +69,16 @@ const resolvers = {
         }
       }
       const author = await Author.findOne({ name: args.author })
-      //console.log('author after saving to db is', author)
+      console.log('author books field before saving book is', author.books)
       const newBook = new Book({
         ...args,
         author: author,
       })
       try {
         await newBook.save()
+        const book = await Book.findOne({ title: args.title })
+        author.books = author.books.concat(book)
+        await author.save()
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
