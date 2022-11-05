@@ -9,12 +9,12 @@ const { PubSub } = require('graphql-subscriptions')
 const pubsub = new PubSub()
 
 const resolvers = {
-  /* temporarily not working
   Author: {
-    bookCount: (root) => {
-      return books.filter((b) => b.author === root.name).length
+    bookCount: async (root) => {
+      const books = await Book.find({}).populate('author')
+      return books.filter((b) => b.author.name === root.name).length
     },
-  },   */
+  },
 
   Query: {
     bookCount: async () => {
