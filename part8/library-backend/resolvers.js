@@ -9,16 +9,6 @@ const { PubSub } = require('graphql-subscriptions')
 const pubsub = new PubSub()
 
 const resolvers = {
-  /* fix n+1 problem of bookCount
-  idea 1: give Author Books field array, then simply populate it
-  and return its length for bookCount */
-
-  /*Author: {
-    bookCount: async (root) => {
-      return root.books.length
-    },
-  },
-*/
   Query: {
     bookCount: async () => {
       const size = await Book.find({})
@@ -37,7 +27,9 @@ const resolvers = {
 
     allAuthors: async () => {
       console.log('firing an allAuthors query')
-      return await Author.find({})
+      const authors = await Author.find({})
+      //console.log('authors is', authors)
+      return authors
     },
 
     me: (root, args, context) => {
@@ -69,7 +61,7 @@ const resolvers = {
         }
       }
       const author = await Author.findOne({ name: args.author })
-      console.log('author books field before saving book is', author.books)
+      //console.log('author books field before saving book is', author.books)
       const newBook = new Book({
         ...args,
         author: author,
@@ -78,6 +70,7 @@ const resolvers = {
         await newBook.save()
         const book = await Book.findOne({ title: args.title })
         author.books = author.books.concat(book)
+        author.bookCount = author.bookCount ? author.bookCount + 1 : 1
         await author.save()
       } catch (error) {
         throw new UserInputError(error.message, {

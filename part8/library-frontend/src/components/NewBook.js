@@ -19,7 +19,7 @@ const NewBook = (props) => {
 
   const submit = async (event) => {
     event.preventDefault()
-    const publishedInt = +published
+    const publishedInt = published ? +published : null
     if (!title || !author || genres.length === 0) {
       window.alert('Please provide Title, Author Name, and Genre(s)')
       return

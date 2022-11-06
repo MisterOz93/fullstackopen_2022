@@ -5,27 +5,16 @@ import UpdateAuthor from './UpdateAuthor'
 
 const Authors = (props) => {
   const getAuthors = useQuery(ALL_AUTHORS)
-  const getBooks = useQuery(ALL_BOOKS)
-  //getBooks temporary until bookCount field of Author obj is fixed
 
   const [editAuthorBirthYear] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
   })
 
-  if (getAuthors.loading || getBooks.loading) {
+  if (getAuthors.loading) {
     return <div>Loading...</div>
   }
 
-  const bookCount = {}
-
-  const books = getBooks.data.allBooks
   const authors = getAuthors.data.allAuthors
-
-  books.map((b) => {
-    bookCount[b.author.name] = bookCount[b.author.name]
-      ? bookCount[b.author.name] + 1
-      : 1
-  })
 
   if (!props.show) {
     return null
@@ -45,7 +34,7 @@ const Authors = (props) => {
             <tr key={a.name}>
               <td>{a.name}</td>
               <td>{a.born}</td>
-              <td>{bookCount[a.name]}</td>
+              <td>{a.bookCount}</td>
             </tr>
           ))}
         </tbody>

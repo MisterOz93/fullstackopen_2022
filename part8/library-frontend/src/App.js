@@ -15,6 +15,8 @@ const App = () => {
 
   const client = useApolloClient()
 
+  useQuery(ALL_BOOKS)
+
   const currentUser = useQuery(CURRENT_USER)
 
   if (!token && localStorage.getItem('library-user-token')) {

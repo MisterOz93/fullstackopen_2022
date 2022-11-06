@@ -85,6 +85,7 @@ export const BOOK_ADDED = gql`
         name
         id
         born
+        bookCount
       }
     }
   }

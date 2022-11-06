@@ -16,6 +16,7 @@ const schema = new mongoose.Schema({
       ref: 'Book',
     },
   ],
+  bookCount: Number,
 })
 
 module.exports = mongoose.model('Author', schema)

@@ -12,9 +12,8 @@ const Books = (props) => {
 
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      //console.log('subscriptionData is', subscriptionData)
+      console.log('subscriptionData is', subscriptionData)
       const bookAdded = subscriptionData.data.bookAdded
-      bookAdded.author.bookCount = bookAdded.author.bookCount + 1
       window.alert(`${bookAdded.title} has been added to the list of books`)
       props.client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
         return {
