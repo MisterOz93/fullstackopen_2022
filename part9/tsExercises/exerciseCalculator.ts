@@ -45,7 +45,7 @@ const calculateExercises = (args: Array<number>): Results => {
     ratingDescription = 'Not too bad but could be better.';
   } else {
     rating = 1;
-    ratingDescription = 'More work is needed to reach target goals.';
+    ratingDescription = 'Bad. More work is needed to reach target goals.';
   }
 
   return {
@@ -69,3 +69,5 @@ try {
     console.log(error);
   }
 }
+
+export default calculateExercises;
