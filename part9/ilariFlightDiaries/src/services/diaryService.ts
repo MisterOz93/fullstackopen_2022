@@ -1,19 +1,26 @@
-import diaryData from '../../data/diaries';
+import diaries from '../../data/tsDiaries';
 
-import { DiaryEntry } from '../types';
+import { DiaryEntry, NonSensitiveDiaryEntry } from '../types';
 
-const diaries: Array<DiaryEntry> = diaryData;
-
-const getEntries = (): Array<DiaryEntry> => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+const getEntries = (): DiaryEntry[] => {
   return diaries;
 };
 
+const getNonSensitiveEntries = (): NonSensitiveDiaryEntry[] => {
+  return diaries.map(({ id, date, weather, visibility }) => ({
+    id,
+    date,
+    weather,
+    visibility,
+  }));
+};
+
 const addDiary = () => {
-  return null;
+  return [];
 };
 
 export default {
   getEntries,
+  getNonSensitiveEntries,
   addDiary,
 };
