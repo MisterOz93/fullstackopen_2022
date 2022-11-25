@@ -1,6 +1,6 @@
 import patients from '../../data/patients';
 import { v4 as uuidv4 } from 'uuid';
-import { parseStringField, parseDate, parseGender } from '../utils';
+import toNewPatient from '../utils';
 
 import { Patient, PatientWithoutSSN, NewPatient } from '../types';
 
@@ -15,20 +15,15 @@ const getPatientsWithoutSSN = (): PatientWithoutSSN[] => {
 };
 
 const addPatient = (patient: NewPatient): Patient => {
+  const newPatient = toNewPatient(patient);
+
   const id = uuidv4();
 
-  const newPatient: Patient = {
-    id,
-    name: parseStringField(patient.name),
-    dateOfBirth: parseDate(patient.dateOfBirth),
-    ssn: parseStringField(patient.ssn),
-    gender: parseGender(patient.gender),
-    occupation: parseStringField(patient.occupation),
-  };
+  const patientWithId = { ...newPatient, id };
 
-  patients.push(newPatient);
+  patients.push(patientWithId);
 
-  return newPatient;
+  return patientWithId;
 };
 
 export default { getPatientsWithoutSSN, addPatient };
