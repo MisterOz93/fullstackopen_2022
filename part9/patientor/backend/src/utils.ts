@@ -54,6 +54,7 @@ const toNewPatient = ({
     ssn: parseStringField(ssn),
     gender: parseGender(gender),
     occupation: parseStringField(occupation),
+    entries: [], //temporary?
   };
   return newPatient;
 };
