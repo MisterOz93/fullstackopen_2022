@@ -7,15 +7,18 @@ import AddPatientModal from "../AddPatientModal";
 import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
 import HealthRatingBar from "../components/HealthRatingBar";
-import { useStateValue } from "../state";
+import { useStateValue, addPatient, setCurrentPatient } from "../state";
 import { TableCell } from "@material-ui/core";
 import { TableRow } from "@material-ui/core";
 import { TableBody } from "@material-ui/core";
 
 const PatientListPage = () => {
   const [{ patients, currentPatient }, dispatch] = useStateValue();
-  console.log('current patient on load is', currentPatient);
+
+  /*if true, display single patient page. false on render so
+   clicking Home button displays home page unless name is clicked*/
   const [displaySingle, setDisplaySingle] = React.useState<boolean>(false);
+  
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>();
 
@@ -33,7 +36,7 @@ const PatientListPage = () => {
         `${apiBaseUrl}/patients`,
         values
       );
-      dispatch({ type: "ADD_PATIENT", payload: newPatient });
+      dispatch(addPatient(newPatient));
       closeModal();
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
@@ -49,7 +52,7 @@ const PatientListPage = () => {
   const displayPatient = (id: string) => {
     const getPatient = async () => {
       const { data: selectedPatient } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
-      dispatch({type: "SET_CURRENT_PATIENT", payload: selectedPatient.id});
+      dispatch(setCurrentPatient(selectedPatient.id));
     };
     
     if (!currentPatient || currentPatient.id !== id){

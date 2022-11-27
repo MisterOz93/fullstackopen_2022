@@ -1,6 +1,6 @@
 import { State } from './state';
 import { Patient } from '../types';
-
+//refactor into action functions
 export type Action =
   | {
       type: 'SET_PATIENT_LIST';
@@ -16,8 +16,36 @@ export type Action =
     }
   | {
       type: 'SET_CURRENT_PATIENT';
-      payload: string | undefined;
+      payload: string;
     };
+
+export const setPatientList = (patientListFromApi: Patient[]): Action => {
+  return {
+    type: 'SET_PATIENT_LIST',
+    payload: patientListFromApi,
+  };
+};
+
+export const addPatient = (patient: Patient): Action => {
+  return {
+    type: 'ADD_PATIENT',
+    payload: patient,
+  };
+};
+
+export const editPatient = (patient: Patient): Action => {
+  return {
+    type: 'EDIT_PATIENT',
+    payload: patient,
+  };
+};
+
+export const setCurrentPatient = (patientId: string): Action => {
+  return {
+    type: 'SET_CURRENT_PATIENT',
+    payload: patientId,
+  };
+};
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -47,15 +75,9 @@ export const reducer = (state: State, action: Action): State => {
       }; //^Need to confirm this works
 
     case 'SET_CURRENT_PATIENT':
-      if (typeof action.payload === 'string') {
-        return {
-          ...state,
-          currentPatient: state.patients[action.payload],
-        };
-      }
       return {
         ...state,
-        currentPatient: undefined,
+        currentPatient: state.patients[action.payload],
       };
     default:
       return state;
