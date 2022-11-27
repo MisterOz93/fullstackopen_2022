@@ -1,7 +1,7 @@
-import React from "react";
+import React, {useEffect} from "react";
 import axios from "axios";
 import { Box, Table, Button, TableHead, Typography } from "@material-ui/core";
-
+import { useNavigate } from "react-router-dom";
 import { PatientFormValues } from "../AddPatientModal/AddPatientForm";
 import AddPatientModal from "../AddPatientModal";
 import { Patient } from "../types";
@@ -13,8 +13,9 @@ import { TableRow } from "@material-ui/core";
 import { TableBody } from "@material-ui/core";
 
 const PatientListPage = () => {
-  const [{ patients }, dispatch] = useStateValue();
-
+  const [{ patients, currentPatient }, dispatch] = useStateValue();
+  console.log('current patient on load is', currentPatient);
+  const [displaySingle, setDisplaySingle] = React.useState<boolean>(false);
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>();
 
@@ -25,6 +26,7 @@ const PatientListPage = () => {
     setError(undefined);
   };
 
+  const navigate = useNavigate();
   const submitNewPatient = async (values: PatientFormValues) => {
     try {
       const { data: newPatient } = await axios.post<Patient>(
@@ -43,6 +45,26 @@ const PatientListPage = () => {
       }
     }
   };
+
+  const displayPatient = (id: string) => {
+    const getPatient = async () => {
+      const { data: selectedPatient } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
+      dispatch({type: "SET_CURRENT_PATIENT", payload: selectedPatient.id});
+    };
+    
+    if (!currentPatient || currentPatient.id !== id){
+      void getPatient();
+      console.log('reached dispatch');
+    }
+    setDisplaySingle(true);
+  };
+
+
+  useEffect(() => {
+    if (currentPatient && displaySingle){
+      navigate(`patients/${currentPatient.id}`);
+    }
+  }, [currentPatient, displaySingle]);
 
   return (
     <div className="App">
@@ -63,7 +85,12 @@ const PatientListPage = () => {
         <TableBody>
           {Object.values(patients).map((patient: Patient) => (
             <TableRow key={patient.id}>
-              <TableCell>{patient.name}</TableCell>
+              <TableCell>
+                <Button onClick={() => displayPatient(patient.id)}
+                variant="contained" color="primary"> 
+                  {patient.name}
+                </Button>
+              </TableCell>
               <TableCell>{patient.gender}</TableCell>
               <TableCell>{patient.occupation}</TableCell>
               <TableCell>
@@ -75,6 +102,7 @@ const PatientListPage = () => {
       </Table>
       <AddPatientModal
         modalOpen={modalOpen}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={submitNewPatient}
         error={error}
         onClose={closeModal}
