@@ -1,20 +1,32 @@
 import { useParams } from "react-router";
+import { useState } from "react";
+import axios from "axios";
 import { useStateValue } from "../state";
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
-
+import { Patient } from "../types";
+import { apiBaseUrl } from "../constants";
 
 const PatientInfoPage = () => {
-  const [{ currentPatient }] = useStateValue();
-  const patient = currentPatient;
+  const [{currentPatient }] = useStateValue();
+  const [patient, setPatient] = useState<Patient | undefined>(currentPatient);
+ 
   const id: string | undefined = useParams().id;
   if (!id) {
     return (<h2>Error: Could not find a patient with that information.</h2>);
   }
 
+  const refetchPatient = async () => {
+    const {data: apiPatient} = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
+    setPatient(apiPatient);
+  };
+
   if (!patient) {
-    return <h3>Error, please return to Home Page.</h3>;
-  }
+    void refetchPatient();
+    if (!patient){
+      return <h2>Loading patient data, please wait or return to the Home Page.</h2>;
+    }
+  } 
 
   return (
     <div>

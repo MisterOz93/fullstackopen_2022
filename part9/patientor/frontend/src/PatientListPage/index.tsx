@@ -18,7 +18,6 @@ const PatientListPage = () => {
   /*if true, display single patient page. false on render so
    clicking Home button displays home page unless name is clicked*/
   const [displaySingle, setDisplaySingle] = React.useState<boolean>(false);
-  
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string>();
 
