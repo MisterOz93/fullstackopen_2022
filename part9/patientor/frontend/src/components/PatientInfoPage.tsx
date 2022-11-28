@@ -13,9 +13,9 @@ const PatientInfoPage = () => {
   }
 
   if (!patient) {
-    return <h3>Loading...</h3>;
+    return <h3>Error, please return to Home Page.</h3>;
   }
-  
+
   return (
     <div>
       <h2>{patient.name} {patient.gender === 'male' && <MaleIcon/>} {patient.gender === 'female' && <FemaleIcon/>}</h2>

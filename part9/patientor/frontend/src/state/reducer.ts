@@ -16,7 +16,7 @@ export type Action =
     }
   | {
       type: 'SET_CURRENT_PATIENT';
-      payload: string;
+      payload: Patient;
     };
 
 export const setPatientList = (patientListFromApi: Patient[]): Action => {
@@ -40,10 +40,10 @@ export const editPatient = (patient: Patient): Action => {
   };
 };
 
-export const setCurrentPatient = (patientId: string): Action => {
+export const setCurrentPatient = (patient: Patient): Action => {
   return {
     type: 'SET_CURRENT_PATIENT',
-    payload: patientId,
+    payload: patient,
   };
 };
 
@@ -77,7 +77,7 @@ export const reducer = (state: State, action: Action): State => {
     case 'SET_CURRENT_PATIENT':
       return {
         ...state,
-        currentPatient: state.patients[action.payload],
+        currentPatient: action.payload,
       };
     default:
       return state;

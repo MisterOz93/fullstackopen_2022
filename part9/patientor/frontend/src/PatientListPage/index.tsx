@@ -52,12 +52,11 @@ const PatientListPage = () => {
   const displayPatient = (id: string) => {
     const getPatient = async () => {
       const { data: selectedPatient } = await axios.get<Patient>(`${apiBaseUrl}/patients/${id}`);
-      dispatch(setCurrentPatient(selectedPatient.id));
+      dispatch(setCurrentPatient(selectedPatient));
     };
     
     if (!currentPatient || currentPatient.id !== id){
       void getPatient();
-      console.log('reached dispatch');
     }
     setDisplaySingle(true);
   };

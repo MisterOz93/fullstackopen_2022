@@ -14,6 +14,7 @@ router.get('/:id', (req, res) => {
   if (!patient) {
     res.status(400).send('Error: Could not find requested patient.');
   } else {
+    //console.log('patient in getByID route is', patient);
     res.json(patient);
   }
 });
