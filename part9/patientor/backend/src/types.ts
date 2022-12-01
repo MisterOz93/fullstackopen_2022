@@ -1,4 +1,4 @@
-export type Diagnose = {
+export type Diagnosis = {
   code: string;
   name: string;
   latin?: string;
@@ -15,7 +15,7 @@ interface BaseEntry {
   description: string;
   date: string;
   specialist: string;
-  diagnosisCodes?: Diagnose['code'][];
+  diagnosisCodes?: Diagnosis['code'][];
 }
 
 export enum HealthCheckRating {

@@ -6,6 +6,7 @@ import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
+import Entries from "./Entries";
 
 const PatientInfoPage = () => {
   const [{currentPatient }] = useStateValue();
@@ -21,8 +22,8 @@ const PatientInfoPage = () => {
     setPatient(apiPatient);
   };
 
-  if (!patient) {
-    void refetchPatient();
+  if (!patient) { //if user refreshes page or unexpected error
+    void refetchPatient(); 
     if (!patient){
       return <h2>Loading patient data, please wait or return to the Home Page.</h2>;
     }
@@ -35,6 +36,7 @@ const PatientInfoPage = () => {
       <p>ssn: {patient.ssn}</p>
       } 
       <p>occupation: {patient.occupation}</p>
+      <Entries entries={patient.entries}/>
    </div>
   );
 };
