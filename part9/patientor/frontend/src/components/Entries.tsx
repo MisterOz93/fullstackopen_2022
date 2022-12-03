@@ -1,11 +1,12 @@
 import { Entry, Diagnosis } from "../types";
-import axios from 'axios';
-import { useEffect } from "react";
-import { apiBaseUrl } from "../constants";
-import { useStateValue, setDiagnosesList } from "../state";
+import OccupationalHealthCareEntry from './OccupationalHealthCareEntry';
+import HealthCheckEntry from './HealthCheckEntry';
+import HospitalEntry from './HospitalEntry';
+import { assertNever } from '../utils';
 
 type PropsForEntries = {
-  entries: Entry[]
+  entries: Entry[];
+  diagnoses: Diagnosis[];
 };
 
 type SingleEntryProps = {
@@ -13,29 +14,14 @@ type SingleEntryProps = {
   diagnoses: Diagnosis[];
 };
 
-const Entries = ({entries}: PropsForEntries) => {
+const Entries = ({entries, diagnoses}: PropsForEntries) => {
 
-  const [{ diagnoses }, dispatch] = useStateValue();
-  
-  useEffect(() => {
-    const getDiagnosesFromApi = async () => {
-      try {
-        const {data: diagnosesData} = await axios.get<Diagnosis[]>(apiBaseUrl + '/diagnoses');  
-        dispatch(setDiagnosesList(diagnosesData));
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    void getDiagnosesFromApi();
-  }, []);
-  console.log('diagnoses data in state is:', diagnoses[0]);
-  
   return (
     <div>
       <h3><strong>Entries:</strong></h3>
       <div>
         {entries.map(entry =>
-          <SingleEntry key={entry.id} entry={entry} diagnoses={diagnoses}/>)
+          <SingleEntry key={entry.id} entry={entry} diagnoses={diagnoses} />)
         }
       </div>  
     </div>
@@ -44,17 +30,18 @@ const Entries = ({entries}: PropsForEntries) => {
 };
 
 
-const SingleEntry = ({entry, diagnoses}: SingleEntryProps) => {
-  return(
-    <div>
-      <p>{entry.date + ' '} {'  '} <em>{entry.description}</em> </p>
-      <ul>
-        {entry.diagnosisCodes?.map(code => 
-          <li key={code}>{code} {diagnoses.find(d => d.code === code)?.name}</li>
-        )}
-    </ul>
-    </div>
-  );
+const SingleEntry = ({entry, diagnoses }: SingleEntryProps) => {
+//console.log(entry.type);
+  switch(entry.type){
+    case "Hospital":
+      return <HospitalEntry entry={entry} diagnoses={diagnoses}/>;
+    case "OccupationalHealthcare":
+      return <OccupationalHealthCareEntry entry={entry} diagnoses={diagnoses}/>;
+    case "HealthCheck":
+      return <HealthCheckEntry entry={entry} diagnoses={diagnoses} />;
+    default:
+      return assertNever(entry);
+  }
 };
 
 export default Entries;

@@ -1,6 +1,6 @@
 import { State } from './state';
 import { Patient, Diagnosis } from '../types';
-//refactor into action functions
+
 export type Action =
   | {
       type: 'SET_PATIENT_LIST';
