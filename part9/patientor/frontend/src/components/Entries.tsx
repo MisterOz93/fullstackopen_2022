@@ -1,6 +1,6 @@
 import { Entry, Diagnosis } from "../types";
 import OccupationalHealthCareEntry from './OccupationalHealthCareEntry';
-import HealthCheckEntry from './HealthCheckEntry';
+import HealthCheckEntryDetails from './HealthCheckEntry';
 import HospitalEntry from './HospitalEntry';
 import { assertNever } from '../utils';
 
@@ -38,7 +38,7 @@ const SingleEntry = ({entry, diagnoses }: SingleEntryProps) => {
     case "OccupationalHealthcare":
       return <OccupationalHealthCareEntry entry={entry} diagnoses={diagnoses}/>;
     case "HealthCheck":
-      return <HealthCheckEntry entry={entry} diagnoses={diagnoses} />;
+      return <HealthCheckEntryDetails entry={entry} diagnoses={diagnoses} />;
     default:
       return assertNever(entry);
   }

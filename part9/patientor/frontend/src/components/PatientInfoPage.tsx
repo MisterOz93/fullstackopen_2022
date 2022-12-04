@@ -61,7 +61,7 @@ const PatientInfoPage = () => {
       <p>ssn: {currentPatient.ssn}</p>
       } 
       <p>occupation: {currentPatient.occupation}</p>
-      <Entries entries={currentPatient.entries} diagnoses={diagnoses}/>
+      <Entries entries={currentPatient.entries} diagnoses={diagnoses} />
    </div>
   );
 };
