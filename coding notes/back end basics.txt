@@ -1,9 +1,0 @@
-Back end generally contains 3 parts: Server, application, and database. 
-
-Two types of databases: Relational and non-relational(nr) (nr means subdivided categories)
-
-Most common databases for web dev: MySQL, PostgreSQL, MongoDB(nr).
-
-Web apps need cache system to handle traffic, Memcached and Redis are popular for this.
-
-
