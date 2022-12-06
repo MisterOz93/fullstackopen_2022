@@ -1,7 +1,7 @@
 import { Entry, Diagnosis } from "../types";
-import OccupationalHealthCareEntry from './OccupationalHealthCareEntry';
+import OccupationalHealthCareEntryDetails from './OccupationalHealthCareEntry';
 import HealthCheckEntryDetails from './HealthCheckEntry';
-import HospitalEntry from './HospitalEntry';
+import HospitalEntryDetails from './HospitalEntry';
 import { assertNever } from '../utils';
 
 type PropsForEntries = {
@@ -34,9 +34,9 @@ const SingleEntry = ({entry, diagnoses }: SingleEntryProps) => {
 //console.log(entry.type);
   switch(entry.type){
     case "Hospital":
-      return <HospitalEntry entry={entry} diagnoses={diagnoses}/>;
+      return <HospitalEntryDetails entry={entry} diagnoses={diagnoses}/>;
     case "OccupationalHealthcare":
-      return <OccupationalHealthCareEntry entry={entry} diagnoses={diagnoses}/>;
+      return <OccupationalHealthCareEntryDetails entry={entry} diagnoses={diagnoses}/>;
     case "HealthCheck":
       return <HealthCheckEntryDetails entry={entry} diagnoses={diagnoses} />;
     default:

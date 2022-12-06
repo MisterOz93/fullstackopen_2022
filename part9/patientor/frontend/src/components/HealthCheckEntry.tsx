@@ -22,7 +22,6 @@ const HealthCheckEntryDetails = ({entry, diagnoses}: entryProps) => {
   const codeIndex = (code:string): number => {
     return diagnoses.map(d => d.code).indexOf(code);
   };
-  console.log(entry.healthCheckRating);
 
   const iconColour = ():string => {
     switch(entry.healthCheckRating) {
@@ -37,7 +36,7 @@ const HealthCheckEntryDetails = ({entry, diagnoses}: entryProps) => {
       default:
         return "pink";
     }
-  }
+  };
 
   return(
     <div id='container' style={entriesStyle}>
@@ -50,6 +49,7 @@ const HealthCheckEntryDetails = ({entry, diagnoses}: entryProps) => {
             <li key={code}>{code} {diagnoses[codeIndex(code)].name}</li>
           )}
         </ul>
+        <p>Diagnosed by {entry.specialist}</p>
       </div>
     </div>
   );

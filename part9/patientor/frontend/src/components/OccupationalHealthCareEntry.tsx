@@ -1,8 +1,9 @@
-import { Entry, Diagnosis } from '../types';
+import { OccupationalHealthCareEntry, Diagnosis } from '../types';
 import * as CSS from 'csstype';
+import WorkIcon from '@mui/icons-material/Work';
 
 type entryProps = {
-entry: Entry;
+entry: OccupationalHealthCareEntry;
 diagnoses: Diagnosis[]
 };
 
@@ -16,7 +17,7 @@ const innerMargin: CSS.Properties = {
 };
 
 
-const OccupationalHealthCareEntry = ({entry, diagnoses}: entryProps) => {
+const OccupationalHealthCareEntryDetails = ({entry, diagnoses}: entryProps) => {
 
   const codeIndex = (code:string): number => {
     return diagnoses.map(d => d.code).indexOf(code);
@@ -25,16 +26,17 @@ const OccupationalHealthCareEntry = ({entry, diagnoses}: entryProps) => {
   return(
     <div id='container' style={entriesStyle}>
     <div style={innerMargin}>
-      <p>{entry.date + ' '} {'  '}insert icon here</p>
+      <p>{entry.date + ' '} {'  '} <WorkIcon/> {' '} {entry.employerName}</p>
       <p><em>{entry.description}</em> </p>
       <ul>
         {entry.diagnosisCodes?.map(code => 
           <li key={code}>{code} {diagnoses[codeIndex(code)].name}</li>
         )}
       </ul>
+      <p>Diagnosed by {entry.specialist}</p>
     </div>
   </div>
   );
 };
 
-export default OccupationalHealthCareEntry;
+export default OccupationalHealthCareEntryDetails;

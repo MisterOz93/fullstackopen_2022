@@ -1,5 +1,6 @@
-import { Entry, Diagnosis } from '../types';
+import { HospitalEntry, Diagnosis } from '../types';
 import type * as CSS from 'csstype';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 
 const entriesStyle: CSS.Properties = {
   borderStyle: 'solid',
@@ -11,11 +12,11 @@ const innerMargin: CSS.Properties = {
 };
 
 type entryProps = {
-entry: Entry;
+entry: HospitalEntry;
 diagnoses: Diagnosis[]
 };
 
-const HospitalEntry = ({entry, diagnoses}: entryProps) => {
+const HospitalEntryDetails = ({entry, diagnoses}: entryProps) => {
 
   const codeIndex = (code:string): number => {
     return diagnoses.map(d => d.code).indexOf(code);
@@ -23,15 +24,19 @@ const HospitalEntry = ({entry, diagnoses}: entryProps) => {
 
   return(
     <div style={entriesStyle}>
-      <h3 style={innerMargin}>this is type: {entry.type} </h3>
-      <p style={innerMargin}>{entry.date + ' '} {'  '} <em>{entry.description}</em> </p>
-      <ul>
-        {entry.diagnosisCodes?.map(code => 
-          <li key={code}>{code} {diagnoses[codeIndex(code)].name}</li>
-        )}
-    </ul>
+      <div style={innerMargin}>
+        <p>{entry.date + ' '} <LocalHospitalIcon /></p> 
+        <p>{'  '} <em>{entry.description}</em> </p>
+        <ul>
+          {entry.diagnosisCodes?.map(code => 
+            <li key={code}>{code} {diagnoses[codeIndex(code)].name}</li>
+          )}
+        </ul>
+        <p>Diagnosed by {entry.specialist}</p>
+        <p>Patient discharged {entry.discharge.date}: <em>{entry.discharge.criteria}</em></p>
+      </div>
     </div>
   );
 };
 
-export default HospitalEntry;
+export default HospitalEntryDetails;
