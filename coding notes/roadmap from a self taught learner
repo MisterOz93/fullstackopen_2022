@@ -1,0 +1,30 @@
+this is what you need to learn. This is the most common set of skills that companies are looking for. If learn this and you build and you are personable and confident in your interviews some company will take you on start career. They realize you're new, but this skillset still serves a purpose, even in its infant stages, so here you go, in order:
+
+- HTML (learn the box model. It is everything)
+- CSS (don't worry about being good at this yet, it takes years to master)
+- javaScript (don't worry about object inheritance. Skip it, you can learn it later)
+- the DOM (this ties the 3 things above together. It is the first big 'ah hah' moment)
+
+At this point, after learning the DOM, you should spend a month or so building stuff. Build a calculator or a drum machine or anything you can think of. At this point you can build anything that doesn't require data from somewhere else. You could build a complete game. I used codepen.io and made a ton of different little apps.
+
+- async javascript (callbacks and promises)
+- http and apis(learn how to fetch data and use callbacks or promises to render data)
+- learn what CORS is and how to deal with it
+
+Now you should build some simple little apps that render data from an api. There's all sorts of APIs out there. Find some and do something interesting with the data.
+
+-start using a text editor and the terminal to code and stop using codepen
+-learn git (this is a huge thing. You don't need to know everything at first. Just learn the basics and start using it)
+- learn node.js
+- learn how to serve a static webpage, I'd recommend using heroku.com
+
+Deploy your first static website that's being served from your own server using heroku. A lot of people first like to use a service like ghpages, but I think that is pointless and a waste of time. Do it the real way.
+
+- learn about rest apis
+- learn how to use a database, any database is fine. I wouldn't start with sql. I liked using mlab.com. Don't use firebase yet. Learn how to do it the real way first.
+- learn about authentication. I would recommend spending a good amount of time on this and building your own auth middleware. It will help solidify many things.
+- learn npm
+- learn what webpack is used for
+- learn react.js (this is the end goal. Don't learn vue, don't learn svelte, don't learn angular. Everyone wants react devs)
+
+Build full stack apps. 2 or 3 should suffice. Make them super polished and make one of them your portfolio. Host all your apps on your portfolio app.

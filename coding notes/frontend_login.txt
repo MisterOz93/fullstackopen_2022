@@ -1,0 +1,125 @@
+Using a form to log in, the way to store username/password 
+is: 
+
+<input type="text" value={username} name="Username" 
+  onChange={({ target }) => setUsername(target.value)}
+
+^and same for password (use type="password")
+^{ target } destructures the target field from the object
+
+be sure to preventDefault() in the form's onSubmit handler function
+
+------------------------
+Creating a POST request for form submit handler:
+
+1. Create module loginService
+to send POST request to the server address /api/login
+
+ex: 
+
+import axios from 'axios'
+const baseUrl = '/api/login'
+
+const login = async (credentials) => {
+  const response = await axios.post(baseUrl, credentials)
+  return response.data
+  } //credentials will be {username, password}
+
+export default { login }
+
+2. and then in the App:
+ 
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    try {
+      const user = await loginService.login({
+	username, password, })
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch (exception) { //...}
+}
+
+^note that user becomes equal to response to axios POST request
+which should include a jwt token (refer to user authentication file)
+
+
+------------------------
+Conditionally rendering forms in React:
+
+{ user === null && loginForm() } //loginForm() being a jsx component
+
+^Renders the Loginform only if user is null (aka not logged in).
+
+------------------------------
+
+Connecting front end login to backend:
+
+Need to add the token from the loginService.login method (see 2nd section
+of this doc) to the authorization header in the axios HTTP POST request.
+
+ex:
+
+import axios from 'axios'
+const url = '/api/notes'
+let token = null
+const setToken = (newToken) => { token = `bearer ${newToken}` }
+
+//....
+
+const create = async newObject => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  const response = await axios.post(url, newObject, config)
+
+//...
+
+export default { getAll, create, update, setToken }
+
+^note that the setToken method is exported to the main app 
+and then called in the login event handler after a successfully login
+^ex inside handleLogin:
+  const user = await loginService.login({ username, password })
+  setUser(user)
+  noteService.setToken(user.token)
+  //....
+-----------------------------------------------------------------------
+Saving login details to local storage:
+
+window.localStorage has methods setItem, getItem, removeItem
+^ex:
+window.localStorage.setItem('key', 'value')
+
+values are saved to storage as DOMstrings, so it has to be parsed to JSON
+with JSON.stringify() before setting, and parsed back to JS with 
+JSON.parse() after getting.
+
+^ex: 
+
+//inside handleLogin:
+
+ try {
+   const user = await loginService.login( {username, password} )
+   window.localStorage.setItem('loggedAppUser', JSON.stringify(user))
+   //.....
+
+^logged in user details are now saved to local storage, can be seen by
+ console.log(window.localStorage)
+
+
+Use an effect hook to check if localstorage has logged in user info:
+
+^ex:  
+  useEffect( () => {
+    const loggedUserJSON = window.localStorage.getItem('loggedAppUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      noteService.setToken(user.token)
+    } 
+  }, [])
+^the empty array ensures effect is only executed when component is 
+ rendered for the first time
+---------------------------------------------------------------------
+ 

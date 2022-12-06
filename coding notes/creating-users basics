@@ -1,0 +1,117 @@
+A basic user schema:
+
+const mongoose = require('mongoose')
+
+const userSchema = new mongoose.schema({
+  username: String,
+  name: String,
+  passwordHash: String,
+})
+
+userSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+    delete returnedObject.passwordHash //important to not return the pw hash!
+  }
+})
+
+module.exports = mongoose.model('User', userSchema)
+-------------------------------------------------------
+In the POST route for users:
+
+const { username, name, password } = request.body
+
+  const saltRounds = 10
+  const passwordHash = await bcrypt.hash(password, saltRounds)
+
+  const existingUser = await User.findOne({ username })
+  if (existingUser){
+     return response.status(400).json({ error: 'username taken' })
+    }
+
+  const user = new User({
+    username,
+    name,
+    passwordHash,
+  })
+
+  const savedUser = await user.save()
+
+  response.status(201).json(savedUser)
+})
+
+^notice that request contains a password, which is then converted into 
+passwordHash that is sent to the DB, and deleted when the user is converted to
+JSON (set in the model file).
+------------------------------------------------------
+When storing objects (ex: Notes) created by users:
+
+1. First, create a reference for the Notes in the User Schema and vice versa:
+
+ex: //inside User Schema constructor
+
+notes: [ 
+	{
+	  type: mongoose.Schema.Types.ObjectID,
+	  ref: 'Note'
+	}
+       ]
+^the User's notes field is an array of objects with type that references 
+note-style documents (i think that means the same fields as note objs).
+
+  //inside Note Schema constructor: 
+
+  user: {
+          type: mongoose.Schema.Types.ObjectId,
+	  ref: 'User'
+        }
+
+2. Inside the Notes Creating (POST Route):
+
+
+notesRouter.post('/', async (request, response, next) => {
+ 
+   const user = await User.findById(body.userId) //1.
+	//^ userId being a field with the ID of the user object
+
+   /// save() the note
+   user.notes = user.notes.concat(savedNote._id) //2.
+   await user.save() //3.
+   //return response.json(savedNote)
+   })
+
+^in addition to doing the note related things (creating the note using
+  the Schema constructor using request.body data, save()ing the note, 
+  and returning the response) we also:
+   1. define the user who created the note based on the userId 
+   2. set the user's notes to include the POSTed note
+   3. save the updated user before returning the note.
+------------------------------------------------------
+
+Once an object (ex: notes) created by a user are referenced in the
+User document, you can show the object's fields by using the 
+#populate method in mongoose.
+
+ex: 
+ //inside users get route:
+	const users= await User.find({}).populate('notes')
+        response.json(users)
+^ the parameter given to populate() defines that the ids in the 
+  notes field of the user document will be replaced by the referenced
+  note documents.
+
+IMPORTANT: the db doesnt actually know that the note ids are references
+to another collection, but works because of the type and ref fields in
+the schemas (see step 1 of 'When storing objects...' further above)
+
+To specify which fields are returned (+id), pass an object as 2nd parameter
+^ex:
+   const users = await User.find({}).populate('notes', { content: 1, date: 1 
+}
+
+^this replaces the notes ids with only the content and date fields (and id).
+
+
+ 

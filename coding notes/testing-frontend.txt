@@ -1,0 +1,134 @@
+$npm install --save-dev @testing-library/react @testing-library/jest-dom
+
+^react-testing-library helps render components for testing 
+^jest-dom provides jest helper methods
+
+$npm install --save-dev eslint-plugin-jest
+^avoids irrelevant linter errors doing tests
+-----------------------------------------------
+
+example test:
+
+import React from 'react'
+import '@testing-library/jest-dom/extend-expect'
+import { render, screen } from '@testing-library/react'
+import Note from './Note'
+
+test('Renders Content', () => {
+  const note = {
+    content: 'foo',
+    important: true
+  }
+
+  render(<Note note={note} />)
+  const element = screen.getByText('foo')
+  expect(element).toBeDefined()
+})
+
+^the render function is provided by testing-library. normally
+components are rendered to DOM, but this renders them in format 
+suitable for tests.
+
+^note: screen.getByText fails the test if it doesnt find what its looking 
+for, which makes the expect function redundant. 
+
+screen.queryByText('foo') does not cause an exception if not found, so
+its useful for making sure foo isn't rendered.
+
+can also use css selectors to find rendered elements.
+^ex: const { container } = render(<Note note={note} />
+     const div = container.querySelector('.note')
+     expect(div).toHaveTextContent('foo')
+
+another method is getByTestId, that looks for elements based in id attributes
+created in the code specifically for testing
+
+IMPORTANT: screen.getByText('foo') looks for an *exact* match. 
+So if the rendered element is <p>{bar}:'foo' </p> and you search for
+getByText(`foo`) it wont work. To find an element that *contains*
+the text, either do:
+a) screen.getByText('foo', { exact: false })
+b) await screen.findByText('foo')
+
+^findByText returns a promise (hence await)
+------------------------------------------
+
+debugging tests:
+
+the screen object has a debug() method to display the rendered component 
+on the console.
+^ex: 
+     render(<Note note={note} />)
+     screen.debug()
+^can pass an element to screen.debug() to see that element
+//i think element means its something rendered
+------------------------------------------------
+button clicking:
+
+$npm install --save-dev @testing-library/user-event
+$npm install -D --exact jest-watch-typeahead@0.6.5
+
+^in action example:
+    import userEevent from '@testing-library/user-event'
+    //..inside the async test
+    const mockHandler = jest.fn()
+    render(<Note note={note} clickHandler={mockHandler} />)
+    
+    const user = userEvent.setup()
+    const button = screen.getByText('text associated with button')
+    await user.click(button)
+    expect(mockHandler.mock.calls).toHaveLength(1)
+
+^the length is the number of times mockHandler was called.  
+---------------------------------------------------
+
+Testing forms:
+
+user-event can also simulate text input.
+
+^ex:
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
+import NoteForm from './NoteForm'
+import userEvent from '@testing-library/user-event'
+
+test('<NoteForm /> updates parent state and calls onSubmit', async () => {
+  const createNote = jest.fn()
+  const user = userEvent.setup()
+
+  render(<NoteForm createNote={createNote} />)
+
+  const input = screen.getByRole('textbox')
+  const sendButton = screen.getByText('Save')
+  await user.type(input, 'testing a form...')
+  await user.click(sendButton)
+
+  expect(createNote.mock.calls).toHaveLength(1)
+  expect(createNote.mock.calls[0][0].content).toBe('testing a form...')
+	//note that .content is referring to the datafield of the note obj
+})
+
+^screen.getByRole('textbox') gets access to the input field
+^user.type is used to write text into the input field
+
+IMPORTANT: if a component being tested has multiple textbox input fields, 
+ should specify which textbox field by using: 
+
+screen.getByPlaceholderText('foo')
+and adding the placeholder attribute to the input elements
+
+^or screen.getAllByRole which returns an array of them, but thats
+  not great because it relies on order of input fields.
+-------------------------------------------
+
+Test coverage:
+
+$CI=true npm test -- --coverage
+
+^generates a report to the coverage/lcov-report directory that 
+shows how much is covered by tests.
+----------------------------------------------
+
+
+

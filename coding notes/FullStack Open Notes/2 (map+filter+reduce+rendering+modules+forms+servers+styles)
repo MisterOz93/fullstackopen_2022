@@ -1,0 +1,495 @@
+------random notes:----
+
+when debugging w console.log, don't use( 'foo is' + foo) like in Java. instead:
+
+console.log('props value is', props)
+
+Functional programming, functions can be assigned to variables. 
+ex: onlyEvens = array.filter(n) => n % 2 === 0
+
+
+A 'higher order function' is a function that accepts a function as a 
+parameter and/or returns a function. 
+
+A 'callback function' is a function that's passed as an argument to a
+higher order function, can then be invoked inside that function. 
+
+
+------filter-------
+
+Ex: arrayName.filter(function(element))
+^filter loops through each element in array then passes each into the 
+callback function, which returns true or false for each based on specified
+criteria. 
+
+note: array.find works like filter, but returns only the first instance. 
+
+
+----------map-------
+
+arrayName.map(function(element))
+
+^map expects callback function to return transformed object to return in 
+place of each element. 
+
+arrow function ex: arrayName.map( (element) => element * 2)
+
+---------reduce--------
+
+can be used for any list transformation.
+
+arrayName.reduce(function(tally, element){  }, startingPoint) 
+
+
+tally starts as startingPoint, then the return value of each iteration is 
+added to tally. 
+
+example:
+
+course.parts.reduce(function (sum, part){return sum + part.exercises}, 0)
+
+^course.parts being an array of objects with an exercises field int value.
+
+any variable assigned to that will equal the sum of exercises in course.parts
+
+
+
+example using reduce to find key with largest value in an object:
+
+const mostLiked = Object.keys(likesByAuthor).reduce( (a, b) =>  {
+
+likesByAuthor[a] > likesByAuthor[b] ? a : b
+})
+
+^iterates through keys (author) and ends up with the one with the largest
+value (likes). 
+
+----------------rendering collections--------
+
+Instead of hardcoding each element of an array in the app's return statement
+({notes[0]} {notes[1]} etc.) return an iterator function instead (ex: map).
+
+^Each element in an array/iterator MUST HAVE A UNIQUE "key" PROP
+
+ex: <div>  
+	{notes.map(note => <li key={note.id}> {note.content} </li>)}
+</div>
+
+given notes as an array of objects with id and content fields, map returns
+a new array displaying the content, with the id value as the key prop. 
+
+DO NOT USE ARRAY INDEX AS THE KEY VALUE, it will break things if elements
+are added/removed. 
+
+
+if iterating over objects instead of array, can do Object.keys(obj) or 
+Object.values(obj).
+^ex: 
+<p>{Object.values(country.languages).map(value => <li key={value}>{value}</li>)}</p>
+
+-------modules-------
+
+common practice is to declare each component in their own js file as an 
+ES6 module 	in a directory called components. components is placed in the src directory.
+
+at the end of the Foo.js file, after defining the component, include:
+
+export default Foo
+
+then in App, at the start:  import Foo from './components/Foo'
+
+^ the period refers to current directory. note the .js after Foo is ommitted.
+
+----------------- Forms -----------------
+
+<form> takes an onSubmit attribute. can create an event handler function
+
+the example event handler uses (event) as a parameter, which is the event
+that triggers the call to the function. 
+
+First thing in the example is event.preventDefault(), which prevents the 
+default action of submitting a form (which causes page to reload and other
+stuff?)
+
+
+ ***Accessing data contained in form's input element:***
+
+Add a new piece of state for storing user submitted input, and set the
+first element of the array as the value attribute of the input element.
+
+^^this makes the input value immutable, to allow it to be
+edited, create an event handler for input's onChange attribute. 
+
+^ex:
+ const [newNote setNewNote] = useState('new note')
+...
+inside <form>
+...
+<input value={newNote} onChange={handleNoteChange} />
+
+^where hanldeNoteChange is an event handler function defined in the component.
+The event handler is called every time a change occurs in the input element. 
+
+^so event.target.value inside handleNoteChage function 
+(event being the parameter) refers to
+the input value of that element, state being updated as the user 
+inputs more. 
+
+the event handler should setNewNote(event.target.value) inside
+
+    *** Filtering Displayed Elements: ***
+
+can create a boolean state of displayAll/setDisplayAll
+
+then a const foo thats = to a ternary if/else. if displayAll true, return 
+array, else return a filtered array.  
+
+then in app's return field, return foo.map to iterate over the elements. 
+(foo will be either all elements, or the filtered ones depending on state 
+of displayAll). 
+
+^did this as well using a search box to filter. If search variable's state
+is an empty string, return elements. else, return filtered array of elements
+that include the search's current state. 
+
+----------- Fetching Json data from server-----------
+
+Javascript engines are single threaded, meaning they cannot execute code
+in parallel. Which means we use non-blocking model to execute
+IO operations (input/output). For browser to be responsive, no single
+computation can take too long. 'web workers' make it possible to run 
+parallelized code. 
+
+promise-based function fetch is a way to pull data from server,
+but I'll be using axios library to get familiar with using npm packages.
+
+package.json in project directory from create-react-app lists dependencies,
+which are the external libraries the project has. 
+
+$npm install axios in the project root directory (where package.json file is)
+
+$npm install json-server --save-dev installs json server as a development
+dependency (only used during development). 
+
+^^^ALSO have to add "server": "json-server -p3001 --watch db.json"
+to the scripts object inside the package.json file. 
+
+can then do $npm run server to start the json server from the project 
+root directory.  
+	
+Can then access the json server in port 3001 (type localhost:3001/fileName 
+in browser address bar)
+
+-------------Axios---------
+
+import axios from 'axios'  //to use in program
+
+you can then assign the data on the json server using axios.get
+^ex: const promise = axios.get('http://localhost:3001/fileName');
+
+A Promise is an object representing the eventual 
+completion or failure of an asynchronous operation.
+
+3 states of Promise object: 
+
+fulfilled/resolved (completed, final value available)
+rejected (error prevented final value from being determined)
+pending (fulfilled or rejected aren't available yet)
+
+
+To access the result of the operation represented by the promise, 
+register an event handler to the promise using the #then method.
+^ex:
+
+const promise = axios.get('http://localhost:3001/foo')
+
+promise.then(response => { console.log(response)}) 
+
+^the callback function registered by #then with the response parameter,
+response object contains all the essential data related to the response of
+an HTTP GET request. including data, status code, and headers.
+
+**promise usually isn't stored in a variable** instead, #get and 
+#then methods are chained together. 
+
+^ex: axios.get('http://localhost:3001/notes').then(response => {
+  const notes = response.data
+  console.log(notes)
+})
+
+
+To use the data effectively, we use effect hooks. 
+
+
+------------------Effect Hooks ------------
+
+Effect hooks let you do side effects in function components.
+(ex of side effects: data fetch, manually changing dom)
+
+import {useEffect } from 'react' (can do it with useState w/ comma between em)
+
+a call to a state-updating function re-renders the component
+
+By default, effects run after every render, but they take an optional 2nd
+parameter to specify which value should change to run the effect.
+
+Convention is 2nd parameter as [] to make the effect only run with the
+first render. 
+
+The general sequence is: 
+1. Body function defining component is executed
+2. component renders
+3. the data fetching function in the component is executed
+4. the function registered as the event handler is called 
+^ex: axios.get('http://localhost...').then(response => {...}) 
+^response is the function registered as the event handler. 
+5. Component is re-rendered if response changes state. 
+
+
+-----Runtime Environment-----
+
+The react app is run in the browser.
+The browser gets JS from the React Dev Server (server runs on npm start cmnd)
+The react app fetches the JSON data from the JSON-server. 
+The JSON-server gets its data from the file db.json. 
+^(in this example, I assume because package.json scripts has "watch db.json")
+
+
+------basic example of getting data from local server--------
+
+app src has db.json file
+app's package has "server": "json-server -p3001 --watch db.json" in scripts
+$npm install json-server --save-dev ran in root of app. 
+$npm install axios  in root of app. 
+
+in the code: 
+
+const fetchData = () => {
+axios.get('http://localhost:3001/foo') //foo is key w/ value array of objs
+.then(response => {setBar(response.data)} //bar is local array to fill with objs from server.
+}
+
+useEffect(fetchData, []) 
+
+^end of code example. the bar array then has objects w/ the same data fields
+as in the db.json server. 
+
+
+--------- REST ---------
+
+Representational state transfer. Constraints of how
+web architecture should behave. 
+
+emphasizes: scalibility of interactions btwn components, uniform interfaces,
+independent deployment of components, layered architecture to facilitate
+caching components. 
+
+A web api taht follows REST constraints is 'RESTful'. 
+
+RESTful API usually based on HTTP methods to access resources via 
+URL-encoded parameters and JSON or XML. 
+
+Individual data objects are referred to as resources. 
+Every resource has unique URL address. 
+^ex: GET request to ...notes/3 would return the note that has the ID 3. 
+whereas GET request to ...notes would return a list containing
+every note. 
+
+Resources are fetched from server w/ HTTP GET requests. 
+
+Creating a new resource is done by making an HTTP POST request to 
+the resource list URL. 
+
+json-server requires all data is sent in JSON format (correctly formatted 
+string). And the request must have the 'Content-Type' request header with 
+the value: 'application/json' (sans quotes for each).
+
+axios example:
+
+axios.post('url', object)   //axios automatically sets Content-type header
+			   // when sending a JS object 
+.then(response => { console.log(response)})
+
+^response is what is sent back from the server, the resource we
+created is stored in the data property field of response object. 
+
+^network tab of chrome dev tools will let you inspect http request to
+make sure headers & values are as expected. 
+
+The new object won't render to screen unless App component's state
+is updated when it's created. 
+
+^ex:
+	axios.post('url', foo)
+	.then(response => {
+		setFooList(fooList.concat(response.data))
+		})
+
+----Modifying data on the backend server-----
+
+Can replace an entire object by doing an HTTP PUT request to that object's
+unique URL, or only change some of its properties using HTTP PATCH request.
+
+An example of an event handler function that changes objects based on
+a given id property of the object to change:
+
+const changeObject = id => { //id is parameter
+	const url = `http://localhost:3001/foo/${id}`
+	const foo = fooList.find(element => element.id === id)
+	const changedFoo = {...foo, propertyToChange = !foo.propertyToChange }
+        //^ assuming the property to change is a boolean
+	axios.put(url, changedFoo).then(response => {
+	  setFooList(fooList.map(foo => foo.id !== id ? foo : response.data))
+	})
+
+	^the map goes through each foo object, if that foo object's id is the 
+	 one who had its property changed, it's replaced with the updated object
+	 received from response.data, else it stays the same. 
+	^ the spread operator (...foo) used in changedFoo creates 
+	  an exact copy of foo, and then the propertyToChange is changed.
+
+	Using the spread operator is used instead of mutating state. 
+
+
+------extracting backend communication into seprate module----
+
+components should have a single responsibility, so it might
+be best to abstract communication into its own file. 
+
+an example:
+
+import axios from 'axios'
+const baseUrl = 'http://localhost:3001/fooList'
+
+const getAll = () => { return axios.get(baseUrl) }
+
+const create = newObject => {return axios.post(baseUrl, newObject) }
+
+const update = (id, newObject) => { 
+    return axios.put(`${baseUrl}/${id}`,newObject)
+}
+
+export default { getAll, create, update }
+//^this last line works if the property fields and variable names in the
+object are the same. shorthand for getAll: getAll, create: create, etc. 
+
+^^this module returns an object with three functions as its properties. 
+
+^Then make sure to import module from './directory/filename' into App.
+
+ 
+Instead of sending entire response from module to app, you can limit it
+to just response.data by changing each function to assign a variable 'request' 
+to each axios method, then return request.then(response => response.data)
+
+^ex:
+
+const getAll = () => {
+   const request = axios.get(baseUrl)
+   return request.then(response => response.data)
+}
+
+^^Note: the then method of a promise also returns a promise. 
+^not sure, but i think the relevance of this is that I can't just
+do setData(Foo.getAll()) when setting initial state, i have to instead do:
+
+useEffect(() => {
+Foo.getAll()
+.then( response => { setData(response)}) //response is response.data
+}, []) //dependency array
+
+
+
+
+------Promises & Errors ------
+
+Promises are a central part of modern JS. 
+
+Most common way of adding a handler for rejected promises is 
+using catch method. 
+
+^ex:
+  axios.get('http://websitethatdoesntexist.nope')
+  .then(response => { console.log('success!') })
+  .catch(error => {console.log('failure') })
+
+catch method can be used to define handler function at the end
+of a promise chain, and is called once any promise in the 
+chain throws an error and becomes rejected. 
+
+-----Updating [in CRUD]------
+example of updating a person object's phone number in database:
+
+ const changedPerson = {...person, number: newNumber}
+          serverCommunication.updatePerson(person.id, changedPerson)
+          .then(response => {setPersons(persons.map(p => p.id !== person.id ? p : response))})
+
+^basically create an identical copy of the object w/ spread operator, and
+modify the thing(s) to update. then i used axios.put(url/${id}, updatedPerson)
+and returned the response.data containing the updated object. 
+then set the list of objects by mapping the list, and if the id of the 
+element isn't the same as the one I used as a parameter for axios then leave as is, 
+else replace element with the response. 
+
+It seemed a lot simpler by passing the id as parameter to axios instead of the
+object, so that I could reference it easily when mapping to find the changed
+object. 
+
+
+--------------- Intro to CSS in React -----
+
+touch index.css inside src directory
+import './index.css' in the *index.js* file. 
+
+In React we have to use the className attribute instead of 
+the class attribute. (for CSS selectors)
+
+^ex: return ( 
+	<li className='person'>
+	....
+	</li>
+then in css:
+ .person {
+	....
+	}
+
+
+
+----Inline styles---
+
+Any React component or element can be given a set of css properties 
+as a JS object through the style attribute. note that in JS object the styles
+use camelCase instead of hyphens. 
+
+^ex:
+
+const footer = {
+ color: 'green',
+ fontStyle: 'italic',
+ fontSize: 16
+ }
+
+return( 
+  <div style={footer}> 
+ ....
+</div>
+)
+}
+
+Inline styles have some limitations (pseudo-classes aren't strtfwd to use)
+
+Convention used to be against inline styles, but inline styles fit with 
+React's philosophy to create components that are as independent and reusable
+as possible. 
+
+----CSS practice notes-----
+
+to make a notification component disappear after 5 seconds:
+
+setTimeout( () => {
+  setNotification(null)
+  }, 5000)
+
+^assuming notification component renders null if state of notification is null
+
+

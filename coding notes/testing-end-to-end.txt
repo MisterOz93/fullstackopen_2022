@@ -1,0 +1,177 @@
+E2E testing tests the system as a whole, testing it 
+through the same interface as a user.
+
+Downside is they can be slow and sometimes inconsistent
+--------------------------------------------------------
+Cypress:
+
+A library for E2E testing.
+Install it into the FRONTEND root:
+
+1. $npm install --save-dev cypress
+2. add to scripts: 'cypress:open': 'cypress open'
+3. unlike supertest, cypress needs the server
+ active to run tests. so in BACKEND scripts:
+ "start:test": "cross-env NODE_ENV=test node index.js"
+4. once backend and frontend are running, can start
+  cypress with: $npm run cypress:open
+
+5. Running cypress for first time creates cypress dir.
+Put tests in the cypress/e2e/ dir. name them foo.cy.js
+^use snake_case for test names.
+Important that file name matches expected pattern
+(.cy.js)
+
+example test:
+
+describe('Note app', function(){
+  it('front page can be opened', function() {
+    cy.visit('http://localhost:3000')
+    cy.contains('Notes')
+    cy.contains('Note app, Department of Computer Science, University of Helsinki 2022')
+  })
+})
+
+^#it function is a test case. 
+^visit opens the web address
+^contains searches for the string it contains
+ARROW FUNCITONS NOT RECOMMENDED FOR CYPRESS (work but can cause is)
+
+To find a specific child, you can chain .contains:
+If each parent had its own id and child that has a view button:
+ex: cy.contains('#parentID').contains('view')
+-----------------------------------
+(Cypress) Writing to a form:
+
+it('login form can be opened', function() {
+  cy.visit('http://localhost:3000')
+  cy.contains('buttonText').click()
+  cy.get('#inputFieldId').type('username')
+  cy.get('#passwordInputFieldId').type('password')
+  cy.get('#login-button-id).click()
+  cy.contains('Foo logged in')
+  })
+--------------
+To disable eslint errors:
+
+$npm install eslint-plugin-cypress --save-dev
+^then in .eslintjrc "env" object, add: "cypress/globals": true
+--------------------------------------------------------
+Controlling DB state:
+
+Just like unit/integration tests, its best to empty DB and format it
+before each run. But E2E tests dont have access to DB from front end. 
+
+Solution is to create API endpoints to the backend for tests:
+
+1. Create testingRouter in backend:
+ const testingRouter = require('express').Router()
+ const Note = require('../models/note')
+ const User = require('../models/user')
+
+ testingRouter.post('/reset', async (request, response) => {
+   await Note.deleteMany({})
+   await User.deleteMany({})
+
+   response.status(204).end()
+ })
+
+ module.exports = testingRouter
+
+2. In app.js, import and use() the router only if process.env.NODE_ENV=test
+
+^can now reset the DB(s) by making POST req to specified url/reset
+(in test mode)
+------------------------------------------------
+Accessing backend with Cypress:
+
+In a test's beforeEach function to reset DB using above route:
+
+cy.request('POST','http://localhost:3001/api/testing/reset
+ const user = { ///.... }
+ cy.request('POST', 'http://localhost:3001/api/users/', user)
+ cy.visit('http://localhost:3000)
+------------------------------------
+cy.get(foo).should() allows for more flexible tests than .contains()
+^ex:
+
+cy.get('.error').should('have.css', 'color', 'rgb(255, 0, 0)')
+ .and('have.css', 'border-style', 'solid')
+
+ex2:
+
+cy.get('html').should('not.contain', 'Foo logged in')
+
+should() should always be chained with get() or another chainable command.
+----------------------------------------------------------
+
+Bypassing a UI (ex: login form):
+
+Instead of simulating logging in, its faster for cypress to directly 
+access the backend, and then set the relevant localstorage item.
+
+^ex:
+
+  beforeEach(function(){
+    cy.request('POST', 'http://localhost:3001/api/login', {
+      username: 'foo', password: 'bar'
+    }).then(response => {
+      localStorage.setItem('loggedInUser', JSON.stringify(response.body))
+      cy.visit('http://localhost:3000')
+    })
+  })
+
+^cy.request, like all cypress commands, are a promise, hence the callback .then
+-----------------------------------------------------------
+
+Custom Commands:
+
+Make a command for code that's reused in testing, ex: logging in.
+Add the commands in the cypress/support/commands.js file
+^ex:
+
+Cypress.Commands.add(login, ({username, password}) => {
+  cy.request //the bypassing UI example just above
+
+^then call the custom command in the test file:
+
+  cy.login({username: 'foo', password: 'bar'})
+-----------------------------------------------------------
+
+DOM traversal:
+
+chaining commands searches the components inside the previous
+component. Ex: cy.contains('foo').contains('bar') searches foo's
+children for bar. 
+
+Can also do parent/child commands;
+^ex: cy.contains('second element').parent().find('button').click()
+ ^note that cy.find works instead of cy.get because .get returns
+  every button on the page. 
+^IMPORTANT: this works assuming 'second element' is a child of the element
+with the button (ex: inside a span of a <li>). I think if it isnt in a span,
+then the cy.contains('second element') would select the <li> itself?
+---------------------------------------
+
+as command:
+
+the as command saves an element to a given string variable:
+^ex:
+
+ cy.contains('second element').parent().find('button').as('theButton')
+ cy.get('@theButton').click()
+ cy.get('@theButton').should('contain', 'I was clicked!')
+
+^the value given to as() is the reference along with @ in a string.
+-----------------------------
+
+How Cypress works: each cy.method() command is added to a queue
+Every command is a promise, so accessing their value has to be
+done using then (cy.(foo).then(res => ...))
+
+-------------------------------
+
+Can run cypress tests from command line instead of browser:
+1. add to scripts: "test:e2e": "cypress run"
+
+

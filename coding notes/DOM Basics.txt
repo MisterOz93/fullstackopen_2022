@@ -1,0 +1,233 @@
+"Document Object Module" is a tree-like representation of the contents on a 
+webpage or document. 
+
+Node: A node is any object in the DOM hierarchy. Nodes can include elements,
+text content inside an element, code comments, documents, and other stuff
+Element: An element is one specific node. 
+
+How to target a node with a CSS-style selector: 
+<div class ="display"> </div> can be targeted(selected) by using either:
+
+div, div.display, #container > .display,
+div#container > div.display, or .display
+
+You can also select nodes based on relative parts like:
+firstElementChild or lastElementChild (child is nested)
+
+To target a node with *Javascript*, you combine an above selector with
+"Query Selectors" like: document.querySelector
+
+syntax: element.querySelector(selector)   <- returns first match of selector
+or       element.querySelectorAll(selectors) <- returns a list w/ references
+						to all matches of slctr
+^Note, querySelectorAll does not return an array, but a nodelist.Similar but diff
+
+
+To link an external js document to HTML:
+
+<script src="filename.js"> </script>
+
+
+
+To create an element (before adding it to DOM):
+
+document.createElement(tagName [,options]);
+
+^don't worry about options for now, it's optional and more advanced. 
+
+syntax example: const div = document.createElement('div'); 
+
+^Important, make sure to always use a recognized element like 'div'
+or 'p' in the brackets, the variable name can be whatever, but that part cant
+
+
+To place a created element into the DOM:
+
+parentNode.appendChild(childNode) appends the childNode as the last child of 
+								parent node.
+or
+parentNode.insertBefore(newNode,referenceNode) inserts the new node into 
+				parent node before reference node.
+
+
+To Remove an element:
+
+parentNode.removeChild(child) <- removes child and returns reference to it
+
+
+To alter an element:
+
+Make sure to have a reference for that element 
+
+ex: const div = document.createElement('div');
+
+then you can alter it inline by referencing it like:
+
+div.style.color = "blue"; 
+
+to add multiple rules:
+
+div.style.cssText = 'color: blue; background: white';
+
+
+you can edit an attribute (like a name) by using:
+
+div.setAttribute('id', 'theDiv'); <- gives the attribute 'theDiv' to 'id'
+					or creates 'theDiv' if no 'id'
+div.getAttribute('id');  <- returns 'theDiv' (value of specified attribute)
+
+div.removeAttribute('id'); <- removes specified attribute
+
+div.classList.add('new'); <-adds class "new" to the selected div.
+
+div.classList.remove('new');
+
+div.classList.toggle('active'); <-adds class 'active' or removes it if already
+				exists.
+
+
+Note: It's usually better to toggle a CSS style instead of adding inline CSS.
+
+
+
+Adding text content:
+
+div.textContent = 'Hello World';   <- creates a node and inserts it in div
+
+Adding HTML content:
+
+div.innerHTML = '<span>Hello World!</span>';  <- renders html inside the div
+						(care w/ the syntax)
+^Don't use innerHTML, can create security risks if you're a noob (which you are)
+
+
+Note that Js does not alter the HTML file, just changes what is rendered in 
+browser.
+
+IMPORTANT: If Js is included in top of html file, dom manipulation might not 
+work since code is run before the nodes are created in DOM, fix this by 
+putting Js at bottom of HTML file if needed.
+
+
+
+Events can be integrated into html file by using DOM manipulation:
+
+in html: <button id="btn"> Click Me </button>
+
+in Js file: const btn = document.querySelector('#btn');
+	    btn.onclick = () => alert("Hello World"); (review arrow functions)
+
+^This is not the ideal method for events since its limited to 1 per element.
+
+The best way to integrate event is through addEventListener
+
+ex: 
+
+in html: <button id="btn">Click Me Too </button>
+
+in Js file: const btn = document.querySelector('#btn');
+	    btn.addEventListener('click', () => {
+		alert("Hello World");
+		}); 
+
+^note its better to use named function for readability. 
+
+In an event listener, using (e) as a function parameter lets you do a lot
+with that event. 
+
+ex: btn.addEventListener('click', function (e) {
+      e.target.style.background = 'blue';
+	}); 
+
+   ^ this makes it so that when the event happens (button click), the target
+     of the event (the button) gets a blue background. 
+
+
+
+To add listeners to a group of nodes, use querySelectorAll('selector')
+
+ex: const buttons = document.querySelectorAll('button');
+	  buttons.forEach((button) => {
+	button.addEventListener('click', () => {
+	alert(button.id);
+	});
+}); 
+
+^This will make clicking each button alert that button's id.
+note the method used is forEach
+
+
+
+https://www.w3schools.com/jsref/dom_obj_event.asp for list of DOM events
+
+common events: 
+
+
+    click
+    dblclick
+    keypress
+    keydown
+    keyup
+
+and many moooore! 
+
+
+Notes from doing WB JS 30 challenge 1:
+
+Need to gain better understanding of classList;
+Refer to e.keyCode when necessary (ie: 65 for a);
+
+
+Notes from doing Rock Paper Scissor Buttons:
+
+use .querySelection('#idName') to reference an html element by id name. 
+
+when using a function in an eventListener, you need to call that function
+within a function. 
+
+ex: rockButton.addEventListener('click', function () {playRound ('rock')});
+
+^using playRound function as 2nd argument results in error
+
+Be sure to use x.textcontent = "" inside the event function for interactivity. 
+
+when creating or appending an element, you can also add .className = "w/e" 
+at the end to assign that element a class that you can reference in css.
+
+ex:
+
+container.appendChild(div).className = "cell";
+
+^ this appends the div variable to container, and gives the appended div
+the class name of cell. 
+
+
+Using for each with node list:
+
+you can use querySelectorAll to grab objects based on their class, just add a
+. first:
+
+ex: const grid = document.querySelectorAll('.cell')  <- selects all cell class
+
+using forEach with node list:
+
+grid.forEach((cell) => {
+cell.addEventListener('click', () => {
+cell.style.background = 'green';
+ }
+)}); 
+
+^note how cell is written as a parameter. 
+
+^^^ Life is a lot easier when you make functions outside of the forEach
+and then apply them. 
+
+ex: function draw (x) {
+    x.addEventListener('mouseenter', () => {
+        x.style.background = 'blue';
+    })
+}
+
+^and then: 
+
+grid.forEach(draw);     <- forEach seems to imply that each node is parameter.

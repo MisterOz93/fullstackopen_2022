@@ -1,0 +1,18 @@
+		Javascript Clean Code
+
+-Be consistent with indentation, whatever you choose to dp
+
+- add semicolons even if they are mostly optional
+
+-lines shouldn't be longer than 80 characters, indent if you're continuing
+	a line and try to break *after* an operator or comma
+
+-Always name things in camelCase, name things clearly. 
+
+-Varibles should begin with a noun, functions begin with verb
+
+-Don't use comments as notes to self, use them to explain what things do
+or (when working in team) what changes were made. Don't overuse comments!
+
+- Avoid making one big function, break it into smaller functions.
+

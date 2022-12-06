@@ -1,0 +1,44 @@
+https://www.staging-typescript.org/tsconfig
+
+^url to cheatsheet
+
+basic starting options:
+
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "outDir": "./build/",
+    "module": "commonjs",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true
+  }
+}
+
+^target tells compiler which ECMAScript to use when
+generating JS. 
+
+outDir tells where the complied code should be placed
+
+module tells compiler that we want to use CommonJS modules
+in the compiled code (require syntax instead of import)
+
+strict is shorthand for: noImplicitAny, noImplicitThis, alwaysStrict,
+ strictBindCallApply, strictNullChecks, strictFunctionTypes and 
+ strictPropertyInitialization.
+
+noUnusedLocals/Params/implicitreturns are self explanatory.
+
+noFallthroughCasesInSwitch means each case ends with either return
+or break statement.
+
+esModuleInterop allows interoperability between CommonJS and ES Modules.
+(see documentation for details)
+
+-----------
+
+
+

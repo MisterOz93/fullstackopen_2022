@@ -1,0 +1,66 @@
+props.children:
+
+used for referencing the child components of the current component. 
+ex:
+
+<ParentComponent >
+	<LoginForm />
+	<Button />
+</ParentComponent>
+
+^LoginForm and Button are accessible inside ParentComponent using props.children.
+props.children always exists, is an empty array if no child components. 
+-----------------------------------------------------------------------------
+Refs: (useRef(), forwardRef, useImperativeHandle):
+
+useRef():
+
+useRef() gives you reference to a component from outside the component.
+Import it with useState/useEffect.
+
+ex:
+
+const noteFormRef = useRef()
+
+ <Togglable buttonLabel='new note' ref={noteFormRef}>
+  <NoteForm createNote={createNote} />
+ </Togglable>
+
+^this assigns the state of the Togglable component to the noteFormRef's
+#current property (I think). Requires the component you want access to
+to be wrapped in a forwardRef() function call (see below)
+
+#########################################
+forwardRef & useImperativeHandle:
+
+to access the component that is given the ref attribute assigned 
+to useRef(), wrap the component in a forwardRef function.
+^ex:
+
+import { //... , forwardRef, useImperativeHandle } from 'react'
+
+const Toggle = forwardRef( (props, refs) => {
+	//...component stuff
+       useImperativeHandle(refs, () => {
+	  return { specificFunctionInsideComponent }
+	 })
+
+
+########################################
+useImperativeHandle:
+
+The uIH hook (as shown in above example) is used to make the functions
+returned inside of it available outside of the component. Access it with
+noteFormRef.current.specificFunctionInsideComponent()
+^//assuming noteFormRef is what you assigned useRef() to and passed to
+//component as ref attribute
+
+----------------------------------------
+
+Components:
+
+Everytime you use a component it creates a seperate instance of it with
+its own state. ref attribute can be used to assign a seperate reference to 
+each component.
+
+

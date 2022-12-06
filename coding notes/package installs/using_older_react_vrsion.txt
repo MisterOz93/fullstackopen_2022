@@ -1,0 +1,33 @@
+In case you end up in a situation where your application breaks because of 
+library compatibility problems, downgrade to the older React by changing 
+the file package.json as follows:
+
+{
+  "dependencies": {
+    "react": "^17.0.2", <----
+    "react-dom": "^17.0.2", <---
+    // ...
+  },
+  // ...
+}
+After the change is made, reinstall dependencies by running
+
+$npm install
+
+Note that also the file index.js needs to be changed a bit. 
+
+For React 17 it looks like
+
+import ReactDOM from 'react-dom'
+import App from './App'
+
+ReactDOM.render(<App />, document.getElementById('root'))
+---------------------------------------------------------
+but for React 18 the correct form is
+
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+
+import App from './App'
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />)

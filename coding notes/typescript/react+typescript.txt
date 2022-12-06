@@ -1,0 +1,326 @@
+*this file continues the example from example-express-app.txt file
+
+
+****Creating a React Typescript App***
+
+1. npx create-react-app appName --template typescript
+
+2. In the generated tsconfig file, change allowJs to false if doing a pure
+   TS app (leave it true if you're in the process of changing a js app into ts)
+
+3. create .eslintrc (npm create react app comes w/ eslint already)
+   
+  ex .eslintrc content:
+
+ {
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jest": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": ["react", "@typescript-eslint"],
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "detect"
+    }
+  },
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "react/react-in-jsx-scope": 0
+  }
+}
+
+^note, since most react components return either JSX.Element or null, no 
+sense in requiring explicit function return type.
+
+4. Add linting script to package.json that includes ts/tsx files:
+  "lint": "eslint './src/**/*/{ts,tsx}'"
+
+
+********Defining React Components in TS*****
+
+basic example:
+
+interface WelcomeProps {
+  name: string;
+}
+
+const Welcome = (props: WelcomeProps) => {
+  return <h1> Hello, {props.name} </h1>;
+};
+
+const element = <Welcome name='Sara' />;
+ReactDOM.render(element, document.getElementById("root")); 
+
+^define the prop names and types in an interface, then declare that props
+are type of that interface. 
+
+***********Dealing with similar objects with different fields****
+
+example:
+
+const courseParts = [
+  {
+    name: "Fundamentals",
+    exerciseCount: 10,
+    description: "This is an awesome course part"
+  },
+  {
+    name: "Using props to pass data",
+    exerciseCount: 7,
+    groupProjectCount: 3
+  },
+  {
+    name: "Deeper type usage",
+    exerciseCount: 14,
+    description: "Confusing description",
+    exerciseSubmissionLink: "https://fake-exercise-submit.made-up-url.dev"
+  }
+];
+
+^array of similar objects with some differing fields. To make sure that
+the different parts can be passed around in the app, do the following:
+
+
+1. Define a 'base type' that contains all the shared fields:
+
+  interface CoursePartBase {
+    name: string;
+    exerciseCount: number;
+  }
+
+
+2. Define types for different parts that *extend* the base type:
+
+   interface CoursePartOne extends CoursePartBase {
+     name: "Fundamentals";
+     description: string;
+    //automatically has exerciseCount due to extend
+  }
+
+   interface CoursePartTwo extends CoursePartBase{
+     name: "Using props to pass data";	
+     groupProjectCount: number;
+  }
+
+  interface CoursePartThree extends CoursePartBase{
+    name: "Deeper type usage";
+    description: string;
+  }
+
+
+3. Create a type union of all those types:
+   
+   type CoursePart = CoursePartOne | CoursePartTwo | CoursePartThree;
+
+
+4. One way for TypeScript to infer which child type (ie: coursePartOne/2/3) 
+is assigned to the variable of a union type is using a switch statement.
+
+  ^ex:  courseParts.forEach(part => {
+          switch (part.name) {
+            case "Fundementals":
+            //ts knows variable has name/exerciseCount/description fields
+              break;
+            case "Using props to pass data":
+            //ts knows name/exerciseCount/groupProjectCount fields
+	      break
+            case "Deeper type usage":
+              //ts knows appropriate fields
+              break;
+            default:
+              break;
+         }
+
+5. If you want to add a new type to the union (ex: a CoursePartFour type),
+   you can create a helper function to already check if the type can be 
+   handled (ie: not falling to the default block in the switch statement),
+ ^ex:
+    const assertNever = (value:never): never => {
+      throw new Error(
+        `Unhandled union member.: ${JSON.stringify(value)}`
+      );
+    };
+
+^then replace the default in the switch statement to:
+  default:
+    return assertNever(part); 
+
+This way, if you have a union type member that isn't handled, it'll 
+reach the default case, and the code editor will highlight an error
+that (part) is not assignable to type never.
+
+-----------------interface vs type alias--------
+
+ex: interface Foo {
+      bar: number
+    }
+
+ex: type Foo = {
+      bar: number
+    }
+
+In most cases they work the same, but a few differences:
+
+Defining multiple interfaces of the same name result in a merged interface,
+but trying to define multiple types of same name, you get error.
+In most cases interface is recommended. 
+
+
+-----Handling State in TS-----
+
+One way to handle state is using a src/state/ dir and using react hooks
+ useContext and useReducer. useContext is designed to share data that 
+ is consdered 'global' for components (ex: user authentication, app state,
+  dispatch functions to change state, etc.)
+
+1. Define State type in state.ts file:
+  ex: export type State = {
+        users: { [id: string]: User | undefined };
+      };
+
+^State is an object with the users key, which itself is an object with
+  id key of type string and User value of type User or undefined.
+
+^*IMPORTANT* TS doesn't know if a key you try to access exists or not.
+            ex: const myUser = state.users['doesnt-exist'];
+                ^wouldnt return an error if you didnt allow id to 
+		 return undefined as well as User. 
+
+2. Use a reducer to handle state manipulation in src/state/reducers.ts file:
+  ^ex:
+   //first define Action type to pass to the reducer
+   export type Action = 
+     | {
+        type: "SET_USER_LIST";
+        payload: User[];
+       }
+     | {
+        type: "ADD_USER";
+        payload: User;
+       };
+
+   export const reducer = (state: State, action: Action): State => {
+     switch (action.type) {
+       case "SET_USER_LIST":
+        return {
+          ...state, 
+          users: {
+            ...action.payload.reduce(
+	      //memo starts as empty object, adds user to it each time
+              (memo, patient) => ({ ...memo, [user.id]: user }),
+              {}//starting value of memo
+              ),
+            ...state.users
+           }
+	 };
+       case "ADD_USER":
+         return {
+           ...state, 
+           users: {
+             ...state.users,
+             [action.payload.id]: action.payload
+           }
+         };
+       default:
+	 return state;
+     }              
+   }
+ 
+3. In src/state/state.tsx file, create a StateProvider that sets up
+   the context:
+
+  export const StateProvider = ({
+    reducer,
+    children
+  }: StateProviderProps) => {
+    const [state, dispatch] = useReducer(reducer, initialState);
+    return (
+      <StateContext.Provider value={[state, dispatch]}>
+        {children}
+      </StateContext.Provider>
+    );
+  };
+
+^Note the useReducer hook creates the state and dispatch function, then
+ pass them to the context provider.
+
+4. Create interface for StateProviderProps (used in prev. step):
+  ex //in state: 
+  type StateProviderProps = {
+    reducer: React.Reducer<State, Action>; //State/Action types def. above
+    children: React.ReactElement;
+  };
+
+5. Define a useStateValue hook using useContext:
+  //in state.tsx:
+  export const useStateValue = () => useContext(StateContext)
+
+^This is imported into components and used in them to get access to
+ the state or dispatcher.
+  ex in FooComponent: 
+   const users = [{ users }, dispatch] = useStateValue();
+   //^1st element is destructuring the state for relevant fields
+
+6. Import the StateProvider in index.tsx and wrap the App in the render:
+  ^ex in index.tsx:
+   import { reducer, StateProvider } from './state';
+   ReactDOM.render(
+     <StateProvider reducer={reducer}>
+       <App />
+     </StateProvider>, //note the comma
+     document.getElementById('root')
+   );
+
+
+-----useState hook----
+
+For local state, you can use useState hook with typescript like this:
+
+const [error, setError] = React.useState<string | undefined>();
+
+^functions returned by useState hook only accept arguments according to
+ the type parameter given. So you can clear the error by calling:
+  setError(undefined). 
+
+---------Axios---------
+Important: Passing a type parameter to Axios does not validate any data. 
+You need to either create custom validation functions that receive the entire
+payload and return the correct type, or use a type guard, or use external
+libraries (ex: io-ts). 
+
+-----------Referring To Another Type's Field in Type Creation--------
+
+ex: 
+  interface Diagnosis {
+    id: string;
+    description; string
+  }
+  
+  interface Entry {
+    id: string;
+    diagnosisInfo?: Array<Diagnosis>['description']
+    //^or Diagnosis['description'][]
+  }  
+^so Entry.diagnosisInfo is an Array of Diagnosis.descriptions. 
+
+------Omit and union-types ----------
+
+IMportant: Using Omit<Foo, 'field'> where Foo is a union type (ex: a | b ),
+ the Omit type would only contain the common properties between a and b,
+ not 'field' or the ones that are unique to a or b. 
+
+***Possible workaround function:***
+
+// Define special omit for unions
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+// Define Entry without the 'id' property
+type EntryWithoutId = UnionOmit<Entry, 'id'>;
+*****

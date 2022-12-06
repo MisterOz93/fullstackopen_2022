@@ -1,0 +1,159 @@
+TS is a superset of JS - it includes all the features of JS as well as its
+own distinct ones. This means all existing JS code is valid in TS.
+
+TS has 3 parts: 
+
+1.Language (syntax/keywords/type annotations etc)
+2.Compiler (transform code to executable js/static code analysis)
+3.Language Service (collect type information from the source code)
+------------------------
+Key features of TS:
+
+1. Type annotations: record the intended contract of a function or variable
+
+ex: const greeter = (name: string, age: number):string => {
+  return `Hello ${name} you are {age} years old`;
+  };
+
+^notice how both the args and the return value types are defined.
+
+More advanced example:
+  type CallsFunction = (callback: (result: string) => any) => void;
+
+  ^writing 'type Foo' creates an alias name for any type so you
+  can use reuse it
+   ^ex: type Point = { x: number; y: number }
+     function printCoord(pt: Point) { console.log(pt.x, pt.y)}
+^the type CallsFunction has one parameter: callback. callback is of type
+function that takes a string and returns any value. CallsFunction itself
+returns void.
+
+2. Type erasure: Removes all type system constructs during compilation
+ ^ie: no type information remains at runtime. If you write: let x: TypeFoo,
+at run time theres nothing saying that x was declared as TypeFoo.
+---------------------------
+Pros of TS:
+
+-Offers type checking and static code analysis.
+- Type annotations serve as a sort of documentation for intended use
+- IDEs provide more specific/smarter 'intellisense' (keeping track of code info)
+
+-------------------------
+Downsides of TS:
+
+-Some external libraries may have missing/invalid type declarations, which
+might require you to define yourself (or check DefinitelyTyped github page)
+
+^generally, types can be found using @types within npm
+(ex: npm install --save-dev @types/react @types/express @types/mongoose etc.)
+^note: types should always be saved as dev dependencies since they arent
+used after compilation. 
+
+-Sometimes type inference (using context to infer the type to return)
+ can require assistance, 
+-Some type errors can be confusing. Generally TS error messages
+have the most useful info at the end of the message.
+----------------------------
+
+Starting with TS:
+
+note: when building TS app, will eventually need to compile into JS
+in a seperate folder for the production environment.
+
+1. $npm init //in an empty dir
+2. $npm install --save-dev ts-node typescript*
+^*ts-node is good for getting started, but the official Typsescript
+  compiler that comes with the typescript package is better for 
+  actual projects. 
+
+3. Set up package.json scripts:
+   "ts-node": "ts-node"
+   ^now you can do $npm run ts-node -- filename.ts
+4. Add configuration file tsconfig.json with:
+   { 
+     "compilerOptions":{
+       "noImplicitAny": false
+      }
+   }
+^defines how TS compiler interprets code, how strict to compile, files
+to watch/ignore, etc. noImplicitAny to false means we can have variables
+without explicit type declarations. 
+
+----------------------------
+Types:
+
+A type can be one of several things, ex:
+
+type Operation = 'multiply' | 'add' | 'divide' //note only 1 | for or
+
+^now the Operation type accepts one of those 3 strings as input.
+
+^can then use the type alias like:
+
+const calculator  = (a: number, b: number, op: Operation):number => {
+  if (op === 'multiply') { return a * b }
+  //etc. 
+
+
+Because the JS at runtime doesnt enforce type, its good to include error
+handling.
+^ex: if (op === 'divide' && b === 0) {
+       throw new Error('Cannot divide by 0!')
+ //...
+then when calling the function use try/catch block
+^ex: try {calculator(5, 0, 'divide')}
+     catch (error: unknown) {
+      console.log('something went wrong')
+     }
+
+^note that error is type unknown, anything is assignable to type unknown,
+but unknown cannot be assigned to anything but itself or type 'any'.
+
+----------------------------------
+Interface object type:
+
+One way to define the 'shape' an object should have, a basic
+example is:
+
+interface Person {
+  name: string;
+  age: number;
+}
+
+function greet(person: Person) {
+ return "Hello " + person.name;
+}
+
+^be sure to include error handlers to enforce type expectations.
+
+ex: if (isNaN(person.age)){ throw new Error(//...)}
+
+^then call the function in a try/catch block so the Error can kick in. 
+
+^Be sure to console.log error.message instead of just error for a clean
+ output (if error instanceOf Error). 
+
+------------------------------
+ts config file
+
+https://www.staging-typescript.org/tsconfig
+
+^cheatsheet for tsconfig options.
+
+example config file options:
+
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  }
+}
+
+//come back here to explain them
+ 

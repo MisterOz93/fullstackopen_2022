@@ -1,0 +1,29 @@
+Once backend is up (ex: on Heroku, refer to heroku-basics file):
+
+1. in frontend root, run $npm run build
+2. in frontend root, run $cp -r build {path to backend root}
+3. in backend code: app.use(express.static('build'))
+^whenever express gets a GET request it will check if build dir has
+a file corresponding to the request address. so the frontend will be displayed
+ when GET request to foo.com or foo.com/index.html
+
+4.In backend's package.json:
+   In "scripts":
+	"build-ui": "rm -rf build && cd {path to frontend root} && npm run
+	           build && cp -r build {path to backend root}",
+	"deploy": "git push heroku main",
+	"deploy:full": "npm run build:ui && git add . && git commit -m uibuild
+		       && npm run deploy",
+	"logs:prod": "heroku logs --tail"
+
+^after adding those: npm build:ui builds frontend and copies to backend.
+		    npm run deploy releases current backend to heroku
+		    npm run deploy:full combines the 2
+
+NOTE: After changing front end code, need to repeat steps 1 and 2 or 
+	run $npm build-ui (if added to scripts)
+
+5. In the frontend's package.json:
+	"proxy": "http://localhost:3001" (or w/e port)
+^note proxy is not nested in scripts, but a sibling of it. 
+This redirects requests to the proxy server if made from localhost.

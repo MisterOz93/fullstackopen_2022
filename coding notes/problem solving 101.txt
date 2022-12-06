@@ -1,0 +1,20 @@
+Problem solving: 
+
+Step 1: Understand the problem, express it in plain English. 
+
+Step 2: Plan: consider the UI, the inputs (user? external?), the outputs you 
+want, given the inputs, how do I get the desired output?
+
+Pseudo code:
+
+Write the code in English instead of syntax. 
+
+Embrace pseudo code and practice it 
+
+Step 3: Divide and Conquer. It's normal to not know every single step,
+but figure out what steps you know and start with the simplest one. 
+
+Do not try to solve it all at once! The key is **break down problems into
+smaller and easier subproblems**. 
+
+Decomposition is key to problem solving. 

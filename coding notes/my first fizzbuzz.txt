@@ -1,0 +1,11 @@
+function fizzBuzz(num){
+ if (num % 3 == 0 && num % 5 !== 0){
+num = "fizz"} 
+ else if (num % 5 == 0 && num % 3 !== 0) {
+num = "buzz"}
+else if (num % 3 == 0 && num % 5 ==0) {
+num = "fizzbuzz"}
+return num}
+
+^It worked! Hopefully in a few months I stumble back on this and laugh
+at how sloppy it is! 

@@ -1,0 +1,405 @@
+Keeping packages up to date:
+
+Check how up to date packages in App are with:
+$npm outdated --depth 0
+
+To update packages:
+
+$npm install -g npm-check-updates (global install)
+ ^then run: $npm-check-updates in root of project
+  ^then run: $ncu -u to update package.json
+    ^then $npm install to install the new depedencies
+
+
+backend:
+
+--------
+$npm install express 
+const app = express()
+app.use(express.json())
+
+-------------
+$npm install cors (middleware to allow requests from all origins)
+app.use(cors())
+-----------
+
+backend:
+
+$npm install json-server --save-dev
+
+Then add to package.json scripts:
+"server": "json-server -p3001 --watch db.json"
+
+^For using basic server/db locally
+
+---------------------
+
+
+
+$npm install --save-dev nodemon
+allows dev server to auto refresh when chaging code.
+in package.json create script: "dev": "nodemon index.js"
+^then $npm run dev works
+
+-----------------------------
+$npm install dotenv (reads from .env files)
+^to use: require('dotenv').config()
+then, assuming a .env file with the line: PW=password123
+const pw = process.env.PW 
+
+Make sure to add .env to git ignore (still not secure on frontend react build)
+but seemingly secure for node/backend?
+
+IMPORTANT: Git ignoring .env breaks Heroku, need to set it manually thru
+heroku dashboard in Config Vars on settings page or thru command line:
+
+$heroku config:set {name of variable in .env file}={value of variable}
+^ex $heroku config:set MONGODB_URI='mongodb+srv://....'
+
+ 
+------------
+
+$npm install eslint --save-dev
+
+^then, run command $npx eslint --init to create default configuration
+ex answers:
+-Check syntax/find problems/enforce style
+-CommonJS (require/exports)
+-None of these
+-No
+-Node
+-Answer questions about your style
+-JavaScript
+-Spaces
+-Single
+-Unix
+-No
+
+^result is saved in .eslintrc.js file
+
+After creating, go into file and change "indent" value from
+4 to 2. 
+
+$npx eslint foo.js inspects + validates foo.js file.
+
+create "lint": "eslint ." script in "scripts" so that 
+$npm run lint checks every file in the dir.
+^^IMPORTANT: to avoid checking the build dir, add a
+.eslintignore file in root with the line:
+  build
+can also use VS code ESlint plugin.
+
+some common rules to add to .eslintrc.js file's 'rules' object:
+-'eqeqeq':'error', //makes sure equality is checked with 3 '='s
+-'no-trailing-spaces': 'error',
+-'object-curly-spacing': [
+  'error', 'always'
+  ], 
+  'arrow-spacing': [
+   'error', { 'before': true, 'after': true }
+  ]
+ 
+to disable a rule, define its value as 0. ex:
+'no-console': 0
+
+---------------------------------------
+$npm install --save-dev jest
+1. add to scripts: "test": "jest --verbose"
+
+2. add to package.json: "jest": { "testEnvironment": "node" }
+
+3. in .eslintrc.js file, inside the 'env' object:
+  'jest': true
+
+for testing. refer to testing-basics doc for more.
+--------------------------------------------
+
+$npm install --save-dev cross-env
+
+allows use of scripts in package.json to define NODE_ENV btwn
+production, development, and test for windows.
+(ex: "start":"cross-env NODE_ENV=production node index.js")
+IMPORTANT: this causes web server (like heroku) error,
+to fix: $npm i cross-env -P (changes to a production dependency)
+
+This lets you modify way app runs depending on mode 
+(ex: use different database for tests than production/development)
+-------------------------------------------------
+
+$npm install --save-dev supertest
+
+^allows testing http requests.
+1. const supertest = require('supertest')
+2. const api = supertest(app)
+
+^then you can call get/post/put/delete/etc. on api
+(ex: await api.get('/pathname/'))
+-------------------------------------------------
+
+$npm install express-async-errors
+
+^removes the need for try/catch blocks for error handling async 
+requests. 
+
+Just add the library to the code: require('express-async-errors')
+^then, errors are automatically passed to the error handling middleware
+without having to write next(error).
+-------------------------------------------------
+
+$npm install bcrypt
+
+^generates password hashes for users. 
+
+1. const bcrypt = require('bcrypt') //define in controllers/user.js 
+2. const passwordHash = await bcrypt.hash(password, saltRounds)
+//saltRounds being a security thing, fso example hard codes value 10
+
+also include bcrypt in test file for users api, 
+and in login controller to compare request's
+ body.password with user.passwordHash
+-----------------------------------------------
+
+$npm install jsonwebtoken
+
+^for generating tokens for user authentication.
+Should be used in controllers/login.js
+See authentication file for more details.
+------------------------------------------------
+
+For frontend react:
+$npm install prop-types
+^ lets you define expected and required prop types of a
+component. 
+
+ex:
+
+import PropTypes from 'prop-types'
+
+ComponentName.propTypes = {
+ propName: PropTypes.string.isRequired
+}
+
+^if the prop is a function, do PropTypes.func.isRequired
+
+^^propTypes doesn't stop the component, but it prints an error msg.
+
+
+--------------------------------------
+
+ESlint for front end:
+
+create-react-app installs ESlint automatically. So just need to 
+define desired configuration by creating .eslintrc.js file. 
+DO NOT RUN $eslint --init in a create-react-app!
+
+1. touch .eslintrc.js and can paste in:
+
+https://fullstackopen.com/en/part5/props_children_and_proptypes#e-slint
+
+^paste content from there (starts with /* eslint-env node */)
+
+2. Then create .eslintignore and add:
+node_modules
+build
+.eslintrc.js
+
+3. $npm install --save-dev eslint-plugin-jest
+^avoids irrelevant linter errors doing tests
+
+If you are seeing Failed to load plugin react: Cannot find module 
+'eslint-plugin-react'additional configuration is needed. 
+Adding the line "eslint.workingDirectories":[{ "mode": "auto" }]
+to settings.json in the workspace seems to work.
+
+4. Add "eslint": "eslint ." to scripts in package.json.
+
+If you get an error: "Component definition is missing a display name"
+fix by adding to the code: ComponentName.displayName = 'ComponentName'
+^add this after the component definition just before exporting it.
+
+-------------------------------------------
+
+$npm install --save-dev @testing-library/react @testing-library/jest-dom
+
+^react-testing-library helps render components for testing 
+^jest-dom provides jest helper methods
+
+for jest-dom, when importing into code, write it as:
+
+  import '@testing-library/jest-dom/extend-expect'
+--------------------------------------------
+$npm install --save-dev @testing-library/user-event
+$npm install -D --exact jest-watch-typeahead@0.6.5
+
+^2nd install is workaround for mismatch between dependencies. 
+this lets you test button clicking.
+----------------------------------------------
+
+Frontend:
+
+$npm install --save-dev cypress
+
+^for End to End (E2E) testing, installed in Front end dir.
+
+$npm install eslint-plugin-cypress --save-dev 
+^disables cypress eslint warnings after adding: "cypress/globals": true
+to the "env" object in eslintrc file AND adding "cypress" to "plugins"
+--------------------------------------------------
+
+Frontend:
+
+$npm install --save-dev deep-freeze
+
+^for redux, can be used to ensure reducer has been correctly defined
+as an immutable function (see redux basics file).
+----------------------------------------------------
+
+Frontend:
+
+$npm install react-redux
+
+^Easiest way to share redux store across various react components
+(see redux basics file)
+
+-----------------------------------------------------
+
+Frontend:
+
+$npm install @reduxjs/toolkit
+
+^makes redux easier to use (greatly simplifies store configuration, etc.)
+
+-------------------------------------------------------
+
+front:
+
+$npm install redux-thunk
+
+^allows action creators to return functions instead of objects, allowing
+for async actions (see redux-backend file for example)
+
+--------------------------------------------
+
+front:
+
+$npm install react-router-dom
+
+^Used to manage navagation for single page apps. Refer to react-router-basics
+file. 
+
+------------------------------------------
+Front:
+
+$npm install react-bootstrap
+
+^UI framework for CSS with React components. see basics file for more
+
+--------------------------------------------
+Front:
+
+$npm install @mui/material @emotion/react @emotion/styled
+
+^Material UI, an alternative to bootstrap, see basics file for more
+-----------------------------------------------
+Front: 
+
+$npm install styled-components
+
+^Another CSS style framework, refer to basics file for more. 
+
+-------------------------------------------
+Front:
+
+$npm install --save-dev webpack webpack-cli
+
+$npm install react react-dom
+
+$npm install @babel/core babel-loader @babel/preset-react --save-dev
+
+$npm install @babel/preset-env --save-dev
+
+$npm install style-loader css-loader --save-dev
+
+$npm install --save-dev webpack-dev-server
+
+^These are all if building React app from scratch (aka: not using 
+create-react-app), see webpack basics file for more. 
+
+*babel install is a loader for webpack, as are css-loader and style-loader 
+*babel/preset-env is transpiler
+*webpack dev server lets you test changes to code without rebundling
+
+------------------
+
+Backend:
+
+$npm install apollo-server graphql
+
+^apollo server for using graphql, refer to graphql basics file for more.
+
+--------------------------
+backend: 
+
+$npm install uuid
+
+^used to generate unique ids for objects
+refer to https://github.com/uuidjs/uuid#readme
+for basic examples, or graphql basics file.
+------------------------------------------
+
+FrontEnd:
+
+$npm install @apollo/client graphql
+
+^for using graphql with react, refer to that doc. for more info
+
+--------------------------------
+Backend:
+
+$npm install apollo-server-express apollo-server-core express @graphql-tools/schema
+
+
+$npm install graphql-subscriptions ws graphql-ws
+
+^^for using subscriptions in apolloServer, see graphql-fragments-subscriptions
+file for more.
+
+-----------------------------------
+
+Front end: 
+
+$npm install @apollo/client graphql-ws
+
+^for using graphql subscriptions in front end, see graphql-fragments
+-subscription file for more.
+
+-------------------------------------
+
+Back end:
+
+$npm install --save-dev ts-node typescript
+
+(see typescript dir)
+------------------------------------- 
+
+Back End (& frontend?)
+
+$npm install --save-dev --save-exact prettier
+$touch .prettierrc.json
+$touch .prettierignore
+$npm install --save-dev eslint-config-prettier (assuming eslint installed)
+^then add "prettier" to "extends" array in .eslintrc.* file, add it AS
+LAST ELEMENT OF THAT ARRAY.
+install VS code extension (done on laptop)
+
+VS Code settings -> View -> Command Palette, and type: Format Document With
+Then Configure Default Formatter... and then choose 
+Prettier - Code formatter.
+
+----------------
+backend:
+
+$npm install --save-dev ts-node-dev
+
+^nodemon for typescript - auto refreshes 
+server when backend change is made in dev mode

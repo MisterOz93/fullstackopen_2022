@@ -1,0 +1,62 @@
+csv files are 'comma seperated files' that store tabular data (numbers and text)
+ in plain-text form. The CSV format is readable by a large number of 
+applications (e.g. Excel, Numbers, Calc). Its portability makes it a
+ popular option when sharing large 
+sets of tabular data from a database or spreadsheet applications.
+
+Ruby has its own way of handling csv files, make sure to 
+<require> (sans brackets) 'csv' at the top to enable it. 
+this lets you use CSV class (instead of File) and use
+CSV.open('filename.csv', headers: true)
+^ 2nd param is optional i think, to tell ruby the
+file has headers. 
+^^3rd optional parameter is header_converters: :symbol
+^this converts the headers into symbols. 
+
+
+
+
+
+Using File.readlines will save each line as a separate item in an array.
+^ex: can save a variable as File.readlines('filename'). 
+^then that variable is an array of each line in the file
+ that you can iterate on.
+
+
+
+
+
+
+
+---------------API-----------------
+
+Ruby comes packaged with the gem command. This tool allows you to download 
+libraries by simply knowing the name of the library you want to install.
+
+ex: gem install google-api-client in command line
+
+documentation should explain how to use the API 
+
+
+------------------------------------------
+ERB lets you use Ruby code inside an html doc for extra functionality
+remember to require 'erb'
+
+set a variable to File.read('filename.erb')
+^then set a new variable to ERB.new <variablename> (sans brackets)
+
+
+ERB defines several different escape sequence tags that we can use. 
+The most common are:
+
+<%= ruby code will execute and show output %>
+<% ruby code will execute but not show output %>
+
+^ex: <h1>Thanks <%= name %></h1>  <- says thanks to name variable in ruby doc
+
+binding does:
+The method binding returns a special object. This object is an instance of 
+Binding. An instance of binding knows all about the current state 
+of variables and methods within the given scope.
+
+^

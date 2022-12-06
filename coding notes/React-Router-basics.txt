@@ -1,0 +1,173 @@
+$npm install react-router-dom
+
+^Library for managing navigation in a react app
+(such as moving 'between pages' in a single page app)
+
+after install:
+//in App.js:
+
+import {
+  BrowserRouter as Router, 
+  Routes, Route, Link
+  } from "react-router-dom"
+
+ const App = () => {
+
+  return (
+    <Router>
+      <div>
+        <Link to="/">Home</Link>
+        <Link to="/notes">Notes</Link>
+        <Link to="/users">Users</Link>
+      </div>
+
+      <Routes>
+        <Route path="/notes" element={<Notes />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Router>
+  )
+ }
+
+^Router is actually BrowserRouter, but renamed in the import statement
+
+^The Link components change the URL in address bar to the #to attribute.
+They basically work like <a> </a> but for single page apps. 
+I think they can be defined anywhere, but must be rendered
+in a component thats rendered inside the Router component.
+
+^The Route components determine which components are rendered based on the 
+ URL defined in #path attribute. 
+
+^The Route components are wrapped in a <Routes> component that renders the 
+first nested component whose path matches the address bar. 
+
+-----------------------------------------
+
+Parameterized Routes (useParams):
+
+If a Route path is based on a parameter value (ex: ID), define it
+like with backend express routes:
+
+^ex:
+<Router> 
+ <Routes> 
+   <Route path="/notes/:id" element={Note notes={notes} />} />
+ </Routes>
+</Router>
+
+^This works with useParams (imported from 'react-router-dom')
+Inside the element that's rendered based on the parameter:
+
+const Note = ({ notes }) => {
+  const id = useParams().id
+
+^notes are passed as a prop to Note in the Route component,
+
+useParams() returns an object of key/value pairs of the 
+params from the current URL of the <Route path>.
+
+Without useParams, there'd be no way(?) for the individual Note
+to know which one to display since its being passed the whole
+list of notes. *useParams gives the value of the :param in 
+the Route path (ex: /notes/:id, it gives the value of id inside
+the component)
+----------------------------------------------------------
+
+useNavigate:
+
+import useNavigate (imported from 'react-router-dom')
+
+useNavigate() changes the browser url to the string path passed
+to it as a parameter. 
+
+^ex:
+  const navigate = useNavigate()
+
+  const onSubmit = (event) => {
+    event.preventDefault()
+    navigate('/secretpage')
+ }
+
+^This causes browser to go to /secretpage when triggering onSubmit. 
+
+IMPORTANT: Just like other hooks (ie useState useEffect), hooks can only 
+be called (defined?) from inside a React Component function.
+
+-------------------------------------------------------
+
+redirect:
+
+The <Navigate /> component has a #replace to attribute to 
+redirect the browser. 
+
+^ex: 
+<Route path="/users" element={user 
+  ? <Users /> 
+  : <Navigate replace to ='/login' />} />
+
+^This directs the browser to '/users' and displays the Users component 
+if the variable user is truthy, else the browser is redirected to the path
+'/login'.
+
+------------------------------------
+useMatch:
+
+Instead of passing the whole list of objects to components
+responsible for displaying one of them at a time 
+(ex: Note = ({ notes }) in the useParams section above),
+it would be better to pass it only the component it should display.
+
+React Router's useMatch hook can do this, but the hook can't be used in
+the component that defines the routed part of the app (Router?). 
+
+^To get around this, make the <App/> component a child component of <Router>
+when creating the root.
+
+So instead of wrapping the App's return tree in <Router> </Router> component,
+instead wrap the App component in <Router></Router> when rendering the root.
+(See step 4 below)
+
+
+Then inside App file:
+
+1. import useMatch from "react-router-dom" (along w/ other imports)
+
+2. Inside App component: 
+
+  const match = useMatch('/notes/:id')
+
+  const note = match ? notes.find(n => n.id === Number(match.params.id))
+                 : null
+
+3. Inside return XML tree:
+   //div with Links 
+   <Routes>
+     <Route path="/notes/:id" element={<Note note={note} />} />
+     //other routes
+  </Routes>
+
+4. at the end of the App file:
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <Router> 
+    <App />
+  </Router>
+)
+
+^no index.js in this case, currently dont know how to do this without
+having everything in 1 file, update when you do. 
+
+
+^Every time the App is rendered, useMatch('/notes/:id') is executed,
+if the browser's URL matches /notes:id, the match variable will 
+contain the appropriate note object to display, else it will be null
+and wont display anything. 
+
+
+
+
+
+
+

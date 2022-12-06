@@ -1,0 +1,54 @@
+Modern react uses components defined as JS functions, which is possible
+thanks to hooks that handle state. Before 16.8, React used JS Class syntax.
+
+--------------------------------
+Basic Class example:
+
+import React from 'react'
+
+class App extends React.Component {
+  constructor(props){
+    super(props)
+  }
+  
+  render() {
+    return (
+      <div>
+        <h1> Hello World </h1>
+      </div>
+    )
+  }
+}
+
+export default App
+------------------------------
+Managing state:
+
+State is initialized in the constructor:
+^ex:  
+   constructor(props){
+     super(props)
+     this.state = {
+       anecdotes: [],
+       current: 0
+     } 
+   }
+^state is accessed with this.state.propertyName
+ex: this.state.anecdotes[this.current].content //content prop of 1st anecdote
+------------
+Lifecycle methods:
+
+Modern react uses useEffect() to fetch data from a server, old React
+used lifecycle method #componentDidMount, which runs once right after
+the first time a component is rendered. 
+^ex: //inside App class 
+  
+  componentDidMount () => {
+    axios.get('inserturlhere/foo').then(res => {
+      this.setState({ anecdotes: res.data })
+    })
+  }
+
+^setState method only interacts with the keys defined in the object passed 
+ to it, other state properties are unchanged. 
+Calling setState always rerenders the component. 

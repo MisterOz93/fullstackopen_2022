@@ -1,0 +1,90 @@
+Reminder about hooks:
+
+-Don't call Hooks inside loops/conditions/nested functions. Always
+use hooks at the top level of a React function.
+
+-Don't call hooks from a regular JS function, instead call them from
+ a React function or from a custom Hook.
+
+-------------
+
+The main purpose of custom hooks is to extract component logic into
+reusable functions.
+
+A custom hook is:
+
+-A regular JS function that can use other hooks
+-Must adhere to the rules of hooks
+-Name must begin with 'use' (sans quotes)
+
+
+example of a custom counter hook:
+
+const useCounter = () => {
+  const [value, setValue] = useState(0)
+
+  const increase = () => {
+    setValue(value + 1)
+  }
+  const decrease = () => {
+    setValue(value - 1)
+  }
+  const reset = () => {
+    setValue(0)
+  }
+
+  return {
+  value, increase, decrease, zero 
+  }
+ }
+
+^the hook can be used by other components like so:
+
+const App = (props) => {
+
+ const counter = useCounter()
+
+//.....
+}
+
+
+^and then can call the methods via counter.value, counter.increase, etc.
+
+Note that useCounter() can be used multiple times for different state.
+ ^ex:
+ //in App:
+  const left = useCounter()
+  const right = useCounter()
+//....
+
+^Now both left and right have a seperate instance of the hook.
+
+----------------------------------------
+Custom Hook for Forms:
+
+const useField = (type) => {
+  const [value, setValue] = useState('')
+
+  const onChange = (event) => {
+    setValue(event.target.value)
+  }
+
+  return {
+    type,
+    value,
+    onChange
+  }
+}
+
+^Can use this hook for any input field in a form,
+ex:
+//in App:
+const name = useField('text')
+const phone = useField('number')
+
+<form>
+ <input type={name.type} value={name.value} onChange={name.onChange} />
+ <input type={phone.type} value={phone.value} onChange={phone.onChange} />
+</form>
+
+^can be shortened with spread syntax to <input {...name} />

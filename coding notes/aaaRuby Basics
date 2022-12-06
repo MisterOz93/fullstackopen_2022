@@ -1,0 +1,1284 @@
+To run ruby code from command line: ruby file_name.rb (file should be .rb beforehand)
+To stop a ruby program execution (ie infinite loop) use CTL+C
+
+type:   require 'pry'   at the start of a ruby doc for debugging w/ pry gem. 
+
+call    binding.pry  to access pry. 
+
+In Ruby, 0 and empty strings are considered true. The only inherently false values are
+false and nil
+
+**** ELSE IF IS elsif IN RUBY*****
+
+Important to rmber: Look for a Solution before Building a Solution
+
+
+* before a parameter (ex: *args) lets you put as many elements as you
+want in that parameter, which becomes an array. 
+^ex: def add(*nums) 
+	*nums.each do |n|
+	sum += n
+	end
+     end
+
+
+Style guide:
+
+Tab should be set to 2 spaces, indenting should be set to use spaces. 
+
+# Is used to comment out a line 
+
+use_snake_case_where_words_are_lower_case_and_spaced_by_underscores
+
+const is declared in all caps (ex: FOUR = 'four')
+
+Curly brackets and do /end seem to be interchangable. Use {} for singleline
+and do / end for multiline 
+
+When declaring a "class" use no spaces and capitalize each word 
+(ex class HelloWorld)
+
+Note: # and :: are used differently in documentation than in actual code. 
+
+
+
+irb is a command line prompt that gives an interactive environment where you can test code
+great place to practice and such. type 'exit' (sans quotes) from the irb to exit it
+
+
+
+A "gem" is a library/collection of ruby files or a publishing system that organizes and publishes those libraries.
+To install a gem from the command line: gem install <gem name> (no brackets)  
+
+^GOod for beginning, but eventually will use "Gemfile" to organize gems. 
+
+
+In ruby, a "float' is a number with a decimal. if you use 2 integers (ex: 22 /7) it will return 3, not 3.14xxx. 
+
+^To get a decimal/float, add a float to the operation. ex: 22 / 7.0
+
+can convert between integer and float with x.to_f or x.to_i 
+
+
+Number Methods:  x.even? (returns boolean) x.odd? (returns boolean)
+
+Can make strings within strings with [].
+ex: 'Hello'[0] returns "h"
+    'hello'[0..1] returns 'he'
+    'hello'[0,4] returns 'hell'
+    'hello'[-1] returns 'o' <- remember this one. 
+
+
+Escape characters: these let you add in spaces or other things inside a string:
+
+\\ <- Adds a backslash to the string
+\b <- adds a backspace
+\r <- carriage return? 
+\a <- alert
+\n <- new line
+\s <- space
+\t <- tab
+\" <- dabble quote
+\' <- single quote
+How to use them: puts "Hello\t\tworld"
+		 puts "Hello\rStart over world"
+^make sure to use double quotes. 
+
+
+Interpolation: how you put a variable inside a string
+ex: name = 'Odin'
+    puts "Hello, #{name}" 
+^returns "Hello Odin"                    tldr: #{variable} inside a double quote string. 
+
+
+
+Common string methods:
+
+"hello".capitalize 
+
+"hello".include?("lo") <--- **Super good to remember. returns true/false
+
+"hello".upcase
+string_variable[n] <--- to get the substring at the nth index. 
+
+"HELLO".downcase
+"hello".empty? returns true/false
+"hello".length
+"hello".reverse
+"hello world".split -> (returns ["hello", "world"]
+"hello".split("") <- works like in javascript
+"hello   ".strip <- removes space after the last character
+"he77o".sub("7", "l") <- returns "hel7o"
+"he77o".gsub("7", "l") <- returns "hello"
+"hello".insert(-1, " dude") <- returns "hello dude"
+"!".prepend("hello, ", "world") <- returns "hello, world!"
+x.nil? <- true/false
+x.is_a? <--- Number/String/etc 
+
+x.to_s to turn something into a string
+
+
+---------------Symbols
+
+A symbol works like a string, but is stored only once in memory making it faster.
+Not used a lot for beginners, but common in hashes, so get used to it for then.
+
+To create symbol use ":" (ex   :my_symbol) 
+Symbols are used when you don't intend to print it to the screen or change it.
+basically^. 
+tobecontinued
+
+
+
+<puts> prints out something on a new line and adds a newline \n and 
+returns nothing (nil)
+<prints> also prints out something on a new line, 
+but doesn't add a \n, and returns nothing
+p works like puts, but shows more info than puts (like \n, useful for debugging)
+p returns the object you pass into it. 
+putc puts a specific character (default is first)
+
+Difference between modulo and remainder:
+
+
+ 
+Modulo operations return a positive integer when the second operand is positive, 
+and a negative integer when the second operand is negative.
+
+Remainder operations return a positive integer when the first operand is positive,
+ and a negative integer when the first operand is negative.
+
+
+Error if you try to add a string and an integer. To do so convert string to_i
+You Can multiply a string by a number to repeat that string x times.
+ex: 'hi' * 3 = "hihihi"
+
+
+
+
+
+
+
+
+------------ basics------
+
+<get> (sans brackets) is used to stop the program and wait for user input. after user hits enter, it resumes.
+get always returns a new line after the input (\n).  .chomp method is used to eliminate a seperator like \n.
+ex: gets.chomp allo <-- returns 'allo'
+
+myVariable = gets <- assigns user input to myVariable
+
+x.eql?(y) is the Ruby version of x === y that returns true/false 
+
+x.equal?(y) is more advanced and has to do with memory pointing. 
+
+SPACESHIP OPERATOR <=> 
+
+ex:    x <=> y       returns -1 if left < right
+		     returns 0  if left = right
+		     returns 1 if left > right 
+
+^most commonly used in sorting functions
+
+
+case statements are used for multiple if/elsif scenarios. 
+
+ex: 
+
+grade = "F"
+
+did_i_pass = case grade 
+when 'A' then 'Yep!'
+when 'D' then 'Barely'
+else 'nope!' 
+end
+
+^Can ommit <then> part if multi line per case. 
+
+
+unless statement is the opposite of if, the code will run if the expression is false
+
+ex: age = 18 
+   unless age < 17 
+    puts 'Care for a beer?' 
+    end
+
+
+ternary works like jS:    condition ? x : y  where x is code if true, y is code if false
+
+
+rjust method takes 2 parameters, first is the length you want to adjust the
+variable to, second is what to fill empty spaces with
+
+ex: "hello".rjust(20, '1234')   #=> "123412341234123hello"
+
+********** RUBY LOOPS!*********
+
+The Loop Loop: An infinite loop that runs forever or until a conditional break is reached, 
+seldom used
+
+while loop ex.: i = 0 
+		while i < 10 do
+	        puts "i is #{i}"
+		i += i
+		end
+
+until loop: opposite of while loop (loops until...) 
+
+^use while and until based on which is easier to read. 
+
+do/while loop works like while loop, but runs at least once before checking the while condition
+
+^ex: loop do 
+     puts 'Wanna do that again?'
+	answer = gets.chomp
+	if answer != 'Y'
+	break
+	end
+     end
+
+RANGES:  (1..5) <- is a range from 1 to 5 including 5
+	 (1...5) <- is a range from 1 to 4, excluding 5. 
+can be used w/ alphabet strings too. 
+
+for loop syntax: for i in 0..10 
+		 puts "#{i} zombies incoming!"
+		 end
+^ i loops from 0 to 10. 
+Note: for loops not used much in ruby, iterators used instead.
+
+Times loop:  loops specified # of times. ex: 
+	  5.times do 
+	 puts 'Hello!'
+	  end
+
+^Can reference the current iteration number like this:
+	5.times do |number|      <- default index starts from 0 
+	puts "Hello #{number}"
+	end
+
+Upto/Downto loops:
+
+5.upto(10) {|num| print "#{num} "} 
+
+10.downto(5) { |num| print "#{num} " } 
+
+
+So the |num| names how to define the current iteration?
+
+Use <next> (sans brackets) to skip a specific iteration
+
+
+
+********Iterators******
+
+Iterators naturally loop over a given set of data and lets you operate on each
+element. 
+
+ex: names = ['Bob', 'Joe', 'Steve', 'Janice', 'Matz']
+    names.each { |name| puts name }
+^Again, between the pipes || is referring to the current element.  
+
+
+
+***********Recursion********
+
+Complicated CS concept, the gist of it is that you have a baseline condition that returns a value
+which then "unwinds" the recursive calls (calling the function inside the function with a smaller
+number), the recursive calls build up until a value is returned. 
+
+example is fibonacci: 
+
+fib(number)
+  if number < 2
+    number
+  else
+    fib (number -1) + fib (number -2)    <- the key is that the function is called 
+      end			        within itself until n < 2, and each time
+     end					    its called the values get stored
+ 
+ 
+^ If you do puts fib(6), this is roughly what happens:
+
+fib(6) turns into fib(5) + fib(4) 
+  ^ fib(5) turns into fib(4) + fib (3) while fib(4) turns into fib(3) + fib (2)
+    ^ Basically the first arg (6) turns into 2 args, which turn into 4, then 8, then 16
+     The 16 args are made up of either 1s or 0s, and added together = 8. 
+
+
+****************ARRAYS*****************
+
+array[-1] returns last element, [-2] returns 2nd to last, etc
+array.first(3) array.last(5)    returns the first 3 elements or last 5, in a new array
+pop removes from end
+shift removes from start
+unshift adds to start
+pop and shift can take specific amount, ex: array.pop(3)   <- removes last 3 
+adding arrays concats them. 
+Subtracting arrays will remove elements from the first array that are in the 2nd array. 
+array.methods will pull up a loooooooong list of available methods, use ruby-docs website instead :)
+very relevant method:
+array.include?(x)
+array.empty?
+array.map works like jS, applies code to each |element| and returns new array
+array.collect is same as map
+array.delete_at(0) <- deletes the element at index 0. 
+array.delete("x") <- deletes all elements of "x" in the array.
+array.uniq <- returns a new array with no duplicate elements
+array.uniq!  <- removes all duplicates from the array
+array.select <- filters a new array with elements that return true
+array.each_index  <- goes through each index | x | refers to the index #
+array.each_with_index <- same as above but includes the array element as x and index as y
+	^ex: a.each_with_index { |xElement, yIndex}
+array.sort   <- returns new array that's sorted (default lower to higher)
+array.product  <- adds every combination of elements in array 1 with elements in array 2
+	^ex: [1,2,3].product([4,5])  <- returns: [[1,4], [1,5], [2,4], [2,5], [3,4], [3,5]]
+
+.each vs  .map <- use each for iteration, map for transformation. 
+
+Accessing 2 Dimensional Arrays (nested arrays)
+
+ex: users = [ [1, 'Peter'], [2,'Steven']]
+
+users[0][0] returns 1 (first element, 1st element in that element)
+users [0][1] returns 'Peter' (first element, 2nd item in that element)
+
+array.flatten to convert a multidimensional/nested array into one
+
+array.insert(index#, 'x') will insert 'x" @ index#, x can be multiple things.
+
+array.sample <- returns a random element in the array, or a specified number of random elements.
+
+
+
+---------Hash------
+
+A hash is a key/value pair just like an object in Js. 
+
+Preferred Syntax:
+
+{name: 'bob',
+ age: 24,
+ job: 'Progamer'
+}
+
+older syntaxes might use rockets => or :symbols
+
+retrieve a value by referencing its key, ex: animals[:cat]    <- returns "meows"
+
+adding a key/value pair: person[:hair] = 'brown' 
+hash[:key] = 'value'
+
+Unlike arrays that have strict index order, hashes order doesn't matter, the key does. 
+
+fetch method returns x, or y if x doesn't exist in the hash
+^ex: shoes.fetch("hiking","hike")   <- returns "hike"
+
+
+
+
+
+remove key/value pair with the delete method on the key, it also returns the deleted value.
+ex: person.delete(:age)
+
+
+hash.keys  <- returns an array of keys in the hash
+hash.values <- returns an array of values in the hash
+
+to merge two hashes:
+
+hash1.merge(hash2)   <- note that if they both have the same key, the value from hash2 will
+overwrite hash1. 
+
+
+.each method used to iterate every element, using |key, value| to reference the
+keys/values specifically. 
+
+You can create an empty hash as an optional parameter 
+
+ex: def greeting(name, options = {})
+      if options.empty?
+	puts "Hi, my name is #{name}"
+      else
+	puts "Hi, my name is #{name} and I'm #{options[:age]}"
+      end (of the else)
+      end (of the def) 
+
+^Then when calling the greeting function, you can assign key/value pairs inside
+a hash as the 2nd parameter.
+
+ex: greeting("Bob", {age: 64}   <- so "Bob" becomes name, and 64 becomes 
+option[:age]'s value.
+
+^^ **important**, when a hash is the last argument, you can omitt the {}. This is common in rails
+
+
+--------Methods--------------
+
+Works just like functions. Difference is that functions have no associated objects, but since
+everything in Ruby is an object, its a method, not a function. 
+
+syntax:  def method_name
+	       code 
+	 end 
+Parameters work the same, in brackets, can give a default value. 
+
+
+each method should do only one thing 
+
+return does not have to be explicitly stated, default return is last expressed value
+be sure to include them for conditions when appropriate 
+^remember that <puts> and <print> returns nil! 
+
+methods don't require (), can include parameter just in "".
+
+Methods ending in ?, both built-in and user-created, are predicate methods that return
+a Boolean. Try to incorporate this. 
+
+***most methods do not overwrite the original value of what was called without explicitly 
+assigning it to a variable. OR with a ! AKA: Bang method
+
+Adding a ! generally indicates the method overwrites the original value. 
+
+**IMPORTANT Note: Any pre-defined variable changed within a defined method is only within the scope of that 
+method. UNLESS the method contains code that mutates the caller/variable IMPORTANT!
+
+
+In ruby, you can use methods as parameters in other methods.
+ex:   def add (a, b)
+	a + b
+	end
+	def sub(a,b)
+	a - b
+	end
+    def mult (a,b)
+	a * b
+	end
+
+ ^ mult(add(20,20), sub(10, 5))   <--- returns 200 (make sure no space btwn method and bracket
+
+
+
+
+-------Call Stack--------
+
+Important programming concept: think of it as a stack of books, starts at the base with main level,
+then when program encounters a method, it puts the method on top of the base, making the main level
+temporarily inaccessible and takes note of which line it paused at. 
+
+Then, if that method calls another method, the called method gets placed on top and the line where
+the initial method was paused it gets noted.
+
+Once a method returns, its removed from the top of the stack and the program resumes the method thats
+now on top from where it paused. And so on until it returns to the main base level.  
+
+
+
+---------------Enumerables-------------
+
+Enumerables are built in methods for arrays and hashes in Ruby to help with iterating. 
+
+^ie. arrayName.each array_name.select, etc. 
+
+The | x | used to define each element is known as the block variable. 
+
+the each method gives a key and a value as an array each iteration in a hash. use 2 parameters
+
+select method is the same as filter
+
+
+***Reduce/Inject: Reduces the array or hash to a single value. 
+
+Ruby syntax:      array.reduce { | accumulator, arrayElement| code per iteration}
+
+accumulator's initial value is array[0] by default. reduce returns accumulator after all iterations.
+
+To set a specific initial value, set it as a (parameter) before the {} 
+
+Most enumerables have bang(!) versions, but its best practice to not use them and perserve the 
+original data. Either assign the enumerable to a new variable, or wrap the enumerable inside
+a method def and call that when needed.
+
+^The latter is the preferred way.
+
+other enumerable methods:
+
+.any? <- returns true if any element passes block of code
+.all? <- returns true if all pass**** Note this returns true by default unless
+a block actually is false/nil
+
+.none? <- true if none pass
+.find <- returns first item that returns true
+
+.group_by <- returns a hash that groups all different types of returns
+^ex: names = ["James", "Jim", "Bob"]
+     names.group_by{|name| name.length|
+^returns {5=> "James", 3 => "Bob", "Jim"]
+
+.grep(/x/) <- returns an array with items that === x
+
+enumerable methods have shorthand "&" that can be 
+used when the method doesnt need any arguments
+
+^ex: ['1','2','3'].map(&:to_f) <- returns [1.0,2.0,3.0]
+
+
+
+---------------------Debugging-------------
+
+stack trace: when an error happens, it prints each line of code that was executed
+before the crash,the first line (from the top)is usually the most helpful; it 
+gives you the line where the error happened, the name of the error+explanation
+
+using puts or p is good to check what exactly is being returned (like how 
+you used console.log in jS often). **Be careful with using puts with something
+that is nil or an empty string, it'll just return a blank line, use p in that case
+
+
+pry stops evaluating the code where binding.pry is written, can type 'next' 
+(w/o quotes) to go to next line. 
+
+pry commands:
+
+break  <- manage breakpoints
+
+step <- step execution into the next line or method, can take n steps at once
+
+next <- step over to next line in same frame, also can take n steps
+
+finish <- execute until current stack returns
+
+continue <- continue program and end the pry session
+
+
+also has the following commands for the call stack:
+
+backtrace <- shows current stack
+up <- moves the stack frame up
+ down <- moves stack frame down
+frame <- moves to specific frame, default will show current frame. 
+
+
+pry is basically a more sophisticated way of using puts statements to find bugs. 
+callstack is the most convenient, but it only shows up for errors. 
+
+
+
+-------------------Yield----------------
+
+Methods that accept blocks of code (ex: .each) can do so because they can 
+transfer control from the method to the block (makes sense, .each needs 
+control to iterate, block needs control to do its thing). This functionality 
+can be built into custom methods with <yield> keyword to switch between block
+and method. 
+
+^How it works. yield will call whatever is in {} after calling the method.
+
+ex: def method 
+	puts 'a'
+	yield
+	puts 'c'
+	end
+
+	method {puts 'b'} <--- this is what yield calls
+	^ this puts 'a', then 'b' (the yield), the 'c'. 
+
+Yields also can take parameters. It can then be manipulated in the block like a
+normal parameter 
+
+^ex: yield(3)
+
+	method_name {|n| puts n+=9}  <- puts 12. can also interact with the
+	method parameter(i think) 
+
+
+------------------Procs----------------------------------
+
+A proc is basically a storable block. (a block is what you put btwn { }) 
+
+ex: multiples_of_three = Proc.new do |n| 
+			   n % 3 == 0
+			   end
+After creating a proc, call it to a method that would normally take a block.
+ex: bunchofnumbers.collect(&multiples_of_three)    <- the & converts the proc
+into a block. Use & when using methods that require a block. 
+
+
+---------------Calls------------------------
+
+You can call a proc directly using proc_name.call
+
+--------------Lambdas----------------
+Virtually identical to procs.
+
+Lambda syntax:
+		variable = lambda { |param| block}
+
+Differences btwn Lambda and Proc: 
+1)lambda checks #of args passed to it. So lambda gives error, but proc gives nil
+2)When a lambda returns, it passes control to the method; but when a proc returns 
+ it returns immediately without going back to the method. 
+
+^ TLDR: A proc will return wherever it is in a method, but a lambda will keep
+going. 
+
+	
+
+
+------------Exception Handling---------
+
+the basic concept as it relates to exceptions and errors is this:
+
+Every type of error and exception is derived from the Exception class
+If your code rescues a StandardError, it will only rescue errors that are derived from StandardError.
+If your code rescues an Exception, it will basically handle every possible error that could happen,
+including all errors of StandardError type and its children types.
+
+
+If you use rescue on Exception, you can't exit the program with CTRL+C since thats an 
+interrupt exception. So be more specific when rescuing. 
+
+Exception Family Tree: 
+
+Exception
+    NoMemoryError
+    ScriptError
+        LoadError
+        NotImplementedError
+        SyntaxError
+    SignalException
+        Interrupt
+    StandardError
+        ArgumentError
+        IOError
+            EOFError
+        IndexError
+            StopIteration
+        LocalJumpError
+        NameError
+            NoMethodError
+        RangeError
+            FloatDomainError
+        RegexpError
+        RuntimeError
+        SecurityError
+        SystemCallError
+        SystemStackError
+        ThreadError
+        TypeError
+        ZeroDivisionError
+    SystemExit
+    fatal   
+
+
+
+
+
+
+
+
+
+Exception handling is code to tell the program how to run if/when something goes wrong.
+One common way is with begin/rescue.
+
+ensure can be added after an else for what you want to happen whether theres an error or not. 
+^retry skips ensure if it activates. 
+retry can be added to send the statement back to begin (you can make a retries variable = x, then
+have retries -= 1 somewhere in the rescue if retries > 0 ) 
+
+
+
+Note: retry skips ensure statement and just goes back.
+
+The main idea is to wrap any part of the program that could fail in this block. 
+Commands that work with outside input, 
+such as downloading a webpage or making calculation something based from user input, are points of failure.  
+
+<begin> and <rescue> (sans tags) blocks are used on code you anticipate errors. 
+Instead of crashing the program, it will rescue it if begin fails. 
+
+
+rescue StandardError => e   is common for a standard error, 
+e refers to the error. 
+
+A rescue clause without an explicit Exception class will rescue all StandardErrors (and only those).
+
+example:
+
+values = [42,'a','r',9,5,10022,8.8,'t']
+
+while values.length > 0
+a = values.pop
+b = values.pop
+
+begin 
+a+b
+rescue
+puts "could not add variables a (#{a}) and b (#{b})"
+else
+puts "a +b is #{a +b}"
+end
+
+end
+
+^Notice that rescue can take an else/ result is that what can be added is added,
+and what cant returns the rescue message. 
+			
+
+Can also handle exceptions with user input in command line (not irb or text editor),
+
+open the file from the command line (ruby filename.rb) and wrap errors in begin/rescue or other
+code from there to fix issues. 
+
+
+----------------Rubocop------------
+typing rubocop from CL will check all .rb files in the current directory
+or can pass rubocop a list of files and directories to check
+ex: rubocop app spec lib/something.rb
+(^ not sure what is placeholder here besides something.) 
+rubocop -x runs auto correct on formatting issues.
+rubocop -h to see list of commands 
+
+RuboCop exits with the following status codes:
+
+0 = no offenses found or if all errors are less than 'fail' level.
+1 = one or more fail level errors (non-auto correctable)
+2 = RuboCop terminates abnormally due to invalid configuration, invalid CLI options, or an internal error.
+
+
+--------------------------Files/Serialization-----------------
+Serialization: converting data into a storable format (the only way data travels on html is as string)
+
+At its most basic, its about flattening data structure so that it can be transfered 
+as a string. 
+
+YAML is often used to save configuration files for rails (its lightweight) 
+JSON is used to transfer larger data from web to a program via an API. 
+
+A lot of overlap between how serialization works and databases work. 
+they facilitate the ability to maintain state and permanence for your data. 
+   
+Ruby has IO objects for input/output streams. STDIN STDOUT STDERR (standard in/out/error)
+
+
+Screens, keyboards, files, and networks are all forms of I/O. 
+Data from these devices is sent to and from programs as a stream of characters/bytes.
+
+I/O streams are located under the /dev/fd directory.
+ Files there are given a number, known as a file descriptor.
+
+Similarly, IO objects can be read from via gets. The bare gets provided by Kernel is an alias to $stdin.gets
+
+$stdin is read-only while $stdout and $stderr are write-only.
+
+To create a new IO object, we need a file descriptor. In this case, 1 (stdout).
+^ io = IO.new(1)
+
+What about creating IOs to other streams? They don’t have constant file descriptors so we first
+ need to get that via IO.sysopen.
+^fd = IO.sysopen('/dev/null', 'w+') <---- I think the w+ is 'write+'
+
+^the first parameter is a "null device" on Unix systems.
+
+VERY IMPORTANT: passing 'w' to a file erases its contents, pass 'a' instead to
+append to existing cotent. 
+
+.open method takes two arguments, the file name (as a string), and "w" or "a" (or others?) 
+
+We can ask a stream if we have reached “end of file” via file_name.eof? 
+
+To return to the beginning of the stream, we can call file_name.rewind.
+
+Any write operations in the middle of a stream will overwrite the existing data
+
+puts method in File class prints to the file instead of screen. writes method does same but does not add a newline.
+
+close method finishes the writing process. 
+
+read method reads the file YEP
+
+Using File.readlines will save each line as a separate item in an array.
+^ex: can save a variable as File.readlines('filename'). 
+^then that variable is an array of each line in the file that you can iterate on.
+
+
+
+Sockets are classes that provide access to operating system stuff(inherits from IO class) 
+
+StringIO is a class that allows strings to behave like IOs (doesn't inherit from IO class though)
+^ex: string_io = StringIO.new('Hello World')
+^ can puts/gets/rewind methods
+
+^useful when we want to pass strings into systems that consume streams. 
+This is common in tests where we might inject a StringIO instead of reading an actual file from disk
+
+tempfile is a class that implements File‘s interface and deals with temporary files. As such, it can be passed to any object that consumes IO-like objects.
+It doesn't inherit from IO tho. 
+
+
+YAML is a serialization format, very similar to hashes.
+ex:
+name: "David"
+height: 124
+age: 28
+children:
+  "John":
+    age: 1
+    height: 10
+  "Adam":
+    age: 2
+    height: 20
+  "Robert":
+    age: 3
+    height: 30
+traits:
+  - smart
+  - nice
+  - caring
+
+^then in the ruby doc: <require> (sans brackets) 'yaml' 
+^then next line: YAML.load File.read('filename.yaml')
+
+
+^Running the above in Pry will give you a nicely formatted result that looks like:
+
+{"name"=>"David",
+ "height"=>124,
+ "age"=>28,
+ "children"=>{"John"=>{"age"=>1, "height"=>10},
+             "Adam"=>{"age"=>2, "height"=>20},
+             "Robert"=>{"age"=>3, "height"=>30}},
+ "traits"=>["smart", "nice", "caring"]}
+
+
+in an object, turn object into YAML compatible string by defining to_yaml method using YAML.dump({ :attribute_name => @attribute_name, etc} 
+
+conversely, turn data into yaml by defining from_yaml(string) method 
+^then make a variable = YAML.load string (the parameter) 
+		p variable
+		self.new(variable[:name], data[:age], data[:gender])
+		end 
+
+
+JSON is similar to YAML, but based on Javascript (JavaScript Object Notation. 
+
+YAML uses spaces to determine nesting relationships. 
+
+---------oop------
+
+Ruby class syntax: class ClassName    <- classes are named CapitalCamelCase
+		  #codestuff
+		end 
+
+
+A getter method is what we create inside a class to return the name of an instance variable.
+ex:  def get_name
+	@name
+      end 
+ ^can then call the method outside the class to get the object's name. 
+
+A setter method is used to change the name of an instance variable. 
+ex (again inside the class):  def set_name=(name)
+				 @name = name
+			      end 
+^then outside the class, can change by doing object.set_name = x 
+
+*Ruby convention is to name getter <name> and setter <name=(n)>  
+
+Note that getter/setter are used in ruby as acessors (attr_accessor :name)
+
+With getter/setter set, reference the instance method instead of the instance variable
+within code ex: "#{name}" instead of "#{@name}". 
+^This will save a lot of headaches. 
+
+---------------------- Blocks/Procs/Lambda Revisited--------
+
+yield keyword can be used multiple times in a method, and each time it
+yields to the block in the same way.
+
+Ex: def double
+	yield
+	yield
+    end 
+
+double {puts 'hey'}
+
+^ puts 'hey' twice.
+
+
+^the block that you yield to does *not* go in the object definition. 
+
+to yield a key/value pair, specify both key and value as parameters of yield
+
+^ex:
+hash = {a: 'apple', b: 'bananana', c: 'cookie'} 
+
+hash.each do |k, v|
+     yield k,v
+   end
+end
+
+if you only include k, it only yields for k
+
+can use block_given? as a conditional if statement, so that 
+something happens if you call the method with a block. 
+
+ex: def maybe_block
+	if block_given?
+	  puts 'yep block'
+	end
+	puts 'yep'
+	end
+^ if I call maybe_block with nothing else, it gives 'yep'
+if I call maybe_block {}, it gives 'yep block' then 'yep' 
+
+*****LAMBDA REVISITED****** 
+A lambda is a way to write a block and save it to a variable. 
+This can be useful if you find yourself having to write blocks for different
+ methods you’re calling which all do the same thing.
+
+There are two ways to create a lambda. 
+One is to use the lambda keyword ex: lambda { "inside the lambda" }
+The other way to declare a lambda is -> {}. 
+
+ex: my_lambda = lambda { puts "my lambda" }
+
+my_other_lambda = -> { puts "hello from the other side" }
+
+To call a lambda you just call the call method.
+
+my_lambda = -> { puts "high five" }
+my_lambda.call
+
+If you want to accept arguments into your lambda you have two options and which
+ option you can use depends on how you declare your lambda.
+ If you use -> then you can use () to name your parameters. 
+If you use lambda then you can use the more recognized || inside the block.
+
+^ex 
+my_name = ->(name) { puts "hello #{name}" }
+
+my_age = lambda { |age| puts "I am #{age} years old" }
+
+*******Procs Revisited***********
+
+A Proc is just an object that you can use to create blocks to be passed around.
+there is no special lambda class. A lambda is just a type of Proc object 
+but with some distinct behaviors 
+
+a_proc = Proc.new { puts "this is a proc example" }
+
+a_proc.call 
+
+Arguments/Params are declared inside ||
+^ex: a_proc = Proc.new { |name, age| puts "#{name}, #{age} years old"}
+
+
+*****Procs vs. Lambdas*****
+
+Differences: proc more flexible about parameters, assigns nil to any you name
+but don't pass through. Lambda will raise an error if unexpected # of params. 
+
+Difference 2: Returns: an explicit return in a lamdba returns the block
+back to the caller. Proc object returns "from the context it was called"
+^not entirely sure what that means, but the gist seems that it returns to the 
+level above the proc? ex: you cant return a proc at a top level outside of a 
+class/method. not 100% sure.
+ex: if you return from a proc inside a method, the method was the context it was
+called in, so it returns from the method, and nothing below it (in
+the method) is executed. 
+
+ex: def my_method
+  a_proc = Proc.new { return }
+  a_proc.call
+  puts "this line is never reached"
+end
+
+procs and lambdas can both use default parameters ( |name = 'bob'|)
+procs and lambdas can both be used as a parameter in a method 
+
+
+How to reference a block:
+
+Ruby allows us to capture blocks in a method definition with a 
+special argument using &.
+
+ex: def cool_method(&my_block)      <---- the captured block should be last
+  my_block.call
+end
+
+this is an 'explicit block', if it isn't a parameter then its an 'implicit block
+
+ruby does a to_proc method on whatever is assigned &. 
+
+ex: arr ['1','2','3']
+arr.map(&:to_i)
+
+^ ruby calls to_proc on the symbol, it returns a proc object that responds 
+to the method given by the symbol. 
+
+& can be appended to a proc, which is then converted to a block.
+
+ex:
+
+def cool_method
+	yield
+	end
+	my_proc = Proc.new { puts "proc party" }
+
+cool_method(&my_proc)
+
+
+---------Pattern Matching--------
+pattern matching uses specified patterns to match against some data. 
+If the data conforms to the pattern there is a match and
+ the data is deconstructed accordingly. If there is no match either you can
+supply a default value to return or else a NoMatchingPatternError is raised.
+
+Syntax is similar to case statement:
+ex:
+grade = 'C'
+
+case grade
+in 'A' then puts 'Amazing effort'
+in 'B' then puts 'Good work'
+in 'C' then puts 'Well done'
+in 'D' then puts 'Room for improvement'
+else puts 'See me'
+end
+
+There are multiple ways of potentially matching against an input. 
+Patterns in Ruby 2.7 can be
+
+ Any Ruby object which is matched using ===. The Object Pattern.
+ A variable capture / Variable Pattern
+ An As Pattern
+ An Alternative Pattern
+    A Guard Condition
+    An Array Pattern
+    A Hash Pattern
+
+There are two possible return values from a pattern match statement.
+ The first is true which is returned whenever there is a match, even when 
+the match is the else clause in a statement. The second possible return
+ value is a NoMatchingPatternError whenever no match can be found.
+
+Any object can be used in a pattern match. 
+It is matched using === to compare the two objects and is the same basis for 
+matches in the case/when format. This pattern is usually used within other 
+patterns such as the array pattern.
+
+Ruby places the pattern to match on the left of the comparison in ===. 
+
+Variable Pattern
+
+The variable pattern binds a variable or variables to the values
+ that match the pattern.
+^ex:
+	age = 15
+
+	case age
+	in a
+ 	 puts a
+	end
+
+	# => 15  (the puts output)
+
+As Pattern Match
+
+The as pattern is similar to the variable pattern
+ but can be used to manage more complex assignments.
+
+^ex:    
+	case 3
+	in 3 => a
+ 	 puts a
+	end
+
+	# => 3 (puts output)
+
+Alternative Pattern Match
+
+The alternative pattern allow you to check if multiple options match the input.
+^ex:
+	case 0
+	in 0 | 1 | 2
+  	puts :match
+	end
+
+	# => match (puts output)
+
+important: when using a variable, the case value will be given to that 
+variable, even if the outer scope has that variable with a different value.
+
+^ex: 
+	a = 5
+	case 1
+	in a
+	   a
+	end 
+^puts a will display 1 
+
+use the [^] operator (sans brackets) to specify an existing variable 
+
+^ex: 
+	a = 5
+	case 1
+	 in ^a
+	   a
+	end 
+^this returns an error because the pattern doesn't match (5 and 1) 
+
+
+Guard Conditions
+
+This isn’t a pattern per se but a way to make sure the pattern is only 
+matched if the guard condition holds true
+
+^ex:
+  some_other_value = true
+
+	case 0
+	in 0 if some_other_value (this could be any true expression I think)
+ 	 puts :match
+	end
+
+# => match (puts output)
+
+Array Pattern Match
+
+Matching against arrays can be done in a few different ways. 
+At its most basic you can match against the exact elements in the array.
+
+^ex:
+arr = [1 ,2]
+
+case arr
+in [Integer, Integer] 
+	 puts :match
+in [String, String] 
+	puts :no_match
+end
+# => match (puts output)
+
+Ruby appears to only match against arrays with the same number of elements. 
+What if you want to match against only part of an array? 
+Use the trusty splat *
+
+^ ex:
+	arr = [1,2,3,4,5,6]
+   case arr
+	in [Integer, Integer, *]
+	  puts :match
+	end
+# => match (puts output)
+
+Let’s say you want to match against an array of two numbers, 
+but only if they aren’t the same number. You can use a guard clause
+ex:
+     arr = [1, 2]
+    case arr
+      in [a, b] unless a == b
+        puts :match
+       end
+
+You can even match against nested arrays. This is where the real power of 
+pattern matching shines. Traversing deeply nested structures for matches.
+
+arr = [1, 2, [3, 4]]
+
+case arr
+in [_, _, [3, 4]]
+  puts :match
+end
+
+You can incorporate the variable pattern to bind 
+matching values to variables to use later
+
+^ex:
+    arr = [1, 2, 3, 4, 5]
+
+    case arr
+     in [1, 2, 3, a, b]
+       puts a
+       puts b
+     end
+
+# => 4
+# => 5 
+
+Hash Pattern Matching
+
+Pattern Matching with Hashes works in a similar way to arrays with a couple 
+of important differences. The first is that pattern matching only works for
+ symbol keys, not string keys.
+
+We can match against the actual values of a hash
+ex:
+    case { a: 'apple', b: 'banana' }
+       in { a: 'aardvark', b: 'bat' } 
+         puts :no_match
+       in { a: 'apple', b: 'banana' }
+         puts :match
+       end
+
+# => match
+
+We can match against a hash and assign values to variables
+ex:
+case { a: 'apple', b: 'banana' }
+in { a: a, b: b }
+  puts a
+  puts b
+end
+
+# => apple
+# => banana
+
+You can use the double splat ** to scoop up multiple key;value pairs
+ex: 
+case { a: 'ant', b: 'ball', c: 'cat' }
+in { a: 'ant', **rest }
+  p rest
+end
+
+# => { b: 'ball', c: 'cat' }
+
+Something to be mindful of with hashes is that because a hash will match 
+with only a subset of keys matching, you need to guard against situations 
+where you don’t want that behaviour
+^I think this means that only one key needs to match? should test irb to confirm
+ex:
+
+   case { a: 'ant', b: 'ball' }
+    in { a: 'ant' }
+    'this will match'
+    in { a: 'ant', b: 'ball' }
+     'this will never be reached'
+end
+
+^If you want to ensure you only match exactly you can use **nil
+
+case { a: 'ant', b: 'ball' }
+in { a: 'ant', **nil }
+  puts :no_match
+in { a: 'ant', b: 'ball' }
+  puts :match
+end
+
+# => match
+
+We can use the as pattern to assign the entire hash match to a variable.
+ex:
+    case { a: 'ant', b: 'ball' }
+       in { a: 'ant' } => hash
+         p hash
+        end
+
+#=> { :a => 'apple', :b => 'ball' }
+
+
+There are more techniques with Ruby 3, but that's not production ready yet. 
+
+TLDR on pattern matching is it is mainly used for working with deeply nested data. 
+If/when I need to use it, make sure to refresh on basics, and * operator. 

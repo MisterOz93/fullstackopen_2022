@@ -1,0 +1,132 @@
+refer to creating-users basics file in this dir for setting up user
+schema and connecting it with another db collection (ex notes).
+
+Make sure any username/password/tokens is done over HTTPS and not HTTP in
+production server. (Heroku is HTTPS). 
+
+Basics of Logging in:
+
+1. User submits login form.
+2. HTTP POST to /api/login containing { username, password }
+3. Backend generates a token that identifies the user
+4. Token is returned as message body of POST request.
+5. Browser saves the token.
+6. User Creates an object (ex: a note)
+7. HTTP POST to /api/notes containing {content}, the Token is in the req header
+8. Backend identifies the user from the Token.
+9. Backend responds with status 201, created. 
+----------------------------------------------
+use $npm install jsonwebtoken to generate the tokens.
+
+The code for login functionality goes to the file controllers/login.js.
+
+^ex:
+	const jwt = require('jsonwebtoken')
+	const bcrypt = require('bcrypt')
+	const loginRouter = require('express').Router()
+	const User = require('../models/user')
+
+	loginRouter.post('/', async (request, response) => {
+  	  const { username, password } = request.body
+
+  	  const user = await User.findOne({ username })
+          const passwordCorrect = user === null
+           ? false
+           : await bcrypt.compare(password, user.passwordHash)
+ 
+         if (!(user && passwordCorrect)) {
+           return response.status(401).json({
+              error: 'invalid username or password'
+               })
+          }
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      }
+
+      const token = jwt.sign(userForToken, process.env.SECRET)
+
+      response.status(200)
+       .send({ token, username: user.username, name: user.name })
+})
+module.exports = loginRouter
+
+^ SECRET must be defined in .env, it can be any string
+
+----------------------------------------------------------
+
+Requiring user be logged in order to POST an object (ex a note):
+
+inside the note controller:
+
+const jwt = require('jsonwebtoken')
+
+//create a helper function to isolate the token from the header:
+
+const getTokenFrom = request => {
+   const authorization = request.get('authorization')
+   if (authorization && authorization.toLowerCase().startsWith('bearer ')){
+     return authorization.substring(7)
+   }
+   return null
+ }
+
+^'bearer' is the name of the scheme being used for the authorization header.
+if the token is a string 'fooxyz123' 
+then the header would be: 'Bearer fooxyz123'
+
+//inside the POST route:
+
+  const body = request.body
+  const token = getTokenFrom(request)
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+  const user = await User.findById(decodedToken.id)
+  //then create note, save note, add it to user's array of notes using 
+  //concat, then save user and return response.json(savedNote)
+
+^^The decodedToken object contains username and id fields that were 
+passed in the userforToken object in 1st param of sign method
+^^To test this in VS Code REST, have to add a line for Authorization
+underneath Content-Type.
+ex:
+Authorization: bearer foo123xyz //where foo123xyz is the token value
+
+--------------------------
+Error handling should be done for error.name === 'JsonWebTokenError'
+return response.status(401).json({ error: 'invalid token' })
+
+-----------------------------------------
+
+Limiting Token validity:
+
+Method 1:
+To limit the amount of time a token is valid, in the jwt.sign() 
+method, add an object as 3rd parameter for number of seconds its valid.
+
+^ex: //inside login POST route
+
+    const userForToken = {
+	username: user.username, //user being defined earlier w/ User.findOne
+        id: user._id,
+    }
+    const token = jwt.sign(
+		userForToken,
+		process.env.SECRET,
+		{ expiresIn: 60*60 } //3600 seconds aka 1 hour.
+                )
+^Then, handle error.name=== 'TokenExpiredError' w/ a 401 status and a msg.
+
+Method 2: 
+Save info about each token to a database, and check on each API
+request if the access right corresponding to the token is still valid.
+Common to save the session corresponding to a token to a key-value db
+(ex: Redis).This approach usually uses cookies instead of Authorization header
+for transferring token btwn client and server.
+--------------------------------------------------
+
+
+
+

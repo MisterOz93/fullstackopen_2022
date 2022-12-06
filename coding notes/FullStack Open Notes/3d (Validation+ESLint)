@@ -1,0 +1,132 @@
+----Mongoose validation----
+
+Instead of hardcoding validation requirements 
+^(ex: if (!request.body.dataFieldName){return response.status(400).json({..})
+
+you can instead define validation rules for each field in the schema.
+
+ex:  fooSchema = new mongoose.Schema({ 
+	dataFieldName: {
+         type: String,
+	 minLength: 3,
+	 required: true
+    }, 
+	otherDataFieldName: { //etc} 
+
+In addition to built in validators (minLength, required, etc.) you can 
+create custom validators.
+
+for customer validators, define a function that returns true/false. The
+parameter of that function is automatically the data you're validating.
+^ex if im trying to validate a field foo, then when I define
+validator: function (x) {return x === 3}  <-- x will be foo when the validation is run. 
+
+If you try to store an object in the db that breaks a validation constraint,
+it throws a ValidationError. So when creating a new Foo remember to .catch and throw to
+error handling middleware (ex: .catch(error => next(error))
+
+And in error handler, can add a condition if error.name === 'ValidationError{
+ return response.status(400.json({ error: error.message})
+
+
+Validation is default off for PUT (updating). To enable it, in the 
+findBy[x]andUpdate() as 3rd parameter include {validation: true} 
+^//not exact syntax, check code and replace w/ actual syntax
+
+
+Also consider adding error handling to front end when trying to create a
+new Foo object. 
+
+-------Deploying database backend to production-----
+
+*Remember to generate a new production build of the front end if any
+changes were made there. 
+
+Environment variables defined in dotenv are in the development file .env for 
+the development build, but for production the DB url needs to be set to Heroku
+with the $heroku config:set command:
+$heroku config:set MONGODB_URI=<insertdatabaseurl> (sans brackets)
+^if this doesnt work, put the value of MONGODB_URI as a string.
+
+
+---------Lint-------
+
+a Linter provides static analysis of code (like how Java IDE detects errors
+since Java is a compiled statically typed language).
+
+for JS, ESlint is the current top 'linter' 
+
+$npm install eslint --save-dev
+
+step 2: $npx eslint --init //initializes a default ESlint configuration
+
+step 3: answer the questions that come up, config will be saved in the 
+        .eslintrc.js file
+^in fso, choices were:
+-to check syntax, find problems, and enforce code style
+- CommonJS
+- none of these
+-No
+-Node
+-Answer questions abt style
+-Javascript
+-spaces
+-single
+-unix
+-no 
+
+Step 4: go to that file and change indentation
+        rule to 2. 
+
+
+To inspect/validate a file:
+
+$npx eslint filename.js
+
+or create a script:
+
+"lint": "eslint ." 
+
+^in package.json @ "scripts" w/ "start" 
+
+^this creates $npm run lint command
+to check every file in project.
+
+^^IMPORTANT this also checks files in
+the build directory, which you dont want.
+so create a .eslintignore file in the
+project root and add 'build' (sans quotes)
+to it.
+
+
+Instead of executing linter from command line,
+its better to use an eslint-plugin in the editor that
+runs the linter continuously. 
+
+
+edit the 'rules' of ESlint by editing them in the 
+.eslintrc.js file. 
+
+examples:
+
+ 'eqeqeq': 'error', //warns if equality is checked
+	//with anything other than ===
+'no-trailing-spaces': 'error',
+'obect-curly-spacing': [
+	'error', always'
+	],
+ 'arrow-spacing': [ 'error, { 'before': true, 'after': true }
+
+to disable a rule (that you may have taken in from 'extends': 'eslint:reccomended',)
+define its value as 0. 
+
+
+**When you make changes to .eslintrcjs file, run the linter from command line
+to make sure it (the config file) is formatted properly. vs plugin can act up
+if something wrong w/ config file. 
+
+Many companies have their own ESlint config file to follow as style guide.
+
+
+
+

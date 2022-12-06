@@ -1,0 +1,182 @@
+
+--------Getting Started-----------
+
+$ npx create-react-app appname creates a new directory called appname. 
+
+$npm start   inside the directory will load react app using localhost:3000
+
+if you copy project from one directory to other, delete (or just dont xfer)
+the node_modules over. run $npm install to install the dependencies again.
+
+The code for the app is in the src folder. 
+
+Note: npm start won't work if code editor is open (or in that directory at least)
+
+In VSCode, shift+ctl+p then type 'simple browser' then copy paste 
+url (usually localhost3000) to get side by side windows. 
+
+Files to remove on startup:
+
+- logo192.png
+- logo512.png
+- logo.svg
+- favicon.ico
+- robots.txt
+- App.test.js
+- setupTests.js
+- index.css
+- reportWebVitals.js
+
+
+This leaves us with:
+
+node_modules (where npm stores imported packages)
+index.html (template for main file served on browser)
+manifest.json (describes info needed to populate icons/colors/names/etc)
+.gitignore (which files not added to commits)
+package.json (lists packages project depends on, and which versions it can use)
+package-lock.json (the exact version of packages used)
+README.md (description, how to install/run it)
+src folder (source code)
+index.js (safe to edit it so it only imports react, reactdom, app. and then
+calls reactdom.render(<App />, document.getElementById('root'));
+App.js (root component)
+App.css 
+
+
+
+Start up index.js should be: 
+
+import ReactDOM from 'react-dom'
+import App from './App'
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+------------------
+
+Start up App.js should have:
+
+import React from 'react' 
+
+const App = () => {
+
+return (
+
+<div>
+</div>
+)
+}
+
+export default App
+-------------------
+
+
+
+
+
+
+---------------------------COMPONENTS----------------
+
+Components: independent and resuable bits of code, similar to functions, 
+but return HTML via a render function. 
+
+ex: ReactDOM.render(
+    <App />,
+  document.getElementById('root')
+);
+
+^App being a seperate js file that is imported, 'root' being the ID
+of the HTML div where we want to render App. 
+
+Can also add a block of code in there, js will embed it into the 
+defined part of the html.
+
+ex: 
+const App = () => {   <- notice curly braces
+  const now = new Date()
+  const a = 10
+  const b = 20
+
+  return (   <- notice return 
+    <div>
+      <p>Hello world, it is {now.toString()}</p>
+      <p>
+        {a} plus {b} is {a + b}
+      </p>
+    </div>
+  )
+}
+
+When using React, all content that needs to be rendered 
+is usually defined as React components. 
+
+React uses JSX and not HTML, JSX returned by React components 
+is compiled into JavaScript. JSX is a lot like HTML but can
+easily embed dynamic content by writing appropriate JS in curly braces.
+
+IN JSX, EVERY TAG NEEDS TO BE CLOSED. 
+
+so when we write <div>, under the hood is actually:
+
+React.createElement('div', null) <- not sure what null is for, will learn later.
+
+you can nest a component in another component. "call" (idk if correct term)
+component with <ComponentName /> 
+
+^ex: const App = () => {
+return (
+	<div>
+	 	<h1> Greetings</h1>
+		<OtherComponentName />
+	</div>
+	)
+	} 
+
+const OtherComponentName = () => {
+  return (
+    <div>
+      <p>Hello world</p>
+    </div>
+  )
+}
+
+A core philosophy of react is composing applications from many
+different specialized reusable components. As well as a root component
+called "App" (but some situations where App is not exactly the root, but
+wrapped in a utility component, to be covered in part 6). 
+
+Components need to begin with Capital letter. 
+
+Also, components usually need a root element <> </>. 
+^a <div> </div> works, but it creates extra tags in the DOM. 
+
+---------------PROPS---------------------
+
+props are a way to pass data to components. 
+
+ex: 
+
+const Hello = (props) => {
+return (
+  <div>
+      <p> Hello {props.name}</p>
+  </div>
+  )
+}
+
+the parameter is an object that has fields for each "props" the user
+of the component defines. 
+
+ex:
+
+const App = () => {
+  return (
+   <div> 
+     <h1> Greetings </h1>
+	<Hello name="George" />     
+<etc>
+
+^here the component is 'called' with the name field of the 
+props set to George.
+
+
+

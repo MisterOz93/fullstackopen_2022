@@ -1,0 +1,4 @@
+If you haven’t already, set your local default git branch to main. 
+You can do so by running: 
+
+$git config --global init.defaultBranch main

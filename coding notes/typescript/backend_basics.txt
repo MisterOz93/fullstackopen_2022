@@ -1,0 +1,108 @@
+*this continues from getting_started.txt
+-----
+
+$npm install express
+$npm install --save-dev @types/express	
+create index.ts and add script: "start": "ts-node index.ts" to package.json
+-------------
+
+import vs. require:
+
+Sometimes when using require (ex: const express = require('express')) the
+compiler might interpret everyting related to that package as type *any, 
+but might know the actual types if you use import (ex: import express from
+'express'). 
+
+^The better one to use depends on the export method used in that package.
+Rule of thumb is try import first, if that doesnt work, then try 
+a combined method: import ... = require('...') 
+--------------
+
+example starting point for index.ts:
+
+import express from 'express';
+const app = express();
+
+app.get('/', (_req, res) => {
+    res.send('hi');
+});
+
+const PORT = 3003;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
+-----------------
+Auto-reload server on change:
+
+$npm install --save-dev ts-node-dev
+add "dev": "ts-node-dev index.ts" to scripts.
+
+^works like nodemon - used in dev environment
+to recompile with every change so you dont have to restart
+constantly.
+
+-------------------
+type any:
+
+In TS, any variable whose type is undeclared or cannot be inferred
+implicitly becomes type 'any' - a wildcard type. 
+
+Any can be typed explicitly or implicit, but implicit are usually
+problematic since it usually results from forgetting to assign a
+type. The noImplicitAny rule in config file is recommended to be on
+at all times to avoid implicit anys. Only explicitly type something
+any if you dont know what its type will be.
+
+*IMPORTANT*: Some express objects (like request.query or request.body)
+are explicitly types as any.
+
+In order to enforce not using type any - use eslint to manage the code.
+Ex:
+
+1. $npm install --save-dev eslint @typescript-eslint/eslint-plugin 
+                 @typescript-eslint/parser
+^if using prettier, also add:
+
+$npm install --save-dev eslint-config-prettier eslint-plugin-prettier
+
+and add "prettier" to plugins and extends arrays in .eslintrc
+
+Then add .prettierrc.json to dir
+
+2. example of .eslintrc file settings:
+
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
+  "plugins": ["@typescript-eslint"],
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "@typescript-eslint/semi": ["error"],
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/restrict-plus-operands": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_" }
+    ],
+    "no-case-declarations": "off"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  }
+}
+
+3. add to scripts:
+  "lint": "eslint --ext .ts ."
+
+

@@ -1,0 +1,19 @@
+UI frameworks: Bootstrap, materialize, foundation, semantic UI
+
+^Used to make HTML and CSS look better more easily. Choice comes down to
+preference and site goals.
+
+JS Frameworks: Vue, AngularJS, React, Ember
+
+Backend frameworks depend on language. 
+
+Overall languages/frameworks/other stuff is refered to as the stack. 
+
+Choosing the right stack depends on what type of app you're doing and its performance needs.
+
+Simple: landing page or simple online store
+ 
+Medium: ex: eccomerce or enterprise apps
+
+complex: ex: social network, large ecommerce market, fintech software
+

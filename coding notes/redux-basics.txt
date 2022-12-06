@@ -1,0 +1,248 @@
+Flux-Architecture basics:
+
+Makes state management easier. The state is seperated from the react 
+components into its own stores. State in the store is not changed 
+directly, but through different actions.
+
+Action -> Dispatcher -> Store -> View
+
+^When an action changes the state of the Store, the View is rerendered.
+
+Flux offers a standard way for how/where app state is kept and modified.
+
+--------------------------------------
+
+Redux:
+
+$npm install redux in front end dir
+
+In Redux, the whole state of the app is stored in one JS object
+in the store. 
+
+Normally, different things in the state are saved as seperate
+fields of the object. 
+
+
+State of the store is changed with actions.
+
+^Actions are objects with at least a type field
+
+^ex: {
+	type: 'INCREMENT'
+     }
+
+Other fields can be included in the action object if there
+is data involved. 
+
+The Action's impact to the state is defined using a 'Reducer'.
+
+A 'Reducer' is a function that is given the current state and an
+action as parameters, and returns a new state.
+
+Basic Reducer example:
+
+const counterReducer = (state = 0, action) => {
+ switch (action.type) {
+    case 'INCREMENT':
+      return state + 1
+    case 'DECREMENT':
+      return state - 1
+    case 'ZERO':
+      return 0
+    default:
+      return state
+  }
+}
+
+IMPORTANT: Reducer shouldn't be called directly in the app code,
+Reducer is only given as a parameter to the createStore function:
+
+
+import { createStore } from 'redux' //NOTE: use configureStore instead,
+//see redux-toolkit file.
+
+//counterReducer is defined (see above)
+
+const store = createStore(counterReducer)
+
+^store is then used to handle actions through the
+#dispatch method:
+
+^ex: store.dispatch({ type: 'INCREMENT' })
+
+The current state of the store can be found using 
+the store.getState() method.
+
+^To get a specific field, use store.getState().fieldName
+
+Store also has #subscribe method, used to 
+create callback functions that the store calls 
+whenever an action is dispatched to the store.
+
+ex: 
+
+store.subscribe(() => {
+  const currentStore = store.getState()
+  console.log(currentStore)
+})
+
+^Therefore, every change in the store would trigger
+that callback. 
+
+In index.js, create a function to render a root to ReactDOM,
+then call the function, then pass it to store.subscribe(),
+and the render will happen with every state change.
+
+^ex:
+
+const renderApp = () => {
+  ReactDOM.createRoot(document.getElementById('root'))
+    .render(<App />)
+}
+
+renderApp()
+store.subscribe(renderApp)
+
+^the first renderApp() call is needed to render the app the first time
+Also, better to define root first, then call #render on it in renderApp
+method (so you arent creating root with every call).
+
+---------------------------------------------
+
+Reducers:
+
+Redux reducers must be "Pure functions" that do not cause any side effects
+and always return the same response when called with the same parameters.
+
+Reducer state must be immutable objects, if the state changes, it must
+be replaced by a new object instead of changing the old object.
+(ex: use concat over push)
+
+---------------------------------------------
+
+Action creators:
+
+Functions that create actions are action creators.
+ex: A seperate module has a function:
+
+const createNote = (content) => {
+  return{
+    type: 'NEW_NOTE',
+    data: {
+      content,
+      important: false
+    }
+   }
+}
+
+^Then in App event handler:
+  store.dispatch(createNote(content))
+The react component (App in this case) doesn't need direct access to the 
+Redux action type, but can be passed a function that contains the action.
+---------------------------------------------------
+Sharing the redux store across components:
+
+1. $npm install react-redux
+
+2. In index.js:
+ import { Provider } from 'react-redux'
+ import {createStore} from 'redux'
+ import fooReducer from './reducers/fooReducer'
+
+ const store = createStore(fooReducer)
+ ReactDOM.createRoot(document.getElementById('root')).render(
+   <Provider store={store}>
+     <App />
+   </Provider>
+ )
+
+3. Inside the reducer module:
+
+  export const actionFunction = (foo) => {.....}
+
+^add export statement to each action creator
+(still end the file with export default fooReducer)
+
+non-default exported functions can be imported with curly braces:
+^ex: import { actionFunction } from './../reducers/fooReducer'
+
+
+4a. Inside of the App file:
+
+  import { actionFunctionFoo, actionFunctionBar } from //reducer file
+  import { useSelector, useDispatch } from 'react-redux'
+
+4b. Inside App component:
+
+  const dispatch = useDispatch()
+  const foo = useSelector(state => state)
+
+  const submitHandlerExample = (event) => {
+    event.preventDefault()
+    const input = event.target.foo.value //assuming an input field name foo
+    event.target.foo.value = ''
+    dispatch(actionFunctionFoo(input)
+  }
+
+^Note that instead of calling store.dispatch, we use the useDispatch hook's
+ dispatch function.
+
+useDispatch provides a React component access to the dispatch function 
+of the redux-store thats in index.js. 
+
+useSelector provides the component access to the data stored in the 
+redux-store in index.js. 
+
+^useSelector receives a function as parameter, the function either searches
+for or selects data from the redux-store. 
+ex: const importantNotes = useSelector(state => state.filter(note => 
+      note.important))
+
+^Assuming state is an array of note objects, useSelector would return a 
+ filtered array of notes with important field. 
+
+^ or to simply get the state: 
+const notes = useSelector(state => state)
+
+###end of section 4b for sharing store across components
+
+5. If a module needs access to an action creator function:
+     import { useDispatch } from 'react-redux'
+     import { actionCreatorFunction } from //reducer module
+
+     const moduleName = (props) => {
+       const dispatch = useDispatch()
+      
+
+^If an app has other components that need the store, the App-component
+must pass store as a prop to them. (unsure on this)
+
+------------------------------------
+
+Multiple reducers:
+
+if you have seperate reducers for handling different state (ex:
+one for handling notes, and one for setting a filter display) combine them
+in the index.js:
+
+//inside index.js
+import { createStore, combineReducers } from 'redux'
+
+import //both reducers
+
+const reducer = combineReducers({
+  notes: noteReducer,
+  filter: filterReducer
+})
+
+const store = createStore(reducer)
+
+^now, the state has a note field equal to the noteReducer state,
+and a filter field equal to filterReducer state.
+
+---------------------------------------
+cont. from redux toolkit file.
+
+
+	
+

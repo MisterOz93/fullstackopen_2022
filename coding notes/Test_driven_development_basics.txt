@@ -1,0 +1,367 @@
+Test-Driven Development (TDD) is a process and technique of software development 
+that relies on the repetition of a very short and specific development cycle. In
+ each cycle, requirements (i.e., what you want your code to do) 
+are turned into specific test cases first.
+
+First the test fails (since code hasn't been written)
+Then test passes. Then code is refactored. 
+
+
+What methods are worth testing? 
+
+1. Public Command methods (changes the observable state, does not 
+return a value) -> test the change in state
+2. Public Query methods (Returns a result but does not change observable
+state). -> test the rerutn value
+3. Method with outgoing command -> test that a message is sent
+4. Looping script method -> test the behaviour of method. 
+
+What methods don't need to be tested?
+1. Initialize, if it is only creating @instance_variables.
+(but might need to test any methods inside)
+2. methods that only contain puts or gets
+3. private methods because they should have test coverage in public methods
+(but private methods called inside script or looping script should be tested
+publicly).
+---------
+
+Some debate over whether TDD is best way to go, but it seems to reinforce 
+good coding practices. Key is to write the test before the code. 
+
+
+Small and isolated methods (that only do one thing) are easier to test.
+
+good example: def play_game 
+		#turn_order until #game_over?
+		#final_message 
+	     end
+
+bad example: def play_game
+    loop do
+      #player_input
+      @count += 1
+      break if @guess == solution.to_s
+    end
+    #final_message
+  end 
+^ in the good example, the turn order method abstracts the input and
+	the iteration into seperate methods. 
+
+
+-------Rspec--------
+
+The rspec gem comes packaged with all you need to get started, including five 
+gems:
+rspec, rspec-core, rspec-expectations, rspec-mocks, and rspec-support.
+
+to install: gem install rspec
+Once that’s done, you can verify your version of RSpec with rspec --version
+
+cd into project directory and type rspec --init to initialize RSpec, 
+this generates 2 files: .rspec and spec/spec_helper.rb.
+
+rspec command runs the tests. 
+
+the spec/ folder is where to create the test files (.rb)
+
+<describe> (sans brackets) is an RSpec keyword 
+that defines an 'Example group'(collection of tests). It takes a class
+or a string as an argiment and is passed a block. 
+
+describe blocks can be nested. 
+
+ex:
+require './folder/filename'
+describe Calculator do
+  describe "#add" do
+    it "returns the sum of two numbers" do
+      calculator = Calculator.new
+      expect(calculator.add(5, 2)).to eql(7)
+    end
+  end
+end
+
+the <it> keyword defines an individual example (one test)
+<it> takes a string argument and is also passed a block.
+The block passed to <it> is where our expectations of a method
+are expressed. 
+
+ Conventionally, the string argument for instance methods are written as
+ “#method”, while string arguments for class methods are written as “.method”.
+
+Summary Steps: 
+	1.describe class
+	2. describe method example grp 
+	3. write test case w/ it, 
+	4. Write expectation using expect. Expect method is chained with
+	   .to for positive, and .not_to (or .to_not) for negative.
+	Limit one expect clause per test case. 
+
+Remember to add requre './folder/filename' to the spec file's code.
+
+    <rspec --format documentation>
+
+^^typing that in the commandline (sans brackets) displays your it strings 
+(ex: it "returns the sum of multiple numbers") in green/red and the method
+names. (its good, use it)
+
+add --format documentation on a line in a .rspec file. (auto generated when
+you initialize rspec in a project). 
+
+<let> keyword creates a helper method with a memoized value that
+is stored for that example, but not across different examples.
+
+^ex: let(:favorite_color) { String.new('blue') }
+
+a context block works like describe, but is usually used 
+with conditionals (if, when, unless, with, for, etc.)
+
+^ex: context 'when a let variable is used' do 
+	it 'is the value of assigned let variable' do
+	expect(favorite_color).to eq('blue')
+				
+
+If the first argument to the outermost example group is a class, an instance
+of that class is exposed to each example via the subject method.
+
+^this is NOT RECCOMENDED (an implicitly defined subject)
+
+instead, you should explicitly define the subject with a descriptive name.
+
+ex: describe ClassName do
+ subject(:class_name) {ClassName.new} 
+ 
+
+you can test if a subject is a certain type.
+^ex: expect(subject).to be_an(Array)   <--  be_a also works
+	
+.empty? and other predicate methods (ending in ?)
+can be tested as well 
+^ex:expect(subject.empty?).to eq true
+
+predicate matcher: Rspec has built in methods for predicate methods
+ex: expect([]).to be_empty #(this calls [].empty?)
+a few other methods include:
+   (array).not_to have_odd_values
+    (hash).to have_key(:keyname)
+     (7).not_to be_zero
+^and many more. 
+
+use <be> instead of <eql> for true/false 
+^ex: expect(hash_name[:key_name]).to be true
+
+eq checks for equal value
+eql checks for equal value and type
+equal checks for object identity (same object instance?)
+be checks for object identity
+
+the 'all' matcher and 'contain_exactly' matcher look at every item in a list
+^ex: subject(:numbers) { [11,12,13]}
+it 'is all less than 15' do 
+ expect(numbers).to all(be < 15) 
+end
+it 'contains exactly 11, 12, 13' do
+  expect(numbers).to contain_exactly(12,13,11) <- order doesn't matter
+ end
+
+can also do start_with/end_with matchers, and chain matchers with .and
+^ex:
+expect(word).to start_with('letters').and expect(word).to end_with('letters')
+
+
+can use .or to check for multiple cases: expect(number).to eql(4).or eq(5)
+
+when testing for change to happen, you need to use blocks
+^ex: it 'will increase the length by one' do
+	expect {array << value}.to change {array.length}.by(1)
+
+^change can also be represented: by_at_most(n)
+
+
+you can also create custom matchers by passing a block.
+^ex: describe 'defining custom matchers' do 
+       context 'when reusing a matcher that is in scope' do
+	matcher :be_divisible_by_four do 
+	 match { |number| (num % 4).zero?}
+	end
+   it 'is divisible by 4' do
+	expect(12).to be_divisible_by_four 
+   end 
+^note how the test (it) is within the same scope (describe) as the matcher.
+so it works. 
+
+use <described_class> (sans brackets) instead of class's name when naming subject
+incase Class name changes during development. 
+^ex: subject(:my_class) { described_class.new(arg) }
+
+^This way you only have to change the class name that's initially described. 
+
+google rspec magic matcher, description is a bit unclear. 
+
+^I think the idea is instead of testing (class.method) you can just test 
+(class) when the method is a true/false without parameters. 
+ex: 
+   expect(subject_name).to be_full <when testing a .full? method> 
+
+
+Shared examples: 
+
+When you have multiple specs that describe similar behavior, 
+it might be better to extract redundant examples into shared examples 
+and use them in multiple specs.
+
+As stated in the official documentation(sans brackets):
+
+<include_examples> — includes examples in the current context
+<it_behaves_like> and <it_should_behave_like> include the examples 
+in a nested context
+
+^AKA: When you include parameterized examples in the current context 
+multiple times, you may override previous method definitions and last 
+declaration wins. So use <behaves_like> to create nests to avoid overriding.
+
+I think the shared test code has: Rspec.shared examples 'x'
+and then the file you run the test on has: include_examples 'x'
+^ex: 
+	describe Cat do 
+	subject(:oscar) {described_class.new('Oscar', 'Maine Coon') }
+	context 'when Cat is a child class of Pet' do
+	  include_examples 'same text thats in Rspec.shared_examples'
+	end 
+^this runs the test that is described in the shared_ex file with the same 
+text.
+
+
+The testing pattern is: Arrage (set up the test ex: initialize object/let)
+			Act (execute the logic to test, ex: calling a method)
+			Assert (expect the results of arrange&act)
+reading tests is a good way to learn an existing code base (ie: real world work)
+
+
+Remember: 
+describe -> Name of the method that is being tested.
+# context ->  Explains the conditions of the test.
+# it ->       Explains the results of the test.
+
+
+method stub <aka allow>: 
+
+allow is a keyword that goes with receive.
+basically it allows an object to recieve a method call, without actually
+calling the method in the code (simulates it basically). 
+you can also 
+
+ex:
+allow(subject).to receive(:method).with(parameters).and_return(return_value)
+
+
+message expectation: 
+
+A message expectation is an expectation that an object should receive a 
+specific message during the course of a code example.
+
+^In this context, a 'message' is what an object sends to another object to 
+invoke a method with the same name as the 'message'.
+
+You can specify how many times you expect the message to be received. 
+ex: expect(subject_name).to receive(:puts).with('Input error').once 
+
+^make sure to invoke the method on the next line. (?)  
+
+
+------- Before and After hooks---------
+
+these are used to execute code before and after each test. 
+
+<before> and <after> methods each take a symbol as parameter that 
+define the scope (:each) blocks are run for each example, and (:all) are
+run once before/after all examples. Use these blocks in the example group 
+(<describe>) or in a configuration. 
+
+ex: 
+
+describe ClassName do 
+  before(:each) do 
+	class_name = ClassName.new(para)
+  end 
+
+^^this creates a new object each test. 
+
+Its not necessary to write tests for methods that only have puts outputs.
+But if you do need to test puts, a few things to note: 
+- instead of subject.method in normal brackets, it needs a block 
+-use output matcher with a variable containing the expected string 
+(dont forget \n if necessary)
+-expect the output(var).to_stdout (standard(?) output) 
+full example:
+expect { game.final_message }.to output(variable_sentence).to stdout
+
+
+-------doubles------
+One important TDD technique is using a 'double' for any object outside of 
+the class being tested. A 'double' is a generic ruby object that stands 
+in for the real object, like a stunt double.
+
+doubles are very useful in TDD to test functionality that isnt coded yet. 
+<remember doubles are for the objects that arent the described class.> 
+
+I think the syntax is  
+variable_name = double('object')
+
+important: doubles are 'strict' by default, meaning that any unallowed 
+message/method will trigger error. so you need to allow or expect 
+doubles to receieve(:method) and specify what they return in a block {}. 
+
+2 ways to allow methods, either in the test, or when defining double.
+
+ex 1: 
+	let(:random_number) { double('random_number') }
+	 context 'when random_number is 8' do
+	   it 'returns 8' do 
+	    allow(random_number).to receive(:value).and_return(8)
+		...etc 
+
+ex 2:   
+	let(:random_number) { double('random_number', value: 8) }
+
+
+After TDD is over, classes and methods that were used as doubles should be 
+updated to a "verifying double". 
+
+with verifying doubles rspec will check that the methods being stubbed are 
+actually present on the underlying object if it is available. 
+
+
+^ex: let(:random_update) { instance_double(ClassName, value: 3) }
+^compare with ex 2. the verifying double uses the actual class instead of
+a string. 
+
+Polymorphism: the class doesnt care if its given an actual class object, 
+it only cares that its given an object that can respond to certain methods.
+
+When you want to read an instance variable's value that doesnt have a 
+reader method, you can use #instance_variable_get(:@instance_var_name)
+
+^ex: variable = subject_name.instance_variable_get(:@maximum) 
+
+Remember that if you're doing an expect(subject).to receive()....
+you need to call the method on the next line to actually test it. 
+I think?
+
+Remember to specifically allow methods for doubles. 
+
+-------Testing Modules---------
+
+several ways to test methods inside modules. 
+1) include in example groups using the config.include option.
+^(i think this means in the helper file?)
+2) creating a dummy class with let(:) that includes the module. 
+^ex:
+RSpec.describe ModuleName do 
+  let(:dummy_class) {Class.new { extend ModuleName } }
+	it 'blah blah' do 
+      expect(dummy.module_method).to eq(x)
+	end 
+end
+3) in a class that already includes it. 
+
