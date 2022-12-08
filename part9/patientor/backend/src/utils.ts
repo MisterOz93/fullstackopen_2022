@@ -1,4 +1,6 @@
-import { Gender, NewPatient, Entry } from './types';
+import { Gender, NewPatient, //Entry, 
+  //HealthCheckEntry, OccupationalHealthCareEntry, HospitalEntry 
+} from './types';
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -33,16 +35,44 @@ const parseGender = (gender: unknown): Gender => {
   return gender;
 };
 
+/* work in progress entry validation
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isEntry = (entry: any): entry is Entry => {
-  return (
-    entry.type === 'HealthCheck' ||
-    entry.type === 'Hospital' ||
-    entry.type === 'OccupationalHealthcare'
-  );
+  if (
+    !entry.type || !entry.id || !entry.description || !entry.date || !entry.specialist
+  ) { 
+    return false;
+  };
+
+  switch(entry.type){
+    case "HealthCheck":
+      return isHealthCheckEntry(entry);
+    case "Hospital":
+      return isHospitalEntry(entry);
+    case "OccupationalHealthcare":
+      return isOccupationalHealthcare(entry);
+    default:
+      console.log('unhandled entry type:', entry.type)
+      return false;
+  }
+
 };
 
-const parseEntries = (entries: unknown): Entry[] => {
+//helper functions for isEntry
+
+const isHealthCheckEntry = (entry: any): entry is HealthCheckEntry => {
+  return (entry.healthCheckRating || entry.healthCheckRating === 0 ? true : false)
+};
+const isHospitalEntry = (entry: any): entry is HospitalEntry => {
+  return (entry.discharge ? true : false)
+};
+
+const isOccupationalHealthcare = (entry: any): entry is OccupationalHealthCareEntry => {
+  return (entry.employerName ? true : false)
+};
+//
+
+/*const parseEntries = (entries: unknown): Entry[] => {
   if (!Array.isArray(entries)) {
     throw new Error('Missing or invalid Entry data.');
   }
@@ -53,7 +83,7 @@ const parseEntries = (entries: unknown): Entry[] => {
   }
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return entries;
-};
+}; */
 
 type Fields = {
   name: unknown;
@@ -61,7 +91,6 @@ type Fields = {
   ssn: unknown;
   gender: unknown;
   occupation: unknown;
-  entries: unknown;
 };
 
 const toNewPatient = ({
@@ -69,8 +98,7 @@ const toNewPatient = ({
   dateOfBirth,
   ssn,
   gender,
-  occupation,
-  entries,
+  occupation
 }: Fields): NewPatient => {
   const newPatient: NewPatient = {
     name: parseStringField(name),
@@ -78,7 +106,7 @@ const toNewPatient = ({
     ssn: parseStringField(ssn),
     gender: parseGender(gender),
     occupation: parseStringField(occupation),
-    entries: parseEntries(entries),
+    entries: []
   };
   return newPatient;
 };
