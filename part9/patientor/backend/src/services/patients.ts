@@ -23,11 +23,15 @@ const getPatientById = (id: string): Patient | undefined => {
 };
 
 const addPatient = (patient: NewPatient): Patient => {
-  const newPatient = toNewPatient(patient);
+  const newPatient = toNewPatient({...patient, entries: []});
+
+  if (patients.find(p => p.ssn === patient.ssn)){
+    throw new Error('That patient is already in the database.')
+  }
 
   const id = uuidv4();
 
-  const patientWithId = { ...newPatient, id, entries: [] };
+  const patientWithId = { ...newPatient, id};
 
   patients.push(patientWithId);
 

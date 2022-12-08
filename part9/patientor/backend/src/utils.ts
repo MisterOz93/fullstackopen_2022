@@ -6,9 +6,9 @@ const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
 };
 
-const parseStringField = (value: unknown): string => {
+const parseStringField = (value: unknown, fieldName: string): string => {
   if (!value || !isString(value)) {
-    throw new Error(` Missing or malformatted data field:` + value);
+    throw new Error(` Missing or malformatted data field: ` + fieldName);
   }
   return value;
 };
@@ -54,11 +54,11 @@ export const toNewPatient = ({
   entries
 }: NewPatientFields): NewPatient => {
   const newPatient: NewPatient = {
-    name: parseStringField(name),
+    name: parseStringField(name, 'patient name'),
     dateOfBirth: parseDate(dateOfBirth),
-    ssn: parseStringField(ssn),
+    ssn: parseStringField(ssn, 'patient ssn'),
     gender: parseGender(gender),
-    occupation: parseStringField(occupation),
+    occupation: parseStringField(occupation, 'patient occupation'),
     entries: parseEntries(entries)
   };
   return newPatient;
@@ -183,10 +183,10 @@ export const toNewHealthCheckEntry = (
     healthCheckRating
   } : NewHealthCheckEntryFields): HealthCheckEntry => {
     const newHealthCheckEntry: HealthCheckEntry = {
-      id: parseStringField(id),
-      description: parseStringField(description),
+      id: parseStringField(id, 'Entry ID'),
+      description: parseStringField(description, 'Entry Description'),
       date: parseDate(date),
-      specialist: parseStringField(specialist),
+      specialist: parseStringField(specialist, 'Entry specialist'),
       type: parseType(type) as 'HealthCheck',
       healthCheckRating: parseHealthCheckRating(healthCheckRating)
     }
@@ -203,12 +203,12 @@ export const toNewOccupationalHealthcareEntry = (
     employerName
   } : NewOccupationalHealthcareEntryFields): OccupationalHealthCareEntry => {
     const newOccupationalHealthcareEntry: OccupationalHealthCareEntry = {
-      id: parseStringField(id),
-      description: parseStringField(description),
+      id: parseStringField(id, 'Entry ID'),
+      description: parseStringField(description, 'Entry Description'),
       date: parseDate(date),
-      specialist: parseStringField(specialist),
+      specialist: parseStringField(specialist, 'Entry specialist'),
       type: parseType(type) as 'OccupationalHealthcare',
-      employerName: parseStringField(employerName)
+      employerName: parseStringField(employerName, 'entry employer name')
     }
   return newOccupationalHealthcareEntry;
 }
@@ -223,10 +223,10 @@ export const toNewHospitalEntry = (
     discharge
   } : NewHospitalEntryFields): HospitalEntry => {
     const newHospitalEntry: HospitalEntry = {
-      id: parseStringField(id),
-      description: parseStringField(description),
+      id: parseStringField(id, 'Entry ID'),
+      description: parseStringField(description, 'Entry Description'),
       date: parseDate(date),
-      specialist: parseStringField(specialist),
+      specialist: parseStringField(specialist, 'Entry specialist'),
       type: parseType(type) as 'Hospital',
       discharge: parseDischarge(discharge)
     }
