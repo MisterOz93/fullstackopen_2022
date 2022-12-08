@@ -1,6 +1,6 @@
 import patients from '../../data/patients';
 import { v4 as uuidv4 } from 'uuid';
-import toNewPatient from '../utils';
+import { toNewPatient, toNewHealthCheckEntry, toNewHospitalEntry, toNewOccupationalHealthcareEntry } from '../utils';
 
 import { Patient, PublicPatient, NewPatient, Entry } from '../types';
 
@@ -37,9 +37,26 @@ const addPatient = (patient: NewPatient): Patient => {
 const addEntry = (newEntry: Entry, patient: Patient) => {
   const patientToUpdate = patients.find(p => p.id === patient.id)
 
-  patientToUpdate?.entries.push(newEntry);
+  const id = uuidv4();
 
-  return patientToUpdate;
+  const newEntryWithId = {...newEntry, id}
+
+  let newEntryWithType;
+
+  if (newEntryWithId.type === 'Hospital'){
+    newEntryWithType = toNewHospitalEntry(newEntryWithId)
+  }
+  else if (newEntryWithId.type === 'HealthCheck'){
+    newEntryWithType = toNewHealthCheckEntry(newEntryWithId)
+  }
+  else if (newEntryWithId.type === 'OccupationalHealthcare'){
+    newEntryWithType = toNewOccupationalHealthcareEntry(newEntryWithId)
+  }
+  else throw new Error('Unrecognized Entry type on entry:' + newEntryWithId)
+
+  patientToUpdate?.entries.push(newEntryWithType);
+
+  return patientToUpdate?.entries;
 }
 
 export default { getPublicPatients, getPatientById, addPatient, addEntry };

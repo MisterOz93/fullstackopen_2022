@@ -1,5 +1,5 @@
-import { Gender, NewPatient, //Entry, 
-  //HealthCheckEntry, OccupationalHealthCareEntry, HospitalEntry 
+import { Gender, NewPatient, Entry,
+  HealthCheckEntry, OccupationalHealthCareEntry, HospitalEntry, HealthCheckRating, Discharge
 } from './types';
 
 const isString = (text: unknown): text is string => {
@@ -35,8 +35,37 @@ const parseGender = (gender: unknown): Gender => {
   return gender;
 };
 
-/* work in progress entry validation
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+type NewPatientFields = {
+  name: unknown;
+  dateOfBirth: unknown;
+  ssn: unknown;
+  gender: unknown;
+  occupation: unknown;
+  entries: unknown;
+};
+
+export const toNewPatient = ({
+  name,
+  dateOfBirth,
+  ssn,
+  gender,
+  occupation,
+  entries
+}: NewPatientFields): NewPatient => {
+  const newPatient: NewPatient = {
+    name: parseStringField(name),
+    dateOfBirth: parseDate(dateOfBirth),
+    ssn: parseStringField(ssn),
+    gender: parseGender(gender),
+    occupation: parseStringField(occupation),
+    entries: parseEntries(entries)
+  };
+  return newPatient;
+};
+
+
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isEntry = (entry: any): entry is Entry => {
   if (
     !entry.type || !entry.id || !entry.description || !entry.date || !entry.specialist
@@ -72,7 +101,10 @@ const isOccupationalHealthcare = (entry: any): entry is OccupationalHealthCareEn
 };
 //
 
-/*const parseEntries = (entries: unknown): Entry[] => {
+const parseEntries = (entries: unknown): Entry[] => {
+  if (!entries){
+    return []
+  }
   if (!Array.isArray(entries)) {
     throw new Error('Missing or invalid Entry data.');
   }
@@ -83,32 +115,120 @@ const isOccupationalHealthcare = (entry: any): entry is OccupationalHealthCareEn
   }
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return entries;
-}; */
+}; 
 
-type Fields = {
-  name: unknown;
-  dateOfBirth: unknown;
-  ssn: unknown;
-  gender: unknown;
-  occupation: unknown;
-};
 
-const toNewPatient = ({
-  name,
-  dateOfBirth,
-  ssn,
-  gender,
-  occupation
-}: Fields): NewPatient => {
-  const newPatient: NewPatient = {
-    name: parseStringField(name),
-    dateOfBirth: parseDate(dateOfBirth),
-    ssn: parseStringField(ssn),
-    gender: parseGender(gender),
-    occupation: parseStringField(occupation),
-    entries: []
+const parseType = (type: unknown) => {
+    if (type === 'HealthCheck' || type === 'OccupationalHealthcare' || type === 'Hospital'){
+      return type
+    }
+      throw new Error('Entry has invalid type:' + type)
+  }
+
+
+const isHealthCheckRating = (rating: any): rating is HealthCheckRating => {
+  const numberRating = Number(rating)
+   return (isNaN(numberRating) || numberRating < 0 || numberRating > 3 ) 
+  }
+
+const parseHealthCheckRating = (rating: unknown): HealthCheckRating => {
+  if (!rating || !isHealthCheckRating(rating)){
+    throw new Error('Missing or invalid HealthCheckRating:' + rating);
   };
-  return newPatient;
-};
+  return rating
+}
 
-export default toNewPatient;
+const isDischarge = (discharge: any): discharge is Discharge => {
+  return ('date' in discharge && 'criteria' in discharge && Object.keys(discharge).length === 2)
+}
+
+const parseDischarge = (discharge: unknown): Discharge => {
+  if (!discharge || !isDischarge(discharge)){
+    throw new Error('Hospital Entry Discharge information missing or invalid:' + discharge);
+  };
+  return discharge;
+}
+
+interface NewBaseEntryFields {
+  id: unknown;
+  description: unknown;
+  date: unknown;
+  specialist: unknown;
+  diagnosisCodes?: unknown
+}
+
+interface NewHealthCheckEntryFields extends NewBaseEntryFields {
+  type: unknown;
+  healthCheckRating: unknown;
+
+}
+
+interface NewOccupationalHealthcareEntryFields extends NewBaseEntryFields {
+  type: unknown;
+  employerName: unknown;
+}
+
+interface NewHospitalEntryFields extends NewBaseEntryFields {
+  type: unknown;
+  discharge: unknown;
+}
+
+export const toNewHealthCheckEntry = (
+  { 
+    id,
+    description,
+    date,
+    specialist,
+    type,
+    healthCheckRating
+  } : NewHealthCheckEntryFields): HealthCheckEntry => {
+    const newHealthCheckEntry: HealthCheckEntry = {
+      id: parseStringField(id),
+      description: parseStringField(description),
+      date: parseDate(date),
+      specialist: parseStringField(specialist),
+      type: parseType(type) as 'HealthCheck',
+      healthCheckRating: parseHealthCheckRating(healthCheckRating)
+    }
+  return newHealthCheckEntry;
+  }
+
+export const toNewOccupationalHealthcareEntry = (
+  {
+    id,
+    description,
+    date,
+    specialist,
+    type,
+    employerName
+  } : NewOccupationalHealthcareEntryFields): OccupationalHealthCareEntry => {
+    const newOccupationalHealthcareEntry: OccupationalHealthCareEntry = {
+      id: parseStringField(id),
+      description: parseStringField(description),
+      date: parseDate(date),
+      specialist: parseStringField(specialist),
+      type: parseType(type) as 'OccupationalHealthcare',
+      employerName: parseStringField(employerName)
+    }
+  return newOccupationalHealthcareEntry;
+}
+
+export const toNewHospitalEntry = (
+  {
+    id,
+    description,
+    date,
+    specialist,
+    type,
+    discharge
+  } : NewHospitalEntryFields): HospitalEntry => {
+    const newHospitalEntry: HospitalEntry = {
+      id: parseStringField(id),
+      description: parseStringField(description),
+      date: parseDate(date),
+      specialist: parseStringField(specialist),
+      type: parseType(type) as 'Hospital',
+      discharge: parseDischarge(discharge)
+    }
+  return newHospitalEntry
+}
