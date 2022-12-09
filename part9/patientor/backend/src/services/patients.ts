@@ -38,8 +38,7 @@ const addPatient = (patient: NewPatient): Patient => {
   return patientWithId;
 };
 
-const addEntry = (newEntry: Entry, patient: Patient) => {
-  const patientToUpdate = patients.find(p => p.id === patient.id)
+const addEntry = (newEntry: Entry, patient: Patient): Entry => {
 
   const id = uuidv4();
 
@@ -56,11 +55,11 @@ const addEntry = (newEntry: Entry, patient: Patient) => {
   else if (newEntryWithId.type === 'OccupationalHealthcare'){
     newEntryWithType = toNewOccupationalHealthcareEntry(newEntryWithId)
   }
-  else throw new Error('Unrecognized Entry type on entry:' + newEntryWithId)
+  else throw new Error('Unrecognized Entry type on entry: ' + Object.entries(newEntry))
 
-  patientToUpdate?.entries.push(newEntryWithType);
+  patient.entries.push(newEntryWithType);
 
-  return patientToUpdate?.entries;
+  return newEntryWithType;
 }
 
 export default { getPublicPatients, getPatientById, addPatient, addEntry };

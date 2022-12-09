@@ -37,8 +37,22 @@ router.post('/', (req, res) => {
   }
 });
 
-/*router.post('/:id/entries', (req, res) => {
+router.post('/:id/entries', (req, res) => {
   const newEntry = req.body; 
-
-}) */
+  const patient = patientService.getPatientById(req.params.id)
+  if (!patient){
+    res.status(400).send('Could not find a patient with given ID')
+    return
+  }
+  try {
+    const addedEntry = patientService.addEntry(newEntry, patient)
+    res.json(addedEntry);
+  } catch (e) {
+    if (e instanceof Error) {
+      res.status(400).send(e.message);
+    } else {
+      res.status(400).send('There was an error with the request');
+    }
+  }
+});
 export default router;

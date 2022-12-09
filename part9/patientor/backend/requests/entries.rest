@@ -1,7 +1,7 @@
 GET http://localhost:3001/api/patients/
 ##################
 
-GET http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667
+GET http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155667
 
 ##################
 
@@ -15,3 +15,16 @@ Content-Type: application/json
     "gender": "male",
     "occupation": "Technician"
 }
+
+##################
+
+POST http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+    {
+        "date": "2022-12-08",
+        "specialist": "Me :)",
+        "type": "HealthCheck",
+        "description": "Idk I'm not a doctor",
+        "healthCheckRating": 2
+    }

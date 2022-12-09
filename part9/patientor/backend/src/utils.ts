@@ -15,7 +15,7 @@ const parseStringField = (value: unknown, fieldName: string): string => {
 
 const parseDate = (date: unknown): string => {
   if (!date || !isString(date) || !Date.parse(date)) {
-    throw new Error('Missing or malformatted date:' + date);
+    throw new Error('Missing or malformatted date: ' + date);
   }
   return date;
 };
@@ -122,18 +122,19 @@ const parseType = (type: unknown) => {
     if (type === 'HealthCheck' || type === 'OccupationalHealthcare' || type === 'Hospital'){
       return type
     }
-      throw new Error('Entry has invalid type:' + type)
+      throw new Error('Entry has invalid type: ' + type)
   }
 
 
 const isHealthCheckRating = (rating: any): rating is HealthCheckRating => {
   const numberRating = Number(rating)
-   return (isNaN(numberRating) || numberRating < 0 || numberRating > 3 ) 
+
+   return (!isNaN(numberRating) && numberRating > 0 && numberRating < 4 ) 
   }
 
 const parseHealthCheckRating = (rating: unknown): HealthCheckRating => {
-  if (!rating || !isHealthCheckRating(rating)){
-    throw new Error('Missing or invalid HealthCheckRating:' + rating);
+  if (!rating && Number(rating) !== 0 || !isHealthCheckRating(rating)){
+    throw new Error('Missing or invalid HealthCheckRating: ' + rating);
   };
   return rating
 }
@@ -144,7 +145,7 @@ const isDischarge = (discharge: any): discharge is Discharge => {
 
 const parseDischarge = (discharge: unknown): Discharge => {
   if (!discharge || !isDischarge(discharge)){
-    throw new Error('Hospital Entry Discharge information missing or invalid:' + discharge);
+    throw new Error('Hospital Entry Discharge information missing or invalid: ' + discharge);
   };
   return discharge;
 }
