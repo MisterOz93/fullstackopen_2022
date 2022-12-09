@@ -28,3 +28,31 @@ Content-Type: application/json
         "description": "Idk I'm not a doctor",
         "healthCheckRating": 2
     }
+
+##################
+
+POST http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+    {       
+        "date": "2022-12-08",
+        "specialist": "Me :)",
+        "type": "OccupationalHealthcare",
+        "employerName": "Vandalay Industries",
+        "description": "Involuntary elbow spasms"
+      }
+
+######################
+POST http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+    {       
+        "date": "2022-12-08",
+        "specialist": "Me :)",
+        "type": "Hospital",
+        "discharge": {
+            "date": "2022-12-07",
+            "criteria": "faking it"
+        },
+        "description": "Involuntary elbow spasms"
+      }

@@ -145,7 +145,7 @@ const isDischarge = (discharge: any): discharge is Discharge => {
 
 const parseDischarge = (discharge: unknown): Discharge => {
   if (!discharge || !isDischarge(discharge)){
-    throw new Error('Hospital Entry Discharge information missing or invalid: ' + discharge);
+    throw new Error('Hospital Entry Discharge information missing or invalid');
   };
   return discharge;
 }
