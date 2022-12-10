@@ -10,7 +10,7 @@ import {
 import { InputLabel } from "@material-ui/core";
 import Input from '@material-ui/core/Input';
 
-import { Diagnosis, EntryType } from "../types";
+import { Diagnosis, EntryType, HealthCheckRating } from "../types";
 
 export interface EntryFormValues {
     description: string;
@@ -21,7 +21,7 @@ export interface EntryFormValues {
     dischargeDate: string;
     dischargeCriteria: string;
     employerName: string;
-    
+
 
 };
 
@@ -30,11 +30,17 @@ export type EntryTypeOption = {
     label: string;
 }
 
+export type HealthRatingOption = {
+    value: HealthCheckRating;
+    label: string;
+}
+
 type EntrySelectFieldProps = {
     name: string;
     label: string;
-    options: EntryTypeOption[]
+    options: EntryTypeOption[] | HealthRatingOption[];
 } 
+
 
 const FormikSelect = ({field, ...props}: FieldProps) => <Select {...field} {...props} />;
 

@@ -1,10 +1,10 @@
 import { Dialog, DialogTitle, DialogContent, Divider } from "@material-ui/core";
 import { useStateValue } from "../state";
-import { Diagnosis, EntryType } from '../types';
+import { Diagnosis, EntryType, HealthCheckRating } from '../types';
 import { Grid, Button } from "@material-ui/core";
 import { Field, Formik, Form } from "formik";
 import { TextField, SelectField } from "../AddPatientModal/FormField";
-import { EntryFormValues, EntryTypeOption, EntryFormSelect } from "./EntryFormHelper";
+import { EntryFormValues, EntryTypeOption, HealthRatingOption, EntryFormSelect } from "./EntryFormHelper";
 
 interface EntryFormProps {
     onSubmit: (values: EntryFormValues) => void;
@@ -15,6 +15,14 @@ const EntryTypeOptions: EntryTypeOption[] = [
   { value: EntryType.HealthCheck, label: 'Health Check'},
   { value: EntryType.Hospital, label: 'Hospital'},
   { value: EntryType.OccupationalHealthcare, label: 'Occupational Healthcare'}
+]
+
+const HealthRatingOptions: HealthRatingOption[] = [
+  {value: HealthCheckRating.Healthy, label: 'Healthy'},
+  {value: HealthCheckRating.LowRisk, label: 'Low Risk'},
+  {value: HealthCheckRating.HighRisk, label: 'High Risk'},
+  {value: HealthCheckRating.CriticalRisk, label: 'Critical Risk'},
+
 ]
 
 const AddEntryForm = ({ onSubmit, onCancel }: EntryFormProps) => {
@@ -94,7 +102,10 @@ const AddEntryForm = ({ onSubmit, onCancel }: EntryFormProps) => {
             }
             {
                 values.type === 'healthCheck' &&
-                <h3>check instructions for help on healthcheckrating</h3>
+                <EntryFormSelect
+                  label='Health Check Rating'
+                  name='rating'
+                  options={HealthRatingOptions} />
             }
             { 
                 values.type === 'occupationalHealthcare' &&
