@@ -17,15 +17,11 @@ type SingleEntryProps = {
 const Entries = ({entries, diagnoses}: PropsForEntries) => {
 
   return (
-    <div>
-      <h3><strong>Entries:</strong></h3>
       <div>
         {entries.map(entry =>
           <SingleEntry key={entry.id} entry={entry} diagnoses={diagnoses} />)
         }
       </div>  
-    </div>
-
   );
 };
 

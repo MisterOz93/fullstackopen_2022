@@ -6,7 +6,8 @@ import MaleIcon from '@mui/icons-material/Male';
 import { Patient, Diagnosis } from "../types";
 import { apiBaseUrl } from "../constants";
 import Entries from "./Entries";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import AddEntryForm from "./AddEntryForm";
 
 const PatientInfoPage = () => {
   const [{diagnoses, currentPatient}, dispatch] = useStateValue();
@@ -16,6 +17,12 @@ const PatientInfoPage = () => {
   if (!id) {
     return (<h2>Error: Could not find a patient with that information.</h2>);
   }
+
+  const [formOpen, setFormOpen] = useState<boolean>(false)
+
+  const openForm = ():void => setFormOpen(true);
+
+  const closeForm = ():void => setFormOpen(false);
 
   useEffect(() => {
     const getDiagnosesFromApi = async () => {
@@ -53,7 +60,7 @@ const PatientInfoPage = () => {
         </div>
       );
   }
-
+  //1st button click (line 72) should prompt user to select 1 of the 3 types, then on submit their selection should be passed as entryType prop to AddEntryForn
   return(
     <div>
       <h2>{currentPatient.name} {currentPatient.gender === 'male' && <MaleIcon/>} {currentPatient.gender === 'female' && <FemaleIcon/>}</h2>
@@ -61,6 +68,8 @@ const PatientInfoPage = () => {
       <p>ssn: {currentPatient.ssn}</p>
       } 
       <p>occupation: {currentPatient.occupation}</p>
+      <h3><strong>Entries:</strong></h3>
+      <p><button onClick={openForm}>Add Entry</button></p>
       <Entries entries={currentPatient.entries} diagnoses={diagnoses} />
    </div>
   );
