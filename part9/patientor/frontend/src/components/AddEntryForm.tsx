@@ -4,27 +4,20 @@ import { Diagnosis, EntryType } from '../types';
 import { Grid, Button } from "@material-ui/core";
 import { Field, Formik, Form } from "formik";
 import { TextField, SelectField } from "../AddPatientModal/FormField";
-
-/* user clicks 'Add Entry' in PatientInfoPage -> user gets a prompt (form? radiobutton?) asking to select type of entry -> user selection is passed 
-  to AddEntryForn as entryType, entryType value determines additional field renders
-  
-  Note: Initial prompt could be unneeded? Test out how form's values.foo works, if it updates dynamically, maybe can just set inital type as Hospital or w/e.
- */
-export interface EntryFormValues {
-    description: string;
-    date: string;
-    specialist: string;
-    diagnosisCodes?: Diagnosis['code'][];
-    type: string; //Make a small form component on 1st button click in patientinfopage where user has to choose type first, then pass choice to form values
-};
+import { EntryFormValues, EntryTypeOption, EntryFormSelect } from "./EntryFormHelper";
 
 interface EntryFormProps {
     onSubmit: (values: EntryFormValues) => void;
     onCancel: () => void;
-    entryType: string;
   }
 
-const AddEntryForm = ({ onSubmit, onCancel, entryType }: EntryFormProps) => {
+const EntryTypeOptions: EntryTypeOption[] = [
+  { value: EntryType.HealthCheck, label: 'Health Check'},
+  { value: EntryType.Hospital, label: 'Hospital'},
+  { value: EntryType.OccupationalHealthcare, label: 'Occupational Healthcare'}
+]
+
+const AddEntryForm = ({ onSubmit, onCancel }: EntryFormProps) => {
     const [{ diagnoses }] = useStateValue();
     return (
         <Formik
@@ -32,7 +25,10 @@ const AddEntryForm = ({ onSubmit, onCancel, entryType }: EntryFormProps) => {
         description: "",
         date: "",
         specialist: "",
-        type: entryType //pass via user input in PatientInfPage first button click
+        type: "", //user selects, then additional Field's are rendered.
+        dischargeCriteria: "",
+        dischargeDate: "",
+        employerName: ""
       }}
       onSubmit={onSubmit}
       validate={(values) => {
@@ -49,16 +45,16 @@ const AddEntryForm = ({ onSubmit, onCancel, entryType }: EntryFormProps) => {
         }
         return errors;
       }}
+      enableReinitialize={true}
     >
       {({ isValid, dirty, setFieldValue, setFieldTouched, values  }) => {
-        console.log('form values:', values)
+        //console.log('form values.type:', values.type)
         return (
           <Form className="form ui">
-            <Field
-              label="Name"
-              placeholder="Name"
-              name="name"
-              component={TextField}
+            <EntryFormSelect
+              label="Entry Type"
+              name="type"
+              options={EntryTypeOptions}
             />
             <Field
               label="Entry Description"
@@ -79,29 +75,29 @@ const AddEntryForm = ({ onSubmit, onCancel, entryType }: EntryFormProps) => {
               component={TextField}
             />
             {
-                values.type === 'Hospital' &&
-
-                <>
-                    <Field  
-                      label="Discharge Date"
-                      placeholder="YYYY-MM-DD"
-                      name="dischargeDate"
-                      component={TextField} 
-                    />
-                    <Field
-                      label="Criteria for Discharge"
-                      placeholder="Criteria"
-                      name="dischargeCriteria"
-                      component={TextField}
-                    />
-                </>
+                values.type === 'hospital' &&
+                <Field  
+                  label="Discharge Date"
+                  placeholder="YYYY-MM-DD"
+                  name="dischargeDate"
+                  component={TextField} 
+                />
+            }
+             {
+                values.type === 'hospital' &&
+                <Field
+                  label="Criteria for Discharge"
+                  placeholder="Criteria"
+                  name="dischargeCriteria"
+                  component={TextField}
+                />
             }
             {
-                values.type === 'HealthCheck' &&
+                values.type === 'healthCheck' &&
                 <h3>check instructions for help on healthcheckrating</h3>
             }
             { 
-                values.type === 'OccupationalHealthcare' &&
+                values.type === 'occupationalHealthcare' &&
                 <Field 
                     label="Employer Name"
                     placeholder="Employer Name"

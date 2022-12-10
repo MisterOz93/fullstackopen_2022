@@ -24,6 +24,8 @@ const PatientInfoPage = () => {
 
   const closeForm = ():void => setFormOpen(false);
 
+  const dummySubmit = ():void => console.log('dummy onSubmit fired')
+
   useEffect(() => {
     const getDiagnosesFromApi = async () => {
       const {data: diagnosesList } = await axios.get<Diagnosis[]>(`${apiBaseUrl}/diagnoses`);
@@ -70,6 +72,7 @@ const PatientInfoPage = () => {
       <p>occupation: {currentPatient.occupation}</p>
       <h3><strong>Entries:</strong></h3>
       <p><button onClick={openForm}>Add Entry</button></p>
+      <AddEntryForm onCancel={closeForm} onSubmit={dummySubmit}/>
       <Entries entries={currentPatient.entries} diagnoses={diagnoses} />
    </div>
   );
