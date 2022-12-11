@@ -44,6 +44,7 @@ router.post('/:id/entries', (req, res) => {
     res.status(400).send('Could not find a patient with given ID')
     return
   }
+  console.log('newEntry received is:', newEntry)
   try {
     const addedEntry = patientService.addEntry(newEntry, patient)
     res.json(addedEntry);

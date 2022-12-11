@@ -87,7 +87,7 @@ const AddEntryForm = ({ onSubmit, onCancel }: EntryFormProps) => {
               name="specialist"
               component={TextField}
             />
-            {values.type === 'hospital' && (
+            {values.type === 'Hospital' && (
               <Field
                 label="Discharge Date"
                 placeholder="YYYY-MM-DD"
@@ -95,7 +95,7 @@ const AddEntryForm = ({ onSubmit, onCancel }: EntryFormProps) => {
                 component={TextField}
               />
             )}
-            {values.type === 'hospital' && (
+            {values.type === 'Hospital' && (
               <Field
                 label="Criteria for Discharge"
                 placeholder="Criteria"
@@ -103,14 +103,14 @@ const AddEntryForm = ({ onSubmit, onCancel }: EntryFormProps) => {
                 component={TextField}
               />
             )}
-            {values.type === 'healthCheck' && (
+            {values.type === 'HealthCheck' && (
               <EntryFormSelect
                 label="Health Check Rating"
                 name="rating"
                 options={HealthRatingOptions}
               />
             )}
-            {values.type === 'occupationalHealthcare' && (
+            {values.type === 'OccupationalHealthcare' && (
               <Field
                 label="Employer Name"
                 placeholder="Employer Name"

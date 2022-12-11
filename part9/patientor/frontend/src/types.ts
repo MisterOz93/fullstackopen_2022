@@ -11,9 +11,9 @@ export enum Gender {
 }
 
 export enum EntryType {
-  Hospital = 'hospital',
-  OccupationalHealthcare = 'occupationalHealthcare',
-  HealthCheck = 'healthCheck',
+  Hospital = 'Hospital',
+  OccupationalHealthcare = 'OccupationalHealthcare',
+  HealthCheck = 'HealthCheck',
 }
 
 interface BaseEntry {

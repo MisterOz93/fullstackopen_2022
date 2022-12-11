@@ -8,6 +8,8 @@ import { apiBaseUrl } from "../constants";
 import Entries from "./Entries";
 import { useEffect, useState } from "react";
 import AddEntryModal from "../AddEntryModal";
+import { EntryFormValues } from "../AddEntryModal/EntryFormHelper";
+import {formatEntryValues} from '../utils'
 
 const PatientInfoPage = () => {
   const [{diagnoses, currentPatient}, dispatch] = useStateValue();
@@ -24,7 +26,16 @@ const PatientInfoPage = () => {
 
   const closeForm = ():void => setFormOpen(false);
 
-  const dummySubmit = ():void => console.log('dummy onSubmit fired')
+
+  const submitNewEntry = async (values: EntryFormValues) => {
+    //
+    console.log('values being sent to backend are:', values)
+    //call const formattedValues = formatEntryValues(values) before sending data
+
+    //await axios.post(`${apiBaseUrl}/patients/${id}/entries`, formattedValues)
+    //dispatch to update entries state
+    closeForm();
+  }
 
   useEffect(() => {
     const getDiagnosesFromApi = async () => {
@@ -72,7 +83,7 @@ const PatientInfoPage = () => {
       <p>occupation: {currentPatient.occupation}</p>
       <h3><strong>Entries:</strong></h3>
       <p><button onClick={openForm}>Add Entry</button></p>
-      <AddEntryModal modalOpen={formOpen} onClose={closeForm} onSubmit={dummySubmit}/>
+      <AddEntryModal modalOpen={formOpen} onClose={closeForm} onSubmit={submitNewEntry}/>
       <Entries entries={currentPatient.entries} diagnoses={diagnoses} />
    </div>
   );
