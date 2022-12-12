@@ -6,12 +6,20 @@ export const assertNever = (value: never): never => {
 
 export const formatEntryValues = (entryValues: EntryFormValues) => {
   //start by filtering out empty values
-  let dateFormatted: string[]; 
-  dateFormatted = entryValues.date.split('')
-  dateFormatted.splice(4, 0, '-')
-  dateFormatted.splice(7, 0, '-')
-  const formattedDate = dateFormatted.join('')
-  console.log('formattedDate', formattedDate)
+  let relevantValues = Object.fromEntries(Object.entries(entryValues).filter(([k,v]) => v !== ""));
 
-  //need to also format dispatch fields and possibly others. also remove empty fields
-}
+  if (!entryValues.date.includes('-')){
+    let dateFormatted: string[]; 
+    dateFormatted = relevantValues.date.split('');
+    dateFormatted.splice(4, 0, '-');
+    dateFormatted.splice(7, 0, '-');
+    const formattedDate = dateFormatted.join('');
+    relevantValues = {...relevantValues, date: formattedDate}
+  }
+ 
+
+//need to also format dispatch fields and possibly others.
+  return {...relevantValues}
+
+
+};

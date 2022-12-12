@@ -1,6 +1,6 @@
 import { useParams } from "react-router";
 import axios from "axios";
-import { useStateValue, setCurrentPatient, setDiagnosesList } from "../state";
+import { useStateValue, setCurrentPatient, setDiagnosesList, editPatientEntries } from "../state";
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import { Patient, Diagnosis } from "../types";
@@ -28,12 +28,13 @@ const PatientInfoPage = () => {
 
 
   const submitNewEntry = async (values: EntryFormValues) => {
-    //
-    console.log('values being sent to backend are:', values)
-    //call const formattedValues = formatEntryValues(values) before sending data
+    
+    const formattedValues = formatEntryValues(values)
+    //console.log('formatted values being sent to backend are:', formattedValues)
 
-    //await axios.post(`${apiBaseUrl}/patients/${id}/entries`, formattedValues)
-    //dispatch to update entries state
+    const {data: newEntry } = await axios.post(`${apiBaseUrl}/patients/${id}/entries`, formattedValues)
+    dispatch(editPatientEntries(newEntry))
+    //^test this, check console to see if reducer reached, add a try/catch bock.
     closeForm();
   }
 

@@ -1,5 +1,5 @@
 import { State } from './state';
-import { Patient, Diagnosis } from '../types';
+import { Patient, Diagnosis, Entry } from '../types';
 
 export type Action =
   | {
@@ -11,8 +11,8 @@ export type Action =
       payload: Patient;
     }
   | {
-      type: 'EDIT_PATIENT';
-      payload: Patient;
+      type: 'EDIT_PATIENT_ENTRIES';
+      payload: Entry;
     }
   | {
       type: 'SET_CURRENT_PATIENT';
@@ -37,10 +37,10 @@ export const addPatient = (patient: Patient): Action => {
   };
 };
 
-export const editPatient = (patient: Patient): Action => {
+export const editPatientEntries = (entry: Entry): Action => {
   return {
-    type: 'EDIT_PATIENT',
-    payload: patient,
+    type: 'EDIT_PATIENT_ENTRIES',
+    payload: entry,
   };
 };
 
@@ -79,11 +79,20 @@ export const reducer = (state: State, action: Action): State => {
           [action.payload.id]: action.payload,
         },
       };
-    case 'EDIT_PATIENT':
+    case 'EDIT_PATIENT_ENTRIES':
+      if (!state.currentPatient) {
+        return state;
+      }
+      const entries = state.currentPatient.entries;
+      if (!entries){
+        return state;
+      };
+      const updatedEntries = entries.concat(action.payload);
+      
       return {
         ...state,
-        patients: { ...state.patients, [action.payload.id]: action.payload },
-      }; //^Need to confirm this works
+        currentPatient: { ...state.currentPatient, entries: updatedEntries},
+      }; 
 
     case 'SET_CURRENT_PATIENT':
       return {

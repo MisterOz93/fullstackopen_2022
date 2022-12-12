@@ -53,6 +53,7 @@ const addEntry = (newEntry: Entry, patient: Patient): Entry => {
     newEntryWithType = toNewHealthCheckEntry(newEntryWithId)
   }
   else if (newEntryWithId.type === 'OccupationalHealthcare'){
+    console.log('recognized data as occupational type')
     newEntryWithType = toNewOccupationalHealthcareEntry(newEntryWithId)
   }
   else throw new Error('Unrecognized Entry type on entry: ' + Object.entries(newEntry))
