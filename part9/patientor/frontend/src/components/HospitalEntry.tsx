@@ -17,6 +17,7 @@ diagnoses: Diagnosis[]
 };
 
 const HospitalEntryDetails = ({entry, diagnoses}: entryProps) => {
+  console.log('hospital entry in HospitalEntry component:', entry)
 
   const codeIndex = (code:string): number => {
     return diagnoses.map(d => d.code).indexOf(code);

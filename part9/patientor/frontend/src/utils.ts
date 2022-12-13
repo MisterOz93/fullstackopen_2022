@@ -4,21 +4,30 @@ export const assertNever = (value: never): never => {
   throw new Error(`Unhandled option of union type: ${JSON.stringify(value)}`);
 };
 
+const formatDate = (dateArg:string): string => {
+
+  if (dateArg.includes('-')) {
+    return dateArg;
+  }
+
+  let dateFormatted: string[]; 
+    dateFormatted = dateArg.split('');
+    dateFormatted.splice(4, 0, '-');
+    dateFormatted.splice(7, 0, '-');
+    return dateFormatted.join('');
+}
+
 export const formatEntryValues = (entryValues: EntryFormValues) => {
   //start by filtering out empty values
   let relevantValues = Object.fromEntries(Object.entries(entryValues).filter(([k,v]) => v !== ""));
 
-  if (!entryValues.date.includes('-')){
-    let dateFormatted: string[]; 
-    dateFormatted = relevantValues.date.split('');
-    dateFormatted.splice(4, 0, '-');
-    dateFormatted.splice(7, 0, '-');
-    const formattedDate = dateFormatted.join('');
-    relevantValues = {...relevantValues, date: formattedDate}
+  relevantValues = {...relevantValues, date: formatDate(entryValues.date) }
+
+  if (entryValues.type === 'Hospital'){
+    const discharge = {date: formatDate(entryValues.dischargeDate), criteria: entryValues.dischargeCriteria}
+    relevantValues = {...relevantValues, discharge }
   }
  
-
-//need to also format dispatch fields and possibly others.
   return {...relevantValues}
 
 

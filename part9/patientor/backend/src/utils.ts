@@ -148,9 +148,16 @@ const isDischarge = (discharge: any): discharge is Discharge => {
 }
 
 const parseDischarge = (discharge: unknown): Discharge => {
+  //console.log('discharge received in backend:', discharge)
   if (!discharge || !isDischarge(discharge)){
     throw new Error('Hospital Entry Discharge information missing or invalid');
   };
+
+  if (discharge.criteria === '' || discharge.date === '') {
+    throw new Error('Missing Discharge Date and/or Criteria information');
+  }
+
+  parseDate(discharge.date)
   return discharge;
 }
 
