@@ -1,5 +1,5 @@
 import { Gender, NewPatient, Entry,
-  HealthCheckEntry, OccupationalHealthCareEntry, HospitalEntry, HealthCheckRating, Discharge
+  HealthCheckEntry, OccupationalHealthCareEntry, HospitalEntry, HealthCheckRating, Discharge, Diagnosis
 } from './types';
 
 const isString = (text: unknown): text is string => {
@@ -155,7 +155,7 @@ interface NewBaseEntryFields {
   description: unknown;
   date: unknown;
   specialist: unknown;
-  diagnosisCodes?: unknown
+  diagnosisCodes?: Diagnosis['code'][]; //possible values set in frontend form
 }
 
 interface NewHealthCheckEntryFields extends NewBaseEntryFields {
@@ -201,6 +201,7 @@ export const toNewOccupationalHealthcareEntry = (
     date,
     specialist,
     type,
+    diagnosisCodes,
     employerName
   } : NewOccupationalHealthcareEntryFields): OccupationalHealthCareEntry => {
     const newOccupationalHealthcareEntry: OccupationalHealthCareEntry = {
@@ -209,7 +210,8 @@ export const toNewOccupationalHealthcareEntry = (
       date: parseDate(date),
       specialist: parseStringField(specialist, 'Entry specialist'),
       type: parseType(type) as 'OccupationalHealthcare',
-      employerName: parseStringField(employerName, 'entry employer name')
+      employerName: parseStringField(employerName, 'entry employer name'),
+      diagnosisCodes
     }
   return newOccupationalHealthcareEntry;
 }

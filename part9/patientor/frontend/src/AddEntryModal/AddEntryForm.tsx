@@ -3,7 +3,7 @@ import { useStateValue } from '../state';
 import { EntryType, HealthCheckRating } from '../types';
 import { Grid, Button } from '@material-ui/core';
 import { Field, Formik, Form } from 'formik';
-import { TextField } from '../AddPatientModal/FormField';
+import { TextField, DiagnosisSelection } from '../AddPatientModal/FormField';
 import {
   EntryFormValues,
   EntryTypeOption,
@@ -26,7 +26,7 @@ const HealthRatingOptions: HealthRatingOption[] = [
   { value: HealthCheckRating.Healthy, label: 'Healthy' },
   { value: HealthCheckRating.LowRisk, label: 'Low Risk' },
   { value: HealthCheckRating.HighRisk, label: 'High Risk' },
-  { value: HealthCheckRating.CriticalRisk, label: 'Critical Risk' },
+  { value: HealthCheckRating.CriticalRisk, label: 'Critical Risk'},
 ];
 
 const AddEntryForm = ({ onSubmit, onCancel }: EntryFormProps) => {
@@ -118,6 +118,11 @@ const AddEntryForm = ({ onSubmit, onCancel }: EntryFormProps) => {
                 component={TextField}
               />
             )}
+            <DiagnosisSelection
+              setFieldValue={setFieldValue}
+              setFieldTouched={setFieldTouched}
+              diagnoses={Object.values(diagnoses)}
+            />    
             <Grid>
               <Grid item>
                 <Button

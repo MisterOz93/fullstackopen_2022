@@ -16,9 +16,9 @@ const innerMargin: CSS.Properties = {
   marginLeft: '2%'
 };
 
-
+  ///start with testing entryy wiith diagnoses codes to see  what console picks up
 const OccupationalHealthCareEntryDetails = ({entry, diagnoses}: entryProps) => {
-
+  console.log('inside occupational component, entry prop is:', entry);
   const codeIndex = (code:string): number => {
     return diagnoses.map(d => d.code).indexOf(code);
   };

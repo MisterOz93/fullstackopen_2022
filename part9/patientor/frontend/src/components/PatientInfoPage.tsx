@@ -35,6 +35,8 @@ const PatientInfoPage = () => {
     const {data: newEntry } = await axios.post(`${apiBaseUrl}/patients/${id}/entries`, formattedValues)
     dispatch(editPatientEntries(newEntry))
     //^test this, check console to see if reducer reached, add a try/catch bock.
+
+    console.log('newEntry data returned from back end is ', newEntry)
     closeForm();
   }
 
@@ -74,7 +76,7 @@ const PatientInfoPage = () => {
         </div>
       );
   }
-  //button below should make form appear
+  
   return(
     <div>
       <h2>{currentPatient.name} {currentPatient.gender === 'male' && <MaleIcon/>} {currentPatient.gender === 'female' && <FemaleIcon/>}</h2>
