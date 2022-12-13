@@ -21,6 +21,7 @@ const PatientInfoPage = () => {
   }
 
   const [formOpen, setFormOpen] = useState<boolean>(false)
+  const [error, setError] = useState<string>();
 
   const openForm = ():void => setFormOpen(true);
 
@@ -29,16 +30,22 @@ const PatientInfoPage = () => {
 
   const submitNewEntry = async (values: EntryFormValues) => {
     
-    const formattedValues = formatEntryValues(values)
+    const formattedValues = formatEntryValues(values);
     //console.log('formatted values being sent to backend are:', formattedValues)
-
-    const {data: newEntry } = await axios.post(`${apiBaseUrl}/patients/${id}/entries`, formattedValues)
-    dispatch(editPatientEntries(newEntry))
-    //^test this, check console to see if reducer reached, add a try/catch bock.
-
-    console.log('newEntry data returned from back end is ', newEntry)
-    closeForm();
-  }
+    try {    
+      const {data: newEntry } = await axios.post(`${apiBaseUrl}/patients/${id}/entries`, formattedValues);
+      dispatch(editPatientEntries(newEntry));
+     //console.log('newEntry data returned from back end is ', newEntry)
+      closeForm();
+    } catch (error: unknown) {
+      let errorMessage = 'Something went wrong.'
+      if(axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data);
+        errorMessage = error.response.data;
+      }
+      setError(errorMessage);
+    }
+  };
 
   useEffect(() => {
     const getDiagnosesFromApi = async () => {
@@ -86,7 +93,7 @@ const PatientInfoPage = () => {
       <p>occupation: {currentPatient.occupation}</p>
       <h3><strong>Entries:</strong></h3>
       <p><button onClick={openForm}>Add Entry</button></p>
-      <AddEntryModal modalOpen={formOpen} onClose={closeForm} onSubmit={submitNewEntry}/>
+      <AddEntryModal modalOpen={formOpen} onClose={closeForm} onSubmit={submitNewEntry} error={error}/>
       <Entries entries={currentPatient.entries} diagnoses={diagnoses} />
    </div>
   );
