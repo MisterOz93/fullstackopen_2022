@@ -18,7 +18,7 @@ const innerMargin: CSS.Properties = {
 
   ///start with testing entryy wiith diagnoses codes to see  what console picks up
 const OccupationalHealthCareEntryDetails = ({entry, diagnoses}: entryProps) => {
-  console.log('inside occupational component, entry prop is:', entry);
+  //console.log('inside occupational component, entry prop is:', entry);
   const codeIndex = (code:string): number => {
     return diagnoses.map(d => d.code).indexOf(code);
   };

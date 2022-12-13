@@ -185,6 +185,7 @@ export const toNewHealthCheckEntry = (
     date,
     specialist,
     type,
+    diagnosisCodes,
     healthCheckRating
   } : NewHealthCheckEntryFields): HealthCheckEntry => {
     const newHealthCheckEntry: HealthCheckEntry = {
@@ -193,7 +194,8 @@ export const toNewHealthCheckEntry = (
       date: parseDate(date),
       specialist: parseStringField(specialist, 'Entry specialist'),
       type: parseType(type) as 'HealthCheck',
-      healthCheckRating: parseHealthCheckRating(healthCheckRating)
+      healthCheckRating: parseHealthCheckRating(healthCheckRating),
+      diagnosisCodes
     }
   return newHealthCheckEntry;
   }
@@ -227,6 +229,7 @@ export const toNewHospitalEntry = (
     date,
     specialist,
     type,
+    diagnosisCodes,
     discharge
   } : NewHospitalEntryFields): HospitalEntry => {
     const newHospitalEntry: HospitalEntry = {
@@ -235,7 +238,8 @@ export const toNewHospitalEntry = (
       date: parseDate(date),
       specialist: parseStringField(specialist, 'Entry specialist'),
       type: parseType(type) as 'Hospital',
-      discharge: parseDischarge(discharge)
+      discharge: parseDischarge(discharge),
+      diagnosisCodes
     }
   return newHospitalEntry
 }
