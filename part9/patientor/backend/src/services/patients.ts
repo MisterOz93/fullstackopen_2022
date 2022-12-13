@@ -50,6 +50,7 @@ const addEntry = (newEntry: Entry, patient: Patient): Entry => {
     newEntryWithType = toNewHospitalEntry(newEntryWithId)
   }
   else if (newEntryWithId.type === 'HealthCheck'){
+    console.log('recognized data as HealthCheck type')
     newEntryWithType = toNewHealthCheckEntry(newEntryWithId)
   }
   else if (newEntryWithId.type === 'OccupationalHealthcare'){

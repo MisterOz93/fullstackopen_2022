@@ -13,7 +13,7 @@ export interface EntryFormValues {
   dischargeDate: string;
   dischargeCriteria: string;
   employerName: string;
-  rating: string;
+  healthCheckRating: string;
 }
 
 export type EntryTypeOption = {

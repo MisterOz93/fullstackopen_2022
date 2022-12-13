@@ -127,12 +127,16 @@ const parseType = (type: unknown) => {
 
 
 const isHealthCheckRating = (rating: any): rating is HealthCheckRating => {
+  //console.log('inside isHealthCheckRating, rating passed is:', rating);
   const numberRating = Number(rating)
 
-   return (!isNaN(numberRating) && numberRating > 0 && numberRating < 4 ) 
+   return (!isNaN(numberRating) && numberRating >= 0 && numberRating < 4 ) 
   }
 
 const parseHealthCheckRating = (rating: unknown): HealthCheckRating => {
+  //console.log('rating is', rating)
+  if (!rating && Number(rating) !== 0) {console.log('1st check failed')}
+  if (!isHealthCheckRating(rating)){ console.log('2 check failed')}
   if (!rating && Number(rating) !== 0 || !isHealthCheckRating(rating)){
     throw new Error('Missing or invalid HealthCheckRating: ' + rating);
   };

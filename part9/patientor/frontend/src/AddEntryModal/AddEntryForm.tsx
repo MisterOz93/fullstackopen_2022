@@ -1,4 +1,3 @@
-import { Dialog, DialogTitle, DialogContent, Divider } from '@material-ui/core';
 import { useStateValue } from '../state';
 import { EntryType, HealthCheckRating } from '../types';
 import { Grid, Button } from '@material-ui/core';
@@ -41,7 +40,7 @@ const AddEntryForm = ({ onSubmit, onCancel }: EntryFormProps) => {
         dischargeCriteria: '',
         dischargeDate: '',
         employerName: '',
-        rating: ''
+        healthCheckRating: ''
       }}
       onSubmit={onSubmit}
       validate={(values) => {
@@ -106,7 +105,7 @@ const AddEntryForm = ({ onSubmit, onCancel }: EntryFormProps) => {
             {values.type === 'HealthCheck' && (
               <EntryFormSelect
                 label="Health Check Rating"
-                name="rating"
+                name="healthCheckRating"
                 options={HealthRatingOptions}
               />
             )}
