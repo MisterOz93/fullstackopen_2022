@@ -1,31 +1,53 @@
 const express = require('express')
 const cors = require('cors')
-const { anecdotes } = require('./data')
+require('dotenv').config()
+const Anecdote = require('./models/anecdote')
 const app = express()
 const mongoose = require('mongoose')
-const mongourl = `mongodb+srv://MisterOz93:${process.argv[2]}@cluster0.oldzd.mongodb.net/?retryWrites=true&w=majority`
-const PORT = process.env.PORT || 3001
+const { response } = require('express')
+const mongoUrl = process.env.MONGO_URI
+const PORT = process.env.PORT
 
+mongoose.connect(mongoUrl).then(() => console.log('MongoDB connected'))
 //app.use(express.static('build')) dont use build while refactoring
 app.use(express.json())
 app.use(cors())
 
-app.get('/anecdotes', (req, res) => {
+app.get('/anecdotes', async (req, res) => {
+   const anecdotes = await Anecdote.find({})
    return res.json(anecdotes)
 })
+
 app.get('/health', (req, res ) => {
   return res.status(200).send('Ok')
 })
 
-app.put('/anecdotes/:id', (req, res) => {
-    console.log('req body', req.body)
-    const anecdote = anecdotes.find(a => a.id === req.params.id)
-    if (!anecdote){
-        return res.status(400).send('Could not find anecdote with that ID on server')
+app.post('/anecdotes', async (req, res) => {
+    const body = req.body
+    if (!body){
+        return response.status(400).json('Request was missing an anecdote')
     }
-    
-    anecdotes.map(a => a.id !== req.params.id ? a: req.body)
-    return res.json(req.body)
+    const newAnecdote = new Anecdote({content: body.content, votes: body.votes })
+    await newAnecdote.save()
+    return res.json(newAnecdote)
+})
+
+app.put('/anecdotes/:id', async (req, res) => {
+    const body = req.body
+
+    if (!body){
+        return res.status(400).json('Request was missing anecdote information')
+    }
+
+    const anecdote = {
+        content: body.content,
+        votes: body.votes,
+        id: body.id
+    }
+
+    const updatedAnecdote = await Anecdote.findByIdAndUpdate(req.params.id, anecdote, {new : true})   
+    res.json(updatedAnecdote)
+   
 })
 
 app.listen(PORT, () => {

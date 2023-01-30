@@ -3,6 +3,7 @@ const Anecdote = require('./models/anecdote')
 const { anecdotes } = require('./data')
 
 const populateDB = async () => {
+    await Anecdote.remove({})
     const anecdoteObjects = anecdotes.map(a => new Anecdote(a))
     const promiseArray = anecdoteObjects.map(a => a.save())
     await Promise.all(promiseArray)
