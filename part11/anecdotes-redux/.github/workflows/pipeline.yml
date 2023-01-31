@@ -7,8 +7,8 @@ on:
   pull_request:
     branches: [main]
     types: [opened, synchronize]
-
-simple_deployment_pipeline:
+jobs:
+  simple_deployment_pipeline:
     permissions: write-all
     runs-on: ubuntu-20.04
     steps:
