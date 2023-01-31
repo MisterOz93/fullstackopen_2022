@@ -6,7 +6,7 @@ const app = express()
 const mongoose = require('mongoose')
 const { response } = require('express')
 const mongoUrl = process.env.MONGO_URI
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3001
 
 mongoose.connect(mongoUrl).then(() => console.log('MongoDB connected'))
 
@@ -15,8 +15,8 @@ app.use(express.json())
 app.use(cors())
 
 app.get('/anecdotes', async (req, res) => {
-   const anecdotes = await Anecdote.find({})
-   return res.json(anecdotes)
+  const anecdotes = await Anecdote.find({})
+  return res.json(anecdotes)
 })
 
 app.get('/health', (req, res ) => {
@@ -24,30 +24,30 @@ app.get('/health', (req, res ) => {
 })
 
 app.post('/anecdotes', async (req, res) => {
-    const body = req.body
-    if (!body){
-        return response.status(400).json('Request was missing an anecdote')
-    }
-    const newAnecdote = new Anecdote({content: body.content, votes: body.votes })
-    await newAnecdote.save()
-    return res.json(newAnecdote)
+  const body = req.body
+  if (!body){
+    return response.status(400).json('Request was missing an anecdote')
+  }
+  const newAnecdote = new Anecdote({content: body.content, votes: body.votes })
+  await newAnecdote.save()
+  return res.json(newAnecdote)
 })
 
 app.put('/anecdotes/:id', async (req, res) => {
-    const body = req.body
+  const body = req.body
 
-    if (!body){
-        return res.status(400).json('Request was missing anecdote information')
-    }
+  if (!body){
+    return res.status(400).json('Request was missing anecdote information')
+  }
 
-    const anecdote = {
-        content: body.content,
-        votes: body.votes,
-        id: body.id
-    }
+  const anecdote = {
+    content: body.content,
+    votes: body.votes,
+    id: body.id
+  }
 
-    const updatedAnecdote = await Anecdote.findByIdAndUpdate(req.params.id, anecdote, {new : true})   
-    res.json(updatedAnecdote)
+  const updatedAnecdote = await Anecdote.findByIdAndUpdate(req.params.id, anecdote, {new : true})   
+  res.json(updatedAnecdote)
    
 })
 

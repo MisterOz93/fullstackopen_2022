@@ -5,6 +5,7 @@ module.exports = {
     'es2021': true,
     'node': true,
     'jest': true,
+    'cypress/globals': true,
   },
   'extends': [
     'eslint:recommended',
@@ -13,7 +14,8 @@ module.exports = {
   'overrides': [
   ],
   'parserOptions': {
-    'ecmaVersion': 'latest'
+    'ecmaVersion': 'latest',
+    'sourceType': 'module'
   },
   'plugins': [
     'react'
@@ -27,6 +29,7 @@ module.exports = {
       'error',
       'unix'
     ],
+    'react/react-in-jsx-scope': 'off',
     'quotes': [
       'error',
       'single'

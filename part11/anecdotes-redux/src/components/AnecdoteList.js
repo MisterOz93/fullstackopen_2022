@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useSelector, useDispatch } from 'react-redux'
 import { updateAnecdote } from '../reducers/anecdoteReducer'
 import { setNotification } from '../reducers/notificationReducer'
@@ -9,8 +10,8 @@ const Anecdote = ({ anecdote, vote }) => {
         {anecdote.content}
       </div>
       <div>
-        Has {anecdote.votes} {anecdote.votes !== 1 ? 'votes ' : 'vote '}
-        <button onClick={() => vote(anecdote)}>vote</button>
+        Has <span id='votes'>{anecdote.votes} {anecdote.votes !== 1 ? 'votes ' : 'vote '} </span>
+        <button id='vote_button' onClick={() => vote(anecdote)}>vote</button>
       </div>
     </div>
   )
@@ -30,10 +31,10 @@ const AnecdoteList = () => {
     
     <div>
       {!state.filter
-      ? 
+        ? 
         state.anecdotes.map( a => 
           <Anecdote key={a.id} anecdote={a} vote={vote} />)
-      :
+        :
         state.anecdotes.filter(a => a.content.toLowerCase().includes(state.filter))
           .map(a => <Anecdote key={a.id} anecdote={a} vote={vote} />)
       }
