@@ -18,7 +18,9 @@ module.exports = {
     'sourceType': 'module'
   },
   'plugins': [
-    'react'
+    'react',
+    'jest',
+    'cypress'
   ],
   'rules': {
     'indent': [
@@ -30,6 +32,7 @@ module.exports = {
       'unix'
     ],
     'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off',
     'quotes': [
       'error',
       'single'

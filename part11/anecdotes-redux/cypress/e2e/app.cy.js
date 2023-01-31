@@ -1,7 +1,7 @@
 import {anecdotes } from '../../data'
 
 beforeEach(function(){
-    cy.visit('http://localhost:3000')
+  cy.visit('http://localhost:3000')
 })
 describe('Anecdote App', function(){
   it('Can be opened', function(){
