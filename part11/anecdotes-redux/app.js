@@ -9,7 +9,8 @@ const mongoUrl = process.env.MONGO_URI
 const PORT = process.env.PORT
 
 mongoose.connect(mongoUrl).then(() => console.log('MongoDB connected'))
-//app.use(express.static('build')) dont use build while refactoring
+
+app.use(express.static('build'))
 app.use(express.json())
 app.use(cors())
 
