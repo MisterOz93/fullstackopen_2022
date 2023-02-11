@@ -19,7 +19,7 @@ jobs:
       - name: npm install
         run: npm install
       - name: lint
-        run: npm run eslint
+        run: npm run lint
       - name: build
         run: npm run build
       - name: test
@@ -28,8 +28,8 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           command: npm run test:e2e
-          start: npm run start-prod
-          wait-on: http://localhost:5000
+          start: npm start
+          wait-on: http://localhost:3000
       - name: deploy to render
         uses: fjogeleit/http-request-action@v1
         with:
