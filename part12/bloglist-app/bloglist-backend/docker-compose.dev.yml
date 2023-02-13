@@ -12,3 +12,16 @@ services:
       MONGO_INITDB_DATABASE: the_database
     volumes: 
       - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+
+  server:
+    image: backend-dev
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 3001:3000
+    environment:
+      - MONGO_URI=mongodb://the_username:the_password@mongo:27017/the_database
+    container_name: bloglist-backend-dev
